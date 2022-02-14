@@ -1,4 +1,4 @@
-import React from 'react';
+import { useEffect } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Table, Row, Col, Card, Button, Image } from 'antd';
 import { history } from 'umi';
@@ -6,6 +6,15 @@ import { history } from 'umi';
 import styles from './style.less';
 
 export default () => {
+  
+  const loadData = async () => {
+    
+  }
+
+  useEffect(() => {
+    loadData()
+  },[])
+
   const handler = {
     detail(record) {
       history.push('/market/detail/' + record.key);
