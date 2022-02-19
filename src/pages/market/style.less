@@ -7,23 +7,6 @@
   word-break: break-all;
 }
 
-// mixins for clearfix
-// ------------------------
-.clearfix() {
-  zoom: 1;
-  &::before,
-  &::after {
-    display: table;
-    content: ' ';
-  }
-  &::after {
-    clear: both;
-    height: 0;
-    font-size: 0;
-    visibility: hidden;
-  }
-}
-
 .activitiesList {
   padding: 0 24px 8px 24px;
   .username {
