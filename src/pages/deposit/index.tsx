@@ -1,10 +1,12 @@
 import React, { useRef, useState } from 'react';
 import { useModel, history } from 'umi';
-import { Table, Card, Row, Col, Menu, Button } from 'antd';
+import { Table, Row, Col, Menu, Radio, Input } from 'antd';
 import { SettingOutlined, UserOutlined } from '@ant-design/icons';
 import { GridContent } from '@ant-design/pro-layout';
 
 import styles from './style.less';
+
+const { Search } = Input;
 
 export default () => {
   const { initialState } = useModel('@@initialState');
@@ -68,7 +70,15 @@ export default () => {
   return (
     <GridContent>
       <Row>
-        <Col>form</Col>
+        <Col span={12}>
+          <Radio.Group defaultValue="all" buttonStyle="solid">
+            <Radio.Button value="all" style={{width:112, textAlign:'center', borderRadius: '6px 0 0 6px'}}>All</Radio.Button>
+            <Radio.Button value="stable" style={{ borderRadius: '0 6px 6px 0'}}>Stable Coins</Radio.Button>
+          </Radio.Group>
+        </Col>
+        <Col span={12}>
+          <Search placeholder="search" style={{ width: 200 }} />
+        </Col>
       </Row>
       <Row>
         <Col span={16}>

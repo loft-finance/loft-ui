@@ -1,12 +1,12 @@
-import aaveLogo from '@/images/aave.svg';
-import aaveActiveLogo from '@/images/aaveActive.svg';
+import aaveLogo from './aave.svg';
+import aaveActiveLogo from './aaveActive.svg';
 import aavev2Logo from './aavev2.svg';
-import aavev2ActiveLogo from '@/images/aavev2Active.svg';
-import ammLogo from '@/images/amm.svg';
-import ammActiveLogo from '@/images/ammActive.svg';
-import polygon from '@/images/polygon.svg';
-import arbitrium from '@/images/arbitrium.svg';
-import avalanche from '@/images/avalanche.svg';
+import aavev2ActiveLogo from './aavev2Active.svg';
+import ammLogo from './amm.svg';
+import ammActiveLogo from './ammActive.svg';
+import polygon from './polygon.svg';
+import arbitrium from './arbitrium.svg';
+import avalanche from './avalanche.svg';
 
 export {
   aaveLogo,

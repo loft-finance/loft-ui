@@ -1,20 +1,73 @@
 import { useEffect } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Table, Row, Col, Card, Button, Image } from 'antd';
-import { history } from 'umi';
+import { history, useModel } from 'umi';
+import { valueToBigNumber } from '@aave/protocol-js';
 
-
-import { Pool } from "@/lib/pool";
+// import { Pool } from "@/lib/pool";
 
 
 import styles from './style.less';
 
 
 export default () => {
-  const pool = new Pool();
+  const { reserves, getReserves } = useModel('pool')
+  
+  let totalLockedInUsd = valueToBigNumber('0');
+  let marketRefPriceInUsd = '0'
+  if(reserves?.reservesData){
+    let list = reserves.reservesData
+    .filter((res: any) => res.isActive && !res.isFrozen)
+    .map((reserve: any) => {
+      totalLockedInUsd = totalLockedInUsd.plus(
+        valueToBigNumber(reserve.totalLiquidity)
+          .multipliedBy(reserve.priceInMarketReferenceCurrency)
+          .multipliedBy(marketRefPriceInUsd)
+      );
+
+      const totalLiquidity = Number(reserve.totalLiquidity);
+      const totalLiquidityInUSD = valueToBigNumber(reserve.totalLiquidity)
+        .multipliedBy(reserve.priceInMarketReferenceCurrency)
+        .multipliedBy(marketRefPriceInUsd)
+        .toNumber();
+
+      const totalBorrows = Number(reserve.totalDebt);
+      const totalBorrowsInUSD = valueToBigNumber(reserve.totalDebt)
+        .multipliedBy(reserve.priceInMarketReferenceCurrency)
+        .multipliedBy(marketRefPriceInUsd)
+        .toNumber();
+      // const reserveIncentiveData = reserveIncentives[reserve.underlyingAsset.toLowerCase()];
+      const reserveIncentiveData = false
+      return {
+        totalLiquidity,
+        totalLiquidityInUSD,
+        totalBorrows: reserve.borrowingEnabled ? totalBorrows : -1,
+        totalBorrowsInUSD: reserve.borrowingEnabled ? totalBorrowsInUSD : -1,
+        id: reserve.id,
+        underlyingAsset: reserve.underlyingAsset,
+        currencySymbol: reserve.symbol,
+        depositAPY: reserve.borrowingEnabled ? Number(reserve.supplyAPY) : -1,
+        avg30DaysLiquidityRate: Number(reserve.avg30DaysLiquidityRate),
+        stableBorrowRate:
+          reserve.stableBorrowRateEnabled && reserve.borrowingEnabled
+            ? Number(reserve.stableBorrowAPY)
+            : -1,
+        variableBorrowRate: reserve.borrowingEnabled ? Number(reserve.variableBorrowAPY) : -1,
+        avg30DaysVariableRate: Number(reserve.avg30DaysVariableBorrowRate),
+        borrowingEnabled: reserve.borrowingEnabled,
+        stableBorrowRateEnabled: reserve.stableBorrowRateEnabled,
+        isFreezed: reserve.isFrozen,
+        aincentivesAPR: reserveIncentiveData ? reserveIncentiveData.aIncentives.incentiveAPR : '0',
+        vincentivesAPR: reserveIncentiveData ? reserveIncentiveData.vIncentives.incentiveAPR : '0',
+        sincentivesAPR: reserveIncentiveData ? reserveIncentiveData.sIncentives.incentiveAPR : '0',
+      };
+    });
+    console.log('reserves:', list, reserves)
+  }
+
+  // const pool = new Pool();
   const loadData = async () => {
-    const res = await pool.getData()
-    console.log('res:', res)
+    await getReserves()
   }
 
 

@@ -47,6 +47,7 @@
     "not ie <= 10"
   ],
   "dependencies": {
+    "@aave/math-utils": "0.27.3",
     "@aave/protocol-js": "^4.3.0",
     "@ant-design/charts": "^0.9.4",
     "@ant-design/icons": "^4.5.0",
@@ -66,6 +67,7 @@
     "bizcharts": "^3.5.3-beta.0",
     "bizcharts-plugin-slider": "^2.1.1-beta.1",
     "classnames": "^2.2.6",
+    "dayjs": "^1.10.7",
     "ethers": "^5.5.4",
     "gg-editor": "^2.0.2",
     "graphql": "^16.3.0",
