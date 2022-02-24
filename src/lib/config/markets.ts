@@ -1,4 +1,4 @@
-import { ChainId } from "./ChainId";
+import { ChainId } from '@aave/contract-helpers';
 import * as logos from './images';
 
 export enum CustomMarket {
