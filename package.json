@@ -47,6 +47,7 @@
     "not ie <= 10"
   ],
   "dependencies": {
+    "@aave/contract-helpers": "0.27.3",
     "@aave/math-utils": "0.27.3",
     "@aave/protocol-js": "^4.3.0",
     "@ant-design/charts": "^0.9.4",
