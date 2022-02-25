@@ -24,7 +24,10 @@ export default () => {
     const { current: currentMarket } = useModel('market');
 
     const [loading, setLoading] = useState(false);
-    const [reserves, setReserves] = useState({});
+    const [baseCurrency, setbaseCurrency] = useState({})
+    const [reserves, setReserves] = useState([]);
+
+    const [userReserves, setUserReserves] = useState([]);
     const [user, setUser] = useState({});
 
     const getNetwork = (chainId: ChainId) => {
@@ -81,7 +84,8 @@ export default () => {
             );
             const reserves = format(reservesData)
             
-            setReserves({ reservesData: reserves, baseCurrencyData });
+            setReserves(reserves);
+            setbaseCurrency(baseCurrencyData)
         } catch (e) {
             console.log('e', e);
         }
@@ -111,5 +115,5 @@ export default () => {
         return list
     }
 
-    return { loading, reserves, getReserves, user };
+    return { loading, baseCurrency, reserves, getReserves };
 };

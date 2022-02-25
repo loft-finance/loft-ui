@@ -16,8 +16,8 @@ export default () => {
 
   let totalLockedInUsd = valueToBigNumber('0');
   let marketRefPriceInUsd = '0'
-  if(reserves?.reservesData){
-    list = reserves.reservesData
+  if(reserves){
+    list = reserves
     .filter((res: any) => res.isActive && !res.isFrozen)
     .map((reserve: any) => {
       totalLockedInUsd = totalLockedInUsd.plus(
