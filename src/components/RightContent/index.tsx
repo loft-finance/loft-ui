@@ -44,7 +44,7 @@ const GlobalHeaderRight: React.FC = () => {
         {!wallet && (
           <Button
             size="small"
-            style={{ borderRadius: 16, padding: '0 10px' }}
+            style={{ borderRadius: 16, padding: '0 10px 24px' }}
             onClick={handler.connect}
           >
             connect
