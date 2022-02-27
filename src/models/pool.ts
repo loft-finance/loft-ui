@@ -6,7 +6,7 @@ import dayjs from 'dayjs';
 import {
     formatReserve,
     // FormatReserveResponse,
-    // formatUserSummary,
+    formatUserSummary,
     // FormatUserSummaryResponse,
     normalize,
   } from '@aave/math-utils';
@@ -22,12 +22,13 @@ const providers: { [network: string]: ethers.providers.Provider } = {};
 
 export default () => {
     const { current: currentMarket } = useModel('market');
+    const { currentAccount } = useModel('wallet')
 
     const [loading, setLoading] = useState(false);
-    const [baseCurrency, setbaseCurrency] = useState({})
+    const [baseCurrency, setbaseCurrency] = useState<any>({})
     const [reserves, setReserves] = useState([]);
 
-    const [userReserves, setUserReserves] = useState([]);
+    const [userReserves, setUserReserves] = useState<any>(undefined);
     const [user, setUser] = useState({});
 
     const getNetwork = (chainId: ChainId) => {
@@ -82,7 +83,7 @@ export default () => {
             const { reservesData, baseCurrencyData } = await contract.getReservesHumanized(
                 lendingPoolAddressProvider
             );
-            const reserves = format(reservesData)
+            const reserves = formatReserves(reservesData)
             
             setReserves(reserves);
             setbaseCurrency(baseCurrencyData)
@@ -92,7 +93,35 @@ export default () => {
         setLoading(false);
     }
 
-    const format = (reserves: any) => {
+    const getUserReserves = async () => {
+        if(!currentAccount) return;
+
+        const chainId = currentMarket.chainId
+        const provider = getProvider(chainId);
+
+        const networkConfig = getNetwork(chainId);
+        const contract = new UiPoolDataProvider({
+            uiPoolDataProviderAddress: networkConfig.addresses.uiPoolDataProvider,
+            provider,
+        });
+        const lendingPoolAddressProvider = currentMarket.addresses.LENDING_POOL_ADDRESS_PROVIDER
+        try {
+            setLoading(true);
+            const userReservesResponse = await contract.getUserReservesHumanized(
+                lendingPoolAddressProvider,
+                currentAccount
+            );
+            if(userReservesResponse){
+                const res = formatUserReserves(userReservesResponse)
+                setUserReserves(res);
+            }
+        } catch (e) {
+            console.log('e', e);
+        }
+        setLoading(false);
+    }
+
+    const formatReserves = (reserves: any) => {
         const currentTimestamp = dayjs().unix();
         const marketRefCurrencyDecimals = 18;
         let list: any = []
@@ -115,5 +144,36 @@ export default () => {
         return list
     }
 
-    return { loading, baseCurrency, reserves, getReserves };
+    const formatUserReserves = (rawUserReserves: any) => {
+        const currentTimestamp = dayjs().unix();
+        const marketRefCurrencyDecimals = 18;
+        let marketRefPriceInUsd = baseCurrency?.marketReferenceCurrencyPriceInUsd ? baseCurrency.marketReferenceCurrencyPriceInUsd
+        : '0';
+        marketRefPriceInUsd = normalize(marketRefPriceInUsd, 8)
+
+        const computedUserData =
+        currentAccount && rawUserReserves
+            ? formatUserSummary({
+                currentTimestamp,
+                marketRefPriceInUsd,
+                marketRefCurrencyDecimals,
+                rawUserReserves: rawUserReserves,
+                })
+            : undefined;
+        return {
+            id: currentAccount,
+            ...computedUserData
+        }
+    }
+
+    const start = async() => {
+        await getReserves()
+        await getUserReserves()
+        // setInterval(()=>{
+        //     getReserves()
+        //     getUserReserves()
+        // }, 30 * 1000)
+    }
+
+    return { loading, baseCurrency, reserves, userReserves, start };
 };

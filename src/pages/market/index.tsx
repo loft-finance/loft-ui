@@ -11,7 +11,9 @@ import styles from './style.less';
 
 
 export default () => {
-  const { reserves, getReserves } = useModel('pool')
+  const { reserves, userReserves, start } = useModel('pool')
+  console.log('data:', reserves, userReserves)
+
   let list: any = []
 
   let totalLockedInUsd = valueToBigNumber('0');
@@ -68,7 +70,7 @@ export default () => {
 
   // const pool = new Pool();
   const loadData = async () => {
-    await getReserves()
+    await start()
   }
 
 
@@ -86,28 +88,36 @@ export default () => {
     {
       title: 'Assets',
       dataIndex: 'currencySymbol',
+      width: 200,
+      align: 'center'
     },
     {
       title: 'Market Size',
       dataIndex: 'totalBorrows',
+      width: 200,
+      align: 'center'
     },
     {
       title: 'total borrowings',
       dataIndex: 'totalBorrowsInUSD',
       render: (text: any) => {
         return text < 0 ? '--' : ( '$ ' + (text ? text.toFixed(2) : text) )
-      }
+      },
+      width: 200,
+      align: 'center'
     },
     {
-      title: 'deposit APY  (annual rate of return)',
+      title: <div style={{textAlign:'center'}}>deposit APY <p>(annual rate of return)</p></div>,
       dataIndex: 'depositAPY',
       render: (text: any) => {
         return text < 0 ? '--' : (text.toFixed(2) + '%')
-      }
+      },
+      align: 'center'
     },
     {
       title: 'annual interest rate of borrowing',
       dataIndex: 'depositAPY',
+      align: 'center'
     },
   ];
 
