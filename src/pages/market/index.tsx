@@ -11,7 +11,9 @@ import styles from './style.less';
 
 
 export default () => {
-  const { reserves, getReserves } = useModel('pool')
+  const { reserves, userReserves, start } = useModel('pool')
+  console.log('data:', reserves, userReserves)
+
   let list: any = []
 
   let totalLockedInUsd = valueToBigNumber('0');
@@ -68,7 +70,7 @@ export default () => {
 
   // const pool = new Pool();
   const loadData = async () => {
-    await getReserves()
+    await start()
   }
 
 

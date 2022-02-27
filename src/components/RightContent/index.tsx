@@ -26,6 +26,8 @@ const GlobalHeaderRight: React.FC = () => {
     className = `${styles.right}  ${styles.dark}`;
   }
 
+  const { current } = useModel('wallet');
+
   const connectRef = useRef();
 
   const handler = {
@@ -34,14 +36,12 @@ const GlobalHeaderRight: React.FC = () => {
     },
   };
 
-  const { wallet } = initialState;
-
   return (
     <>
       <Space className={className}>
         <IconFont type="icon-ic_twitter" className={styles.share} />
         <IconFont type="icon-ic_telegram" className={styles.share} />
-        {!wallet && (
+        {!current && (
           <Button
             size="small"
             style={{ borderRadius: 16, padding: '0 10px 24px' }}
@@ -50,7 +50,7 @@ const GlobalHeaderRight: React.FC = () => {
             connect
           </Button>
         )}
-        {wallet && (
+        {!!current && (
           <div className={styles.user}>
             Ftm Network
             <div className={styles.account}>0x00...176c</div>
