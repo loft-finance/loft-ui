@@ -79,6 +79,7 @@ ol {
 .ant-table-tbody > tr.ant-table-row > td {
   border-top: 1px solid #fff !important;
   border-bottom: 1px solid #fff !important;
+  padding: 10px 16px;
 }
 .ant-table-tbody > tr.ant-table-row > td:first-child {
   border-left: 1px solid #fff !important;
@@ -126,6 +127,7 @@ td.ant-table-column-sort {
 }
 .CardInfo {
   border-radius: 4px !important;
+  height: 145px;
   .ant-card-head {
     min-height: 38px;
     .ant-card-head-title {
@@ -145,6 +147,37 @@ td.ant-table-column-sort {
   font-size: 24px;
   color: #29292D;
 }
+
+.TokenIcon {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.TokenIcon__image {
+  margin-right: 10px;
+}
+.TokenIcon__name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
+  margin-bottom: 0;
+}
+.MultipleIcons {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  margin-right: 10px;
+}
+.MultipleIcons__symbols {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.MultipleIcons .MultipleIcons__separator.MultipleIcons__separator, .MultipleIcons .TokenIcon img, .MultipleIcons img {
+  margin-right: 0;
+}
+
 .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item:hover::after,
 .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu:hover::after,
 .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item-active::after,

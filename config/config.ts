@@ -50,7 +50,7 @@ export default defineConfig({
           hideInMenu: true,
         },
         {
-          path: '/market/detail/:id',
+          path: '/market/detail/:underlyingAsset/:id',
           name: 'detail',
           component: './market/detail',
           hideInMenu: true,
