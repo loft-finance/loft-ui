@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useModel } from 'umi';
 import {
   Card,
   Row,
@@ -13,24 +14,31 @@ import {
 } from 'antd';
 import { TokenIcon } from '@aave/aave-ui-kit';
 import { calculateHealthFactorFromBalancesBigUnits, valueToBigNumber } from '@aave/protocol-js';
+
 import Back from '@/components/Back';
 import styles from './Deposit.less';
 const { Step } = Steps;
 
-export default ({ poolReserve, user, marketRefPriceInUsd, wallet, maxAmountToDeposit }: any) => {
+export default ({ poolReserve, maxAmountToDeposit }: any) => {
+  const symbol = poolReserve?poolReserve.symbol:''
+
   const [quantity, setQuantity] = useState(0);
   const [steps, setSteps] = useState([]);
   const [current, setCurrent] = useState(0);
-
-  const symbol = poolReserve?poolReserve.symbol:''
+  
+  const { user, userReserve, baseCurrency } = useModel('pool')
+  const { wallet } = useModel('wallet');
+  const {lendingPool} = useModel('lendingPool');
+  
 
   const amount = valueToBigNumber(quantity || '0');
   const amountIntEth = amount.multipliedBy(poolReserve.priceInMarketReferenceCurrency);
-  const amountInUsd = amountIntEth.multipliedBy(marketRefPriceInUsd);
+  const amountInUsd = amountIntEth.multipliedBy(baseCurrency.marketReferenceCurrencyPriceInUsd);
   const totalCollateralMarketReferenceCurrencyAfter = valueToBigNumber(
     user.totalCollateralMarketReferenceCurrency
   ).plus(amountIntEth);
 
+ 
   const liquidationThresholdAfter = valueToBigNumber(user.totalCollateralMarketReferenceCurrency)
     .multipliedBy(user.currentLiquidationThreshold)
     .plus(amountIntEth.multipliedBy(poolReserve.reserveLiquidationThreshold))
@@ -41,6 +49,16 @@ export default ({ poolReserve, user, marketRefPriceInUsd, wallet, maxAmountToDep
     valueToBigNumber(user.totalBorrowsMarketReferenceCurrency),
     liquidationThresholdAfter
   );
+
+
+  const notShowHealthFactor =
+    user.totalBorrowsMarketReferenceCurrency !== '0' && poolReserve.usageAsCollateralEnabled;
+
+  const usageAsCollateralEnabledOnDeposit =
+    poolReserve.usageAsCollateralEnabled &&
+    (!userReserve?.underlyingBalance ||
+      userReserve.underlyingBalance === '0' ||
+      userReserve.usageAsCollateralEnabledOnUser);
 
   useEffect(() => {
     if (wallet) {
@@ -81,12 +99,19 @@ export default ({ poolReserve, user, marketRefPriceInUsd, wallet, maxAmountToDep
   }, [wallet]);
 
   const handler = {
-    quantity(values) {
+    quantity(values: any) {
       setQuantity(values.quantity);
     },
-    submit() {
-      setCurrent(current + 1);
-    },
+    async submit() {
+      // setCurrent(current + 1);
+      const res = await lendingPool.deposit({
+        user: user.id,
+        reserve: poolReserve.underlyingAsset,
+        amount: amount.toString(),
+      });
+
+      console.log('deposit:', res)
+    }
   };
 
   return (
@@ -182,7 +207,7 @@ export default ({ poolReserve, user, marketRefPriceInUsd, wallet, maxAmountToDep
                       span={3}
                       contentStyle={{ color: '#3163E2' }}
                     >
-                      yes
+                      {usageAsCollateralEnabledOnDeposit?'yes':'no'}
                     </Descriptions.Item>
                     <Descriptions.Item
                       label="New health factors"

@@ -75,7 +75,7 @@ export default (props) => {
 
       {wallet && walletBalance.eq('0') && <WalletEmpty symbol={poolReserve?poolReserve?.symbol:''} />}
 
-      {wallet && !walletBalance.eq('0') && <Deposit poolReserve={poolReserve} user={user} marketRefPriceInUsd={baseCurrency.marketRefPriceInUsd} wallet={wallet} maxAmountToDeposit={maxAmountToDeposit.toString(10)} />}
+      {wallet && !walletBalance.eq('0') && <Deposit poolReserve={poolReserve} maxAmountToDeposit={maxAmountToDeposit.toString(10)} />}
     </GridContent>
   );
 };

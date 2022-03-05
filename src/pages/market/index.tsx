@@ -97,12 +97,14 @@ export default () => {
       title: 'Market Size',
       dataIndex: 'totalBorrows',
       width: 200,
-      // align: 'center'
+      render: (text: any, record: any) => {
+        return record.isPriceInUSD ? ('$' +record.totalLiquidityInUSD.toFixed(2)) : record.totalLiquidity.toFixed(2)
+      }
     },
     {
       title: 'total borrowings',
       dataIndex: 'totalBorrowsInUSD',
-      render: (text: any) => {
+      render: (text: any, record: any) => {
         return text < 0 ? '--' : ( '$ ' + (text ? text.toFixed(2) : text) )
       },
       width: 200,
@@ -111,17 +113,17 @@ export default () => {
     {
       title: <div style={{textAlign:'center'}}>deposit APY <p>(annual rate of return)</p></div>,
       dataIndex: 'depositAPY',
-      render: (text: any) => {
-        return <div className={styles.TagBox}>{text < 0 ? '--' : (text.toFixed(2) + '%')} <div className={styles.tag}>1.2% <span>APR</span></div></div>
+      render: (text: any, record: any) => {
+        return <div className={styles.TagBox}>{text < 0 ? '--' : (text.toFixed(2) + '%')} <div className={styles.tag}>{record.aincentivesAPR}% <span>APR</span></div></div>
       },
       align: 'center'
     },
     {
       title: 'annual interest rate of borrowing',
-      dataIndex: 'depositAPY',
+      dataIndex: 'variableBorrowRate',
       align: 'center',
-      render: (text: any) => {
-        return <div className={styles.TagBox}>{text < 0 ? '--' : (text.toFixed(2) + '%')} <div className={styles.tag}>1.2% <span>APR</span></div></div>
+      render: (text: any, record: any) => {
+        return <div className={styles.TagBox}>{text < 0 ? '--' : (text.toFixed(2) + '%')} <div className={styles.tag}>{record.vincentivesAPR}% <span>APR</span></div></div>
       },
     },
   ];
