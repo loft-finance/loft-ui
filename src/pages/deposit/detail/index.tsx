@@ -12,7 +12,7 @@ import { networks } from '@/lib/config/networks';
 import { ChainId } from '@aave/contract-helpers';
 
 export default (props) => {
-  const { match: { params: { underlyingAsset,id } } } = props
+  const { match: { params: { underlyingAsset,id } }, children } = props
 
   const { wallet, balances } = useModel('wallet');
   const { reserves, user, baseCurrency } = useModel('pool')
@@ -75,7 +75,7 @@ export default (props) => {
 
       {wallet && walletBalance.eq('0') && <WalletEmpty symbol={poolReserve?poolReserve?.symbol:''} />}
 
-      {wallet && !walletBalance.eq('0') && <Deposit poolReserve={poolReserve} maxAmountToDeposit={maxAmountToDeposit.toString(10)} />}
+      {wallet && !walletBalance.eq('0') && React.cloneElement(props.children, { poolReserve, maxAmountToDeposit: maxAmountToDeposit.toString(10) }) }
     </GridContent>
   );
 };

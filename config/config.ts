@@ -75,8 +75,32 @@ export default defineConfig({
         {
           path: '/deposit/detail/:underlyingAsset/:id',
           name: 'detail',
-          component: './deposit/detail',
+          // component: '@/pages/deposit/detail',
           hideInMenu: true,
+          routes: [
+            {
+              path: '/deposit/detail/:underlyingAsset/:id',
+              redirect: '/deposit/detail/:underlyingAsset/:id/amount',
+            },
+            {
+              path: '/deposit/detail/:underlyingAsset/:id/amount',
+              name: 'amount',
+              component: '@/pages/deposit/detail/amount',
+              wrappers: [
+                '@/pages/deposit/detail/index',
+              ],
+              hideInMenu: true,
+            },
+            {
+              path: '/deposit/detail/:underlyingAsset/:id/confirm/:amount',
+              name: 'confirm',
+              component: '@/pages/deposit/detail/confirm',
+              wrappers: [
+                '@/pages/deposit/detail',
+              ],
+              hideInMenu: true,
+            }
+          ]
         },
       ],
     },
