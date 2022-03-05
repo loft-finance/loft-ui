@@ -1,14 +1,13 @@
-import { Card, Result, Button } from 'antd';
+import { Card, Result } from 'antd';
 import Back from '@/components/Back';
-import { history } from 'umi';
-export default () => (
+export default ({ symbol='' }) => (
   <Card bordered={false} style={{ paddingBottom: 30 }}>
     <Back />
     <Result
       icon={<></>}
       title="Your balance is zero"
       style={{}}
-      subTitle="Your DAI balance is 0, please transfer DAI to your wallet to deposit"
+      subTitle={`Your ${symbol} balance is 0, please transfer ${symbol} to your wallet to deposit`}
     />
   </Card>
 );

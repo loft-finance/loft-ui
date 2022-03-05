@@ -3,75 +3,173 @@ import { useModel, history } from 'umi';
 import { Table, Row, Col, Menu, Radio, Input } from 'antd';
 import { SettingOutlined, UserOutlined } from '@ant-design/icons';
 import { GridContent } from '@ant-design/pro-layout';
+import { valueToBigNumber } from '@aave/protocol-js';
+import { isAssetStable } from '@/lib/config/assets'
+import { TokenIcon } from '@aave/aave-ui-kit';
 
 import styles from './style.less';
 
 const { Search } = Input;
 
+
 export default () => {
-  const { initialState } = useModel('@@initialState');
-  const { wallet } = initialState;
+  const [searchValue, setSearchValue] = useState('');
+  const [showOnlyStableCoins, setShowOnlyStableCoins] = useState(false);
+
+  const { reserves, baseCurrency, user } = useModel('pool')
+  const marketRefPriceInUsd = baseCurrency.marketRefPriceInUsd
+
+  const { wallet } = useModel('wallet')
+
+  const { reserveIncentives, userIncentives } = useModel('incentives')
+  
+
+  const filteredReserves = reserves.filter(
+    (reserve) =>
+      reserve.symbol.toLowerCase().includes(searchValue.toLowerCase()) &&
+      reserve.isActive &&
+      (!showOnlyStableCoins || isAssetStable(reserve.symbol))
+  );
+
+  const list = (withFilter: boolean) => {
+    const data = (reserves) =>
+      reserves.map((reserve) => {
+        const userReserve = user?.userReservesData.find(
+          (userRes) => userRes.reserve.symbol === reserve.symbol
+        );
+        const walletBalance = wallet?.balance ? valueToBigNumber(wallet?.balance || '0').dividedBy(
+          valueToBigNumber('10').pow(reserve.decimals)
+        ): valueToBigNumber('0');
+        const walletBalanceInUSD = walletBalance
+          .multipliedBy(reserve.priceInMarketReferenceCurrency)
+          .multipliedBy(marketRefPriceInUsd)
+          .toString();
+        const reserveIncentiveData = reserveIncentives[reserve.underlyingAsset.toLowerCase()];
+        return {
+          ...reserve,
+          walletBalance,
+          walletBalanceInUSD,
+          underlyingBalance: userReserve ? userReserve.underlyingBalance : '0',
+          underlyingBalanceInUSD: userReserve ? userReserve.underlyingBalanceUSD : '0',
+          liquidityRate: reserve.supplyAPY,
+          avg30DaysLiquidityRate: Number(reserve.avg30DaysLiquidityRate),
+          borrowingEnabled: reserve.borrowingEnabled,
+          interestHistory: [],
+          aincentivesAPR: reserveIncentiveData
+            ? reserveIncentiveData.aIncentives.incentiveAPR
+            : '0',
+          vincentivesAPR: reserveIncentiveData
+            ? reserveIncentiveData.vIncentives.incentiveAPR
+            : '0',
+          sincentivesAPR: reserveIncentiveData
+            ? reserveIncentiveData.sIncentives.incentiveAPR
+            : '0',
+        };
+      });
+
+    if (withFilter) {
+      if (sortDesc) {
+        return (
+          data(filteredReserves)
+            .sort((a, b) => +b.walletBalanceInUSD - +a.walletBalanceInUSD)
+            // @ts-ignore
+            .sort((a, b) => a[sortName] - b[sortName])
+        );
+      } else {
+        return (
+          data(filteredReserves)
+            .sort((a, b) => +b.walletBalanceInUSD - +a.walletBalanceInUSD)
+            // @ts-ignore
+            .sort((a, b) => b[sortName] - a[sortName])
+        );
+      }
+    } else {
+      return data(reserves);
+    }
+  };
+
+  console.log('deposit:', list(false))
 
   const handler = {
     detail(record) {
-      history.push('/deposit/detail/' + record.key);
+      history.push(`/deposit/detail/${record.underlyingAsset}/${record.id}`);
     },
+    data () {
+      reserves.map((reserve) => {
+        const userReserve = user?.userReservesData.find(
+          (userRes) => userRes.reserve.symbol === reserve.symbol
+        );
+        const walletBalance =
+          walletData[reserve.underlyingAsset] === '0'
+            ? valueToBigNumber('0')
+            : valueToBigNumber(walletData[reserve.underlyingAsset] || '0').dividedBy(
+                valueToBigNumber('10').pow(reserve.decimals)
+              );
+        const walletBalanceInUSD = walletBalance
+          .multipliedBy(reserve.priceInMarketReferenceCurrency)
+          .multipliedBy(marketRefPriceInUsd)
+          .toString();
+        const reserveIncentiveData = reserveIncentives[reserve.underlyingAsset.toLowerCase()];
+        return {
+          ...reserve,
+          walletBalance,
+          walletBalanceInUSD,
+          underlyingBalance: userReserve ? userReserve.underlyingBalance : '0',
+          underlyingBalanceInUSD: userReserve ? userReserve.underlyingBalanceUSD : '0',
+          liquidityRate: reserve.supplyAPY,
+          avg30DaysLiquidityRate: Number(reserve.avg30DaysLiquidityRate),
+          borrowingEnabled: reserve.borrowingEnabled,
+          interestHistory: [],
+          aincentivesAPR: reserveIncentiveData
+            ? reserveIncentiveData.aIncentives.incentiveAPR
+            : '0',
+          vincentivesAPR: reserveIncentiveData
+            ? reserveIncentiveData.vIncentives.incentiveAPR
+            : '0',
+          sincentivesAPR: reserveIncentiveData
+            ? reserveIncentiveData.sIncentives.incentiveAPR
+            : '0',
+        };
+      });
+    }
   };
 
   const columns = [
     {
       title: 'Assets',
-      dataIndex: 'name',
+      dataIndex: 'symbol',
+      render: (text: any) => {
+        return <TokenIcon 
+          tokenSymbol={text}
+          height={35}
+          width={35}
+          tokenFullName={text}
+          className="MarketTableItem__token"
+        />
+      },
     },
     {
       title: 'Your wallet balance',
-      dataIndex: 'chinese',
-      sorter: {
-        compare: (a, b) => a.chinese - b.chinese,
-        multiple: 3,
-      },
+      dataIndex: 'walletBalance',
+      render: (text: any) => {
+        return text.toString()
+      }
     },
     {
       title: 'Aunual rate of return',
-      dataIndex: 'math',
-      sorter: {
-        compare: (a, b) => a.math - b.math,
-        multiple: 2,
-      },
+      dataIndex: 'liquidityRate',
+      render: (text: any) => {
+        return text + '%'
+      }
     },
   ];
 
-  const data = [
-    {
-      key: '1',
-      name: 'John Brown',
-      chinese: 98,
-      math: 60,
-    },
-    {
-      key: '2',
-      name: 'Jim Green',
-      chinese: 98,
-      math: 66,
-    },
-    {
-      key: '3',
-      name: 'Joe Black',
-      chinese: 98,
-      math: 90,
-    },
-    {
-      key: '4',
-      name: 'Jim Red',
-      chinese: 88,
-      math: 99,
-    },
-  ];
+
   return (
     <GridContent>
       <Row>
         <Col span={12}>
-          <Radio.Group defaultValue="all" buttonStyle="solid">
+          <Radio.Group defaultValue={showOnlyStableCoins?"stable":"all"} buttonStyle="solid" onChange={(e)=>{setShowOnlyStableCoins(e.target.value === 'stable')}} >
             <Radio.Button value="all" style={{width:112, textAlign:'center', borderRadius: '6px 0 0 6px'}}>All</Radio.Button>
             <Radio.Button value="stable" style={{ borderRadius: '0 6px 6px 0'}}>Stable Coins</Radio.Button>
           </Radio.Group>
@@ -83,10 +181,11 @@ export default () => {
       <Row>
         <Col span={16}>
           <Table
-            rowKey={'name'}
+            rowKey={'id'}
             columns={columns}
-            dataSource={data}
+            dataSource={list(false)}
             pagination={false}
+            scroll={{ y: 600 }}
             onRow={(record) => ({ onClick: () => handler.detail(record) })}
           />
         </Col>

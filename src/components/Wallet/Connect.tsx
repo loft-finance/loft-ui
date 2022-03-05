@@ -28,13 +28,14 @@ export default function ({ refs }) {
     connect: (type: string) => {
       if(wallet?.current){
         if(wallet?.current == type){
-          disconnect()
+          return
         }
         reconnect(type)
       } else {
         connect(type)
       }
       
+      handler.close()
       // setVisible(false);
     },
     disconnect: () => {

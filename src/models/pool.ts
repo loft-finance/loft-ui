@@ -28,6 +28,7 @@ export default () => {
     const [baseCurrency, setbaseCurrency] = useState<any>({})
     const [reserves, setReserves] = useState([]);
     const [userReserves, setUserReserves] = useState<any>(undefined);
+    const [userReservesBase, setUserReservesBase] = useState<any>([]);
     // const [user, setUser] = useState({});
 
     const getNetwork = (chainId: ChainId) => {
@@ -161,6 +162,7 @@ export default () => {
         const networkConfig = getNetwork(chainId);
 
         const list: any = [];
+        const listBase: any = []
         userReserves?.forEach((userReserve) => {
             const reserve = reserves?.find(
             (reserve) =>
@@ -171,7 +173,7 @@ export default () => {
                 ...userReserve,
                 reserve,
             };
-            userReserves.push(reserveWithBase);
+            listBase.push(reserveWithBase);
             if (reserve.symbol.toUpperCase() === `W${networkConfig.baseAsset}`) {
                 const userReserveFixed = {
                 ...userReserve,
@@ -189,6 +191,7 @@ export default () => {
             }
         });
 
+        setUserReservesBase(listBase)
         return list;
     }
 
@@ -266,5 +269,5 @@ export default () => {
         }
     },[wallet])
 
-    return { loading, baseCurrency, reserves, user: userReserves, start };
+    return { loading, baseCurrency, reserves, user: userReserves, userReservesBase, start };
 };

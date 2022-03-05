@@ -73,7 +73,7 @@ export default defineConfig({
           hideInMenu: true,
         },
         {
-          path: '/deposit/detail/:id',
+          path: '/deposit/detail/:underlyingAsset/:id',
           name: 'detail',
           component: './deposit/detail',
           hideInMenu: true,

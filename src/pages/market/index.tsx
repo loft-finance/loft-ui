@@ -3,9 +3,7 @@ import { PageContainer } from '@ant-design/pro-layout';
 import { Table, Row, Col, Card, Button, Image, Spin } from 'antd';
 import { history, useModel } from 'umi';
 import { valueToBigNumber } from '@aave/protocol-js';
-import {
-  TokenIcon
-} from '@aave/aave-ui-kit';
+import { TokenIcon } from '@aave/aave-ui-kit';
 
 
 import styles from './style.less';
