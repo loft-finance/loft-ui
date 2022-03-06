@@ -88,8 +88,6 @@ export default () => {
     }
   };
 
-  console.log('deposit:', list(false))
-
   const handler = {
     detail(record) {
       history.push(`/deposit/detail/${record.underlyingAsset}/${record.id}`);

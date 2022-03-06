@@ -29,6 +29,7 @@ export default () => {
         accounts: useAccounts()
     }
 
+    const provider = useProvider();
     const error = useError()
     const current = metamask.isActive ? 'MetaMask' : '';
     const currentAccount = metamask.accounts ? metamask.accounts[0] : ''
@@ -38,7 +39,8 @@ export default () => {
         current,
         currentAccount,
         accounts: metamask.accounts,
-        balance
+        balance,
+        provider
     } : undefined;
 
     console.log('wallet:', wallet, error)
