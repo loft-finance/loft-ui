@@ -21,8 +21,11 @@ export default () => {
 
   const { wallet } = useModel('wallet')
 
-  const { reserveIncentives, userIncentives } = useModel('incentives')
+  const { reserveIncentives } = useModel('incentives')
   
+  const availableBorrowsMarketReferenceCurrency = valueToBigNumber(
+    user?.availableBorrowsMarketReferenceCurrency || 0
+  );
 
   const filteredReserves = reserves.filter(
     (reserve) =>
@@ -32,28 +35,40 @@ export default () => {
   );
 
   const list = (withFilter: boolean) => {
-    const data = (reserves) =>
-      reserves.map((reserve) => {
-        const userReserve = user?.userReservesData.find(
-          (userRes) => userRes.reserve.symbol === reserve.symbol
-        );
-        const walletBalance = wallet?.balance ? valueToBigNumber(wallet?.balance || '0').dividedBy(
-          valueToBigNumber('10').pow(reserve.decimals)
-        ): valueToBigNumber('0');
-        const walletBalanceInUSD = walletBalance
+    const data = (reserves: any) =>
+      reserves.map((reserve: any) => {
+        const availableBorrows = availableBorrowsMarketReferenceCurrency.gt(0)
+          ? BigNumber.min(
+              // one percent margin to don't fail tx
+              availableBorrowsMarketReferenceCurrency
+                .div(reserve.priceInMarketReferenceCurrency)
+                .multipliedBy(
+                  user && user.totalBorrowsMarketReferenceCurrency !== '0' ? '0.99' : '1'
+                ),
+              reserve.availableLiquidity
+            ).toNumber()
+          : 0;
+        const availableBorrowsInUSD = valueToBigNumber(availableBorrows)
           .multipliedBy(reserve.priceInMarketReferenceCurrency)
           .multipliedBy(marketRefPriceInUsd)
           .toString();
         const reserveIncentiveData = reserveIncentives[reserve.underlyingAsset.toLowerCase()];
         return {
           ...reserve,
-          walletBalance,
-          walletBalanceInUSD,
-          underlyingBalance: userReserve ? userReserve.underlyingBalance : '0',
-          underlyingBalanceInUSD: userReserve ? userReserve.underlyingBalanceUSD : '0',
-          liquidityRate: reserve.supplyAPY,
-          avg30DaysLiquidityRate: Number(reserve.avg30DaysLiquidityRate),
-          borrowingEnabled: reserve.borrowingEnabled,
+          currentBorrows:
+            user?.userReservesData.find((userReserve) => userReserve.reserve.id === reserve.id)
+              ?.totalBorrows || '0',
+          currentBorrowsInUSD:
+            user?.userReservesData.find((userReserve) => userReserve.reserve.id === reserve.id)
+              ?.totalBorrowsUSD || '0',
+          availableBorrows,
+          availableBorrowsInUSD,
+          stableBorrowRate:
+            reserve.stableBorrowRateEnabled && reserve.borrowingEnabled
+              ? Number(reserve.stableBorrowAPY)
+              : -1,
+          variableBorrowRate: reserve.borrowingEnabled ? Number(reserve.variableBorrowAPY) : -1,
+          avg30DaysVariableRate: Number(reserve.avg30DaysVariableBorrowRate),
           interestHistory: [],
           aincentivesAPR: reserveIncentiveData
             ? reserveIncentiveData.aIncentives.incentiveAPR
@@ -69,24 +84,16 @@ export default () => {
 
     if (withFilter) {
       if (sortDesc) {
-        return (
-          data(filteredReserves)
-            .sort((a, b) => +b.walletBalanceInUSD - +a.walletBalanceInUSD)
-            // @ts-ignore
-            .sort((a, b) => a[sortName] - b[sortName])
-        );
+        // @ts-ignore
+        return data(filteredReserves).sort((a, b) => a[sortName] - b[sortName]);
       } else {
-        return (
-          data(filteredReserves)
-            .sort((a, b) => +b.walletBalanceInUSD - +a.walletBalanceInUSD)
-            // @ts-ignore
-            .sort((a, b) => b[sortName] - a[sortName])
-        );
+        // @ts-ignore
+        return data(filteredReserves).sort((a, b) => b[sortName] - a[sortName]);
       }
     } else {
       return data(reserves);
     }
-  };
+  };;
 
   const handler = {
     detail(record) {
@@ -148,16 +155,16 @@ export default () => {
     },
     {
       title: 'Can be borrowed',
-      dataIndex: 'walletBalance',
+      dataIndex: 'availableBorrows',
       render: (text: any) => {
-        return text.toString()
+        return Number(text)
       }
     },
     {
       title: 'Borrow APY',
-      dataIndex: 'liquidityRate',
+      dataIndex: 'variableBorrowRate',
       render: (text: any) => {
-        return text + '%'
+        return text.toFixed(2) + '%'
       }
     },
   ];

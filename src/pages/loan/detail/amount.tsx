@@ -6,7 +6,7 @@ import { TokenIcon } from '@aave/aave-ui-kit';
 import Back from '@/components/Back';
 import styles from './amount.less';
 
-export default ({ poolReserve, maxAmountToDeposit }: any) => {
+export default ({ poolReserve, maxAmountToBorrow }: any) => {
   const symbol = poolReserve?poolReserve.symbol:''
   
   useEffect(() => {
@@ -15,7 +15,7 @@ export default ({ poolReserve, maxAmountToDeposit }: any) => {
 
   const handler = {
     submit(values: any) {
-        history.push(`/deposit/detail/${poolReserve.underlyingAsset}/${poolReserve.id}/confirm/${values.amount}`);
+        history.push(`/loan/detail/${poolReserve.underlyingAsset}/${poolReserve.id}/confirm/${values.amount}`);
     },
   };
 
@@ -24,9 +24,9 @@ export default ({ poolReserve, maxAmountToDeposit }: any) => {
       <Back />
       <Card bordered={false}>
           <div className={styles.desc}>
-            <div className={styles.title}>How much do you want to deposit</div>
+            <div className={styles.title}>How much do you want to borrow?</div>
             <div className={styles.text}>
-              Please enter the amount to be deposited, the maximum amount you can deposit is shown below
+              Please enter the amount to be borrow, the maximum amount you can deposit is shown below
             </div>
           </div>
           <div className={styles.form}>
@@ -39,8 +39,8 @@ export default ({ poolReserve, maxAmountToDeposit }: any) => {
                   autoComplete="off"
                 >
                   <div className={styles.able}>
-                    <span>Available for deposit</span>
-                    <span className={styles.amount}>{maxAmountToDeposit} {symbol}</span>
+                    <span>Can be borrowed</span>
+                    <span className={styles.amount}>{maxAmountToBorrow} {symbol}</span>
                   </div>
                   <Form.Item
                     name="amount"

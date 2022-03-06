@@ -2,11 +2,10 @@ import React, { useRef, useState } from 'react';
 import { useModel } from 'umi';
 import { GridContent } from '@ant-design/pro-layout';
 import Info from '@/components/Info';
-import Overview from '@/components/Overview';
+import Overview from './overview';
 import WalletDisconnected from '@/components/Wallet/Disconnected';
 import WalletEmpty from '@/components/Wallet/Empty';
-import Deposit from '@/components/Wallet/Deposit';
-import { valueToBigNumber } from '@aave/protocol-js';
+import { valueToBigNumber, BigNumber, InterestRate } from '@aave/protocol-js';
 import { getAssetInfo } from '@/lib/config/assets'
 import { networks } from '@/lib/config/networks';
 import { ChainId } from '@aave/contract-helpers';
@@ -22,7 +21,7 @@ export default (props) => {
 
   const poolReserve = reserves.find((res) =>
         id? res.id === id : res.underlyingAsset.toLowerCase() === underlyingAsset.toLowerCase()
-      );
+  );
   const asset = getAssetInfo(id);
 
   const getNetwork = (chainId: ChainId) => {
@@ -42,31 +41,42 @@ export default (props) => {
     walletBalance = valueToBigNumber(balance).dividedBy(valueToBigNumber(10).pow(poolReserve.decimals))
   }
 
-  let maxAmountToDeposit = valueToBigNumber(walletBalance);
-  if (maxAmountToDeposit.gt(0) && poolReserve.symbol.toUpperCase() === networkConfig.baseAsset) {
-    // keep it for tx gas cost
-    maxAmountToDeposit = maxAmountToDeposit.minus('0.001');
+  const maxUserAmountToBorrow = valueToBigNumber(
+    user?.availableBorrowsMarketReferenceCurrency || 0
+  ).div(poolReserve?.priceInMarketReferenceCurrency);
+  let maxAmountToBorrow = BigNumber.max(
+    BigNumber.min(poolReserve?.availableLiquidity, maxUserAmountToBorrow),
+    0
+  );
+  if (
+    maxAmountToBorrow.gt(0) &&
+    user?.totalBorrowsMarketReferenceCurrency !== '0' &&
+    maxUserAmountToBorrow.lt(valueToBigNumber(poolReserve.availableLiquidity).multipliedBy('1.01'))
+  ) {
+    maxAmountToBorrow = maxAmountToBorrow.multipliedBy('0.99');
   }
-  if (maxAmountToDeposit.lte(0)) {
-    maxAmountToDeposit = valueToBigNumber('0');
-  }
-  
+
+
   return (
     <GridContent>
       <Info
         items={[
           {
-            title: 'Your balance in Aave',
+            title: 'You have borrowed',
             value: walletBalance.toString(),
           },
           {
-            title: 'Your wallet balance',
+            title: 'Total collateral',
             value: '6.92421 FUSDT',
+          },
+          {
+            title: 'Loan value',
+            value: '64.95%',
           },
           {
             title: 'Fitness factor',
             value: '14.95',
-          },
+          }
         ]}
       />
       <Overview  poolReserve={poolReserve} marketRefPriceInUsd={baseCurrency.marketRefPriceInUsd} />
@@ -75,7 +85,7 @@ export default (props) => {
 
       {wallet && walletBalance.eq('0') && <WalletEmpty symbol={poolReserve?poolReserve?.symbol:''} />}
 
-      {wallet && !walletBalance.eq('0') && React.cloneElement(props.children, { poolReserve, maxAmountToDeposit: maxAmountToDeposit.toString(10) }) }
+      {wallet && !walletBalance.eq('0') && React.cloneElement(props.children, { poolReserve, maxAmountToBorrow: maxAmountToBorrow.toString(10) }) }
     </GridContent>
   );
 };
