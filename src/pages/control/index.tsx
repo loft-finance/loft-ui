@@ -7,6 +7,8 @@ import { Pie } from '@ant-design/plots';
 import { useModel, history } from 'umi';
 const { Title } = Typography;
 import styles from './index.less';
+import DepositDashbord from '@/pages/deposit/dashboard'
+import LoanDashboard from '@/pages/loan/dashboard'
 
 export default () => {
   const { wallet } = useModel('wallet');
@@ -34,8 +36,8 @@ export default () => {
         .dividedBy(user?.totalCollateralMarketReferenceCurrency || '1')
         .toFixed();
 
-  const depositedPositions = [];
-  const borrowedPositions = [];
+  const depositedPositions: any = [];
+  const borrowedPositions: any = [];
 
   user?.userReservesData.forEach((userReserve) => {
     const poolReserve = reserves.find((res) => res.symbol === userReserve.reserve.symbol);
@@ -48,6 +50,7 @@ export default () => {
     if (userReserve.underlyingBalance !== '0' || userReserve.totalBorrows !== '0') {
       const baseListData = {
         // uiColor: getAssetColor(userReserve.reserve.symbol),
+        symbol: poolReserve.symbol,
         isActive: poolReserve.isActive,
         isFrozen: poolReserve.isFrozen,
         stableBorrowRateEnabled: poolReserve.stableBorrowRateEnabled,
@@ -151,6 +154,7 @@ export default () => {
       }
     }
   });
+
 
   const data = [
     {
@@ -403,63 +407,7 @@ export default () => {
                 </Col>
                 <Col span={6}></Col>
               </Row>
-              <div className={styles.table}>
-                <Row className={styles.head}>
-                  <Col span={7}>current balance</Col>
-                  <Col span={7}>Annual rate of return</Col>
-                  <Col span={3}>Collateral</Col>
-                </Row>
-                <Row className={styles.row}>
-                  <Col span={2} className={styles.single}>
-                    GEIST
-                  </Col>
-                  <Col span={5}>
-                    <div className={styles.multi}>
-                      20.904
-                      <div className={styles.tag}>$194.234</div>
-                    </div>
-                  </Col>
-                  <Col span={7} className={styles.single}>
-                    9.23
-                  </Col>
-                  <Col span={3} className={styles.single}>
-                    <Switch defaultChecked checkedChildren="yes" unCheckedChildren="no" />
-                  </Col>
-                  <Col span={7} className={styles.single}>
-                    <Button size="small" type="primary" shape={'round'} style={{ marginLeft: 5 }}>
-                      deposit
-                    </Button>
-                    <Button size="small" shape={'round'} style={{ marginLeft: 5 }}>
-                      withdraw
-                    </Button>
-                  </Col>
-                </Row>
-                <Row className={styles.row}>
-                  <Col span={2} className={styles.single}>
-                    GEIST
-                  </Col>
-                  <Col span={5}>
-                    <div className={styles.multi}>
-                      20.904
-                      <div className={styles.tag}>$194.234</div>
-                    </div>
-                  </Col>
-                  <Col span={7} className={styles.single}>
-                    9.23
-                  </Col>
-                  <Col span={3} className={styles.single}>
-                    <Switch defaultChecked checkedChildren="yes" unCheckedChildren="no" />
-                  </Col>
-                  <Col span={7} className={styles.single}>
-                    <Button size="small" type="primary" shape={'round'} style={{ marginLeft: 5 }}>
-                      deposit
-                    </Button>
-                    <Button size="small" shape={'round'} style={{ marginLeft: 5 }}>
-                      withdraw
-                    </Button>
-                  </Col>
-                </Row>
-              </div>
+              <DepositDashbord depositedPositions={depositedPositions} />
             </Card>
           </Col>
           <Col span={12} style={{ marginTop: 15, paddingLeft: 10 }}>
@@ -470,38 +418,7 @@ export default () => {
                 </Col>
                 <Col span={6}></Col>
               </Row>
-              <div className={styles.table}>
-                <Row className={styles.head}>
-                  <Col span={7}>current balance</Col>
-                  <Col span={7}>Annual rate of return</Col>
-                  <Col span={3}>Collateral</Col>
-                </Row>
-                <Row className={styles.row}>
-                  <Col span={2} className={styles.single}>
-                    GEIST
-                  </Col>
-                  <Col span={5}>
-                    <div className={styles.multi}>
-                      20.904
-                      <div className={styles.tag}>$194.234</div>
-                    </div>
-                  </Col>
-                  <Col span={7} className={styles.single}>
-                    9.23
-                  </Col>
-                  <Col span={3} className={styles.single}>
-                    <Switch defaultChecked checkedChildren="yes" unCheckedChildren="no" />
-                  </Col>
-                  <Col span={7} className={styles.single}>
-                    <Button size="small" type="primary" shape={'round'} style={{ marginLeft: 5 }}>
-                      loan
-                    </Button>
-                    <Button size="small" shape={'round'} style={{ marginLeft: 5 }}>
-                      repay
-                    </Button>
-                  </Col>
-                </Row>
-              </div>
+              <LoanDashboard borrowedPositions={borrowedPositions} />
             </Card>
           </Col>
         </Row>

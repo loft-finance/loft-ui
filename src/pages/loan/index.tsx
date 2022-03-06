@@ -1,7 +1,6 @@
-import React, { useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useModel, history } from 'umi';
 import { Table, Row, Col, Menu, Radio, Input } from 'antd';
-import { SettingOutlined, UserOutlined } from '@ant-design/icons';
 import { GridContent } from '@ant-design/pro-layout';
 import { valueToBigNumber } from '@aave/protocol-js';
 import { isAssetStable } from '@/lib/config/assets'
@@ -15,6 +14,8 @@ const { Search } = Input;
 export default () => {
   const [searchValue, setSearchValue] = useState('');
   const [showOnlyStableCoins, setShowOnlyStableCoins] = useState(false);
+  const [sortName, setSortName] = useState('');
+  const [sortDesc, setSortDesc] = useState(false);
 
   const { reserves, baseCurrency, user } = useModel('pool')
   const marketRefPriceInUsd = baseCurrency.marketRefPriceInUsd
@@ -169,6 +170,7 @@ export default () => {
     },
   ];
 
+  const totalValue = list(false).reduce((a, b) => a + (+b['currentBorrowsInUSD'] || 0), 0)
 
   return (
     <GridContent>
@@ -188,7 +190,7 @@ export default () => {
           <Table
             rowKey={'id'}
             columns={columns}
-            dataSource={list(false)}
+            dataSource={list(true)}
             pagination={false}
             scroll={{ y: 600 }}
             onRow={(record) => ({ onClick: () => handler.detail(record) })}
@@ -202,20 +204,29 @@ export default () => {
             >
               My deposits
             </Menu.Item>
-            <Menu.Item key="center">
-              <UserOutlined />
-              USDT
-              <span className={styles.value}>1.500001</span>
-            </Menu.Item>
-            <Menu.Item key="settings">
-              <SettingOutlined />
-              DAI
-              <span className={styles.value}>1.500001</span>
-            </Menu.Item>
-            <Menu.Divider />
+            { list(false).map((item: any, index: number) => 
+              item.currentBorrows.toString() > '0' && 
+              <Menu.Item key={index}>
+                <Row>
+                  <Col span={12}>
+                    <TokenIcon 
+                      tokenSymbol={item.symbol}
+                      height={25}
+                      width={25}
+                      tokenFullName={item.symbol}
+                      className="MarketTableItem__token"
+                    />
+                  </Col>
+                  <Col span={12}>
+                    <span className={styles.value}>{item.currentBorrows.toString()}</span>
+                  </Col>
+                </Row>
+              </Menu.Item>
+            )}
+            {totalValue > 0 &&<Menu.Divider /> }
             <Menu.Item key="total">
               Total
-              <span className={styles.value}>1.500001</span>
+              <span className={styles.value}>{totalValue}</span>
             </Menu.Item>
           </Menu>
         </Col>

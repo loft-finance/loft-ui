@@ -1,13 +1,12 @@
 import React, { useRef, useState } from 'react';
-import { Card, Row, Col, Result, Button, Form, Input, Progress } from 'antd';
+import { Card, Row, Col, Button } from 'antd';
 import { GridContent } from '@ant-design/pro-layout';
 import Info from '@/components/Info';
 import WalletDisconnected from '@/components/Wallet/Disconnected';
-import { useModel, history } from 'umi';
+import { useModel } from 'umi';
 
 export default () => {
-  const { initialState } = useModel('@@initialState');
-  const { wallet } = initialState;
+  const { wallet } = useModel('wallet');
 
   return (
     <GridContent>
