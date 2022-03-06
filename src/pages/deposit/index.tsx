@@ -1,7 +1,6 @@
-import React, { useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useModel, history } from 'umi';
-import { Table, Row, Col, Menu, Radio, Input } from 'antd';
-import { SettingOutlined, UserOutlined } from '@ant-design/icons';
+import { Table, Row, Col, Menu, Radio, Input, Empty } from 'antd';
 import { GridContent } from '@ant-design/pro-layout';
 import { valueToBigNumber } from '@aave/protocol-js';
 import { isAssetStable } from '@/lib/config/assets'
@@ -22,6 +21,9 @@ export default () => {
   const { wallet } = useModel('wallet')
 
   const { reserveIncentives, userIncentives } = useModel('incentives')
+
+  const [sortName, setSortName] = useState('');
+  const [sortDesc, setSortDesc] = useState(false);
   
 
   const filteredReserves = reserves.filter(
@@ -157,12 +159,12 @@ export default () => {
       title: 'Aunual rate of return',
       dataIndex: 'liquidityRate',
       render: (text: any) => {
-        return text + '%'
+        return Number(text).toFixed(2) + '%'
       }
     },
   ];
 
-
+  const totalValue = list(false).reduce((a, b) => a + (+b['underlyingBalanceInUSD'] || 0), 0)
   return (
     <GridContent>
       <Row>
@@ -181,7 +183,7 @@ export default () => {
           <Table
             rowKey={'id'}
             columns={columns}
-            dataSource={list(false)}
+            dataSource={list(true)}
             pagination={false}
             scroll={{ y: 600 }}
             onRow={(record) => ({ onClick: () => handler.detail(record) })}
@@ -195,20 +197,29 @@ export default () => {
             >
               My deposits
             </Menu.Item>
-            <Menu.Item key="center">
-              <UserOutlined />
-              USDT
-              <span className={styles.value}>1.500001</span>
-            </Menu.Item>
-            <Menu.Item key="settings">
-              <SettingOutlined />
-              DAI
-              <span className={styles.value}>1.500001</span>
-            </Menu.Item>
-            <Menu.Divider />
+            { list(false).map((item: any, index: number) => 
+              item.underlyingBalance.toString() > '0' && 
+              <Menu.Item key={index}>
+                <Row>
+                  <Col span={12}>
+                    <TokenIcon 
+                      tokenSymbol={item.symbol}
+                      height={25}
+                      width={25}
+                      tokenFullName={item.symbol}
+                      className="MarketTableItem__token"
+                    />
+                  </Col>
+                  <Col span={12}>
+                    <span className={styles.value}>{item.underlyingBalance.toString()}</span>
+                  </Col>
+                </Row>
+              </Menu.Item>
+            )}
+            {totalValue > 0 &&<Menu.Divider /> }
             <Menu.Item key="total">
               Total
-              <span className={styles.value}>1.500001</span>
+              <span className={styles.value}>{totalValue}</span>
             </Menu.Item>
           </Menu>
         </Col>

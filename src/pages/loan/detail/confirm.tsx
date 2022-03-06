@@ -61,10 +61,17 @@ export default ({ poolReserve, maxAmountToDeposit, match: { params: { amount: am
     const handler = {
         async getTx({ depositing = false }) {
             try {
-                const txs = await lendingPool.deposit({
+                const referralCode = undefined;
+                const txs = await lendingPool.borrow({
+                    interestRateMode,
+                    referralCode,
                     user: user.id,
-                    reserve: poolReserve.underlyingAsset,
                     amount: amount.toString(),
+                    reserve: poolReserve.underlyingAsset,
+                    debtTokenAddress:
+                        interestRateMode === InterestRate.Variable
+                        ? poolReserve.variableDebtTokenAddress
+                        : poolReserve.stableDebtTokenAddress,
                 });
                 const mainTxType = ''
                 const approvalTx = txs.find((tx) => tx.txType === 'ERC20_APPROVAL');
