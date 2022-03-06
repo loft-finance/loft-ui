@@ -17,35 +17,25 @@ export default function ({ refs }) {
     };
   });
 
-  const { current, connect, disconnect, reconnect, connecting, currentAccount } = useModel('wallet')
+  const { connect, disconnect, reconnect, connecting, wallet } = useModel('wallet')
 
-  console.log('wallet status:', currentAccount)
-
-  const { initialState, setInitialState } = useModel('@@initialState');
+  // console.log('wallet:', wallet)
 
   const handler = {
     close: () => {
       setVisible(false);
     },
     connect: (type: string) => {
-      // onClick={()=>current ? (current == 'MetaMask' ? disconnect() : reconnect('MetaMask')) : connect('MetaMask')}
-
-      if(current){
-        if(current == type){
-          disconnect()
+      if(wallet?.current){
+        if(wallet?.current == type){
+          return
         }
         reconnect(type)
       } else {
         connect(type)
       }
-      // setInitialState({
-      //   ...initialState,
-      //   wallet: {
-      //     balance: 1,
-      //     auth: false,
-      //   },
-      // });
-
+      
+      handler.close()
       // setVisible(false);
     },
     disconnect: () => {
@@ -70,12 +60,12 @@ export default function ({ refs }) {
       <Spin spinning={connecting}>
         <div className={styles.box}>
           <Popconfirm
-            title={`Are you sure to ${current == 'MetaMask' ? 'disconnect': 'connect'} MetaMask?`}
+            title={`Are you sure to ${wallet?.current == 'MetaMask' ? 'disconnect': 'connect'} MetaMask?`}
             onConfirm={()=>handler.connect('MetaMask')}
             okText="Yes"
             cancelText="No"
           >
-            <div className={`${styles.item} ${current == 'MetaMask' ? styles.active : null}`}>
+            <div className={`${styles.item} ${wallet?.current == 'MetaMask' ? styles.active : null}`}>
               <Row>
                 <Col span={18} className={styles.title}>
                   MetaMask
@@ -90,7 +80,7 @@ export default function ({ refs }) {
               </Row>
             </div>
           </Popconfirm>
-          <div className={`${styles.item} ${current == 'WalletConnect' ? styles.active : null}`}>
+          <div className={`${styles.item} ${wallet?.current == 'WalletConnect' ? styles.active : null}`}>
             <Row>
               <Col span={18} className={styles.title}>
                 WalletConnect
@@ -104,7 +94,7 @@ export default function ({ refs }) {
               </Col>
             </Row>
           </div>
-          <div className={`${styles.item} ${current == 'BinanceChainWallet' ? styles.active : null}`}>
+          <div className={`${styles.item} ${wallet?.current == 'BinanceChainWallet' ? styles.active : null}`}>
             <Row>
               <Col span={18} className={styles.title}>
                 Binance Chain Wallet

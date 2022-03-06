@@ -2,7 +2,7 @@ import { Row, Col } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import styles from './style.less';
 
-export default ({ title = '', items = [] }) => {
+export default ({ title = '', items = [] }: any) => {
   return (
     <div className={styles.info}>
       {title && <div className={styles.title}>{title}</div>}

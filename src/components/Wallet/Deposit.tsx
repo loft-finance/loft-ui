@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useModel } from 'umi';
 import {
   Card,
   Row,
@@ -11,19 +12,57 @@ import {
   Divider,
   Badge,
 } from 'antd';
-import { DollarCircleOutlined } from '@ant-design/icons';
+import { TokenIcon } from '@aave/aave-ui-kit';
+import { calculateHealthFactorFromBalancesBigUnits, valueToBigNumber } from '@aave/protocol-js';
+
 import Back from '@/components/Back';
 import styles from './Deposit.less';
 const { Step } = Steps;
 
-export default ({ wallet }) => {
+export default ({ poolReserve, maxAmountToDeposit }: any) => {
+  const symbol = poolReserve?poolReserve.symbol:''
+
   const [quantity, setQuantity] = useState(0);
   const [steps, setSteps] = useState([]);
   const [current, setCurrent] = useState(0);
+  
+  const { user, userReserve, baseCurrency } = useModel('pool')
+  const { wallet } = useModel('wallet');
+  const {lendingPool} = useModel('lendingPool');
+  
+
+  const amount = valueToBigNumber(quantity || '0');
+  const amountIntEth = amount.multipliedBy(poolReserve.priceInMarketReferenceCurrency);
+  const amountInUsd = amountIntEth.multipliedBy(baseCurrency.marketReferenceCurrencyPriceInUsd);
+  const totalCollateralMarketReferenceCurrencyAfter = valueToBigNumber(
+    user.totalCollateralMarketReferenceCurrency
+  ).plus(amountIntEth);
+
+ 
+  const liquidationThresholdAfter = valueToBigNumber(user.totalCollateralMarketReferenceCurrency)
+    .multipliedBy(user.currentLiquidationThreshold)
+    .plus(amountIntEth.multipliedBy(poolReserve.reserveLiquidationThreshold))
+    .dividedBy(totalCollateralMarketReferenceCurrencyAfter);
+
+  const healthFactorAfterDeposit = calculateHealthFactorFromBalancesBigUnits(
+    totalCollateralMarketReferenceCurrencyAfter,
+    valueToBigNumber(user.totalBorrowsMarketReferenceCurrency),
+    liquidationThresholdAfter
+  );
+
+
+  const notShowHealthFactor =
+    user.totalBorrowsMarketReferenceCurrency !== '0' && poolReserve.usageAsCollateralEnabled;
+
+  const usageAsCollateralEnabledOnDeposit =
+    poolReserve.usageAsCollateralEnabled &&
+    (!userReserve?.underlyingBalance ||
+      userReserve.underlyingBalance === '0' ||
+      userReserve.usageAsCollateralEnabledOnUser);
 
   useEffect(() => {
     if (wallet) {
-      const { balance, auth } = wallet;
+      const { auth } = wallet;
       if (auth) {
         setSteps([
           {
@@ -60,12 +99,19 @@ export default ({ wallet }) => {
   }, [wallet]);
 
   const handler = {
-    quantity(values) {
+    quantity(values: any) {
       setQuantity(values.quantity);
     },
-    submit() {
-      setCurrent(current + 1);
-    },
+    async submit() {
+      // setCurrent(current + 1);
+      const res = await lendingPool.deposit({
+        user: user.id,
+        reserve: poolReserve.underlyingAsset,
+        amount: amount.toString(),
+      });
+
+      console.log('deposit:', res)
+    }
   };
 
   return (
@@ -77,7 +123,7 @@ export default ({ wallet }) => {
             <div className={styles.desc}>
               <div className={styles.title}>How much do you want to deposit</div>
               <div className={styles.text}>
-                Please enter the amount to be deposited, the maximum amount you
+                Please enter the amount to be deposited, the maximum amount you can deposit is shown below
               </div>
             </div>
             <div className={styles.form}>
@@ -91,7 +137,7 @@ export default ({ wallet }) => {
                   >
                     <div className={styles.able}>
                       <span>Available for deposit</span>
-                      <span className={styles.amount}>6.296457 FUSDT</span>
+                      <span className={styles.amount}>{maxAmountToDeposit} {symbol}</span>
                     </div>
                     <Form.Item
                       name="quantity"
@@ -100,7 +146,13 @@ export default ({ wallet }) => {
                       <InputNumber
                         style={{ width: '100%' }}
                         placeholder="Quantity"
-                        prefix={<DollarCircleOutlined className="site-form-item-icon" />}
+                        prefix={<TokenIcon 
+                          tokenSymbol={symbol}
+                          height={20}
+                          width={20}
+                          tokenFullName={''}
+                          className="MarketTableItem__token"
+                        />}
                         suffix={<a>Max</a>}
                       />
                     </Form.Item>
@@ -148,21 +200,21 @@ export default ({ wallet }) => {
                         marginTop: -20,
                       }}
                     >
-                      $1.000029
+                      ${amountInUsd.toString()}
                     </Descriptions.Item>
                     <Descriptions.Item
                       label="Collateral Usage"
                       span={3}
                       contentStyle={{ color: '#3163E2' }}
                     >
-                      yes
+                      {usageAsCollateralEnabledOnDeposit?'yes':'no'}
                     </Descriptions.Item>
                     <Descriptions.Item
                       label="New health factors"
                       span={3}
                       contentStyle={{ color: '#3163E2' }}
                     >
-                      14.12
+                      {healthFactorAfterDeposit.toString()}
                     </Descriptions.Item>
                   </Descriptions>
                 </Col>

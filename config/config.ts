@@ -50,7 +50,7 @@ export default defineConfig({
           hideInMenu: true,
         },
         {
-          path: '/market/detail/:id',
+          path: '/market/detail/:underlyingAsset/:id',
           name: 'detail',
           component: './market/detail',
           hideInMenu: true,
@@ -73,10 +73,34 @@ export default defineConfig({
           hideInMenu: true,
         },
         {
-          path: '/deposit/detail/:id',
+          path: '/deposit/detail/:underlyingAsset/:id',
           name: 'detail',
-          component: './deposit/detail',
+          // component: '@/pages/deposit/detail',
           hideInMenu: true,
+          routes: [
+            {
+              path: '/deposit/detail/:underlyingAsset/:id',
+              redirect: '/deposit/detail/:underlyingAsset/:id/amount',
+            },
+            {
+              path: '/deposit/detail/:underlyingAsset/:id/amount',
+              name: 'amount',
+              component: '@/pages/deposit/detail/amount',
+              wrappers: [
+                '@/pages/deposit/detail/index',
+              ],
+              hideInMenu: true,
+            },
+            {
+              path: '/deposit/detail/:underlyingAsset/:id/confirm/:amount',
+              name: 'confirm',
+              component: '@/pages/deposit/detail/confirm',
+              wrappers: [
+                '@/pages/deposit/detail',
+              ],
+              hideInMenu: true,
+            }
+          ]
         },
       ],
     },
@@ -84,7 +108,47 @@ export default defineConfig({
       path: '/loan',
       name: 'loan',
       icon: 'icon-ic_loan',
-      component: './loan',
+      routes: [
+        {
+          path: '/loan',
+          redirect: '/loan/index',
+        },
+        {
+          path: '/loan/index',
+          name: 'index',
+          component: './loan/index',
+          hideInMenu: true,
+        },
+        {
+          path: '/loan/detail/:underlyingAsset/:id',
+          name: 'detail',
+          hideInMenu: true,
+          routes: [
+            {
+              path: '/loan/detail/:underlyingAsset/:id',
+              redirect: '/loan/detail/:underlyingAsset/:id/amount',
+            },
+            {
+              path: '/loan/detail/:underlyingAsset/:id/amount',
+              name: 'amount',
+              component: '@/pages/loan/detail/amount',
+              wrappers: [
+                '@/pages/loan/detail/index',
+              ],
+              hideInMenu: true,
+            },
+            {
+              path: '/loan/detail/:underlyingAsset/:id/confirm/:amount',
+              name: 'confirm',
+              component: '@/pages/loan/detail/confirm',
+              wrappers: [
+                '@/pages/loan/detail',
+              ],
+              hideInMenu: true,
+            }
+          ]
+        },
+      ],
     },
     {
       path: '/manage',

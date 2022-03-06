@@ -1,19 +1,17 @@
 import { useEffect } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
-import { Table, Row, Col, Card, Button, Image } from 'antd';
+import { Table, Row, Col, Card, Button, Image, Spin } from 'antd';
 import { history, useModel } from 'umi';
 import { valueToBigNumber } from '@aave/protocol-js';
-
-// import { Pool } from "@/lib/pool";
+import { TokenIcon } from '@aave/aave-ui-kit';
 
 
 import styles from './style.less';
 
 
 export default () => {
-  const { reserves, userReserves, start } = useModel('pool')
-  console.log('data:', reserves, userReserves)
-
+  const { reserves, start } = useModel('pool')
+  
   let list: any = []
 
   let totalLockedInUsd = valueToBigNumber('0');
@@ -65,22 +63,17 @@ export default () => {
         sincentivesAPR: reserveIncentiveData ? reserveIncentiveData.sIncentives.incentiveAPR : '0',
       };
     });
-    console.log('reserves:', list, reserves)
   }
 
-  // const pool = new Pool();
-  const loadData = async () => {
-    await start()
-  }
-
+  // console.log('data:', list)
 
   useEffect(() => {
-    // loadData()
+    // start()
   },[])
 
   const handler = {
     detail(record: any) {
-      history.push('/market/detail/' + record.key);
+      history.push(`/market/detail/${record.underlyingAsset}/${record.id}`);
     }
   };
 
@@ -88,19 +81,30 @@ export default () => {
     {
       title: 'Assets',
       dataIndex: 'currencySymbol',
-      width: 200,
-      align: 'center'
+      width: 240,
+      render: (text: any, record: any) => {
+        return <TokenIcon 
+          tokenSymbol={record.currencySymbol}
+          height={35}
+          width={35}
+          tokenFullName={record.currencySymbol}
+          className="MarketTableItem__token"
+        />
+      },
+      // align: 'center'
     },
     {
       title: 'Market Size',
       dataIndex: 'totalBorrows',
       width: 200,
-      align: 'center'
+      render: (text: any, record: any) => {
+        return record.isPriceInUSD ? ('$' +record.totalLiquidityInUSD.toFixed(2)) : record.totalLiquidity.toFixed(2)
+      }
     },
     {
       title: 'total borrowings',
       dataIndex: 'totalBorrowsInUSD',
-      render: (text: any) => {
+      render: (text: any, record: any) => {
         return text < 0 ? '--' : ( '$ ' + (text ? text.toFixed(2) : text) )
       },
       width: 200,
@@ -109,15 +113,18 @@ export default () => {
     {
       title: <div style={{textAlign:'center'}}>deposit APY <p>(annual rate of return)</p></div>,
       dataIndex: 'depositAPY',
-      render: (text: any) => {
-        return text < 0 ? '--' : (text.toFixed(2) + '%')
+      render: (text: any, record: any) => {
+        return <div className={styles.TagBox}>{text < 0 ? '--' : (text.toFixed(2) + '%')} <div className={styles.tag}>{record.aincentivesAPR}% <span>APR</span></div></div>
       },
       align: 'center'
     },
     {
       title: 'annual interest rate of borrowing',
-      dataIndex: 'depositAPY',
-      align: 'center'
+      dataIndex: 'variableBorrowRate',
+      align: 'center',
+      render: (text: any, record: any) => {
+        return <div className={styles.TagBox}>{text < 0 ? '--' : (text.toFixed(2) + '%')} <div className={styles.tag}>{record.vincentivesAPR}% <span>APR</span></div></div>
+      },
     },
   ];
 
@@ -131,9 +138,9 @@ export default () => {
                 Is an open source and non-custodial liquidity agreement used to earn interest on
                 deposits and borrowed assets
               </div>
-              <div className={styles.value}>$ 212,452,680.86</div>
+              <div className={styles.value}>$ {totalLockedInUsd.toString()}</div>
               <div>
-                <Button type="primary" size="large" style={{ width: 200 }} onClick={loadData}>
+                <Button type="primary" size="large" style={{ width: 200 }}>
                   To trade coins
                 </Button>
               </div>
@@ -182,17 +189,19 @@ export default () => {
   };
 
   return (
-    <PageContainer breadcrumb={false} title={false} content={<PageHeaderContent />}>
-      <div style={{marginTop: 50}}>
-        <Table
-          rowKey={'id'}
-          columns={columns}
-          dataSource={list}
-          onRow={(record) => ({ onClick: () => handler.detail(record) })}
-          pagination={false}
-          scroll={{ y: 400 }}
-        />
-      </div>      
-    </PageContainer>
+    <Spin spinning={!list || !list.length}>
+      <PageContainer breadcrumb={false} title={false} content={<PageHeaderContent />}>
+        <div style={{marginTop: 50}}>
+          <Table
+            rowKey={'id'}
+            columns={columns}
+            dataSource={list}
+            onRow={(record) => ({ onClick: () => handler.detail(record) })}
+            pagination={false}
+            scroll={{ y: 400 }}
+          />
+        </div>      
+      </PageContainer>
+    </Spin>
   );
 };

@@ -1,6 +1,6 @@
 import { Row, Col, Card, Descriptions } from 'antd';
 import { valueToBigNumber } from '@aave/protocol-js';
-import styles from './style.less';
+import styles from './overview.less';
 
 export default ({ title = '', items = [], poolReserve = {}, marketRefPriceInUsd = '0' }: any) => {
 
@@ -46,12 +46,6 @@ export default ({ title = '', items = [], poolReserve = {}, marketRefPriceInUsd 
               <Descriptions.Item label="Available liquidity" span={3}>
                 {data.availableLiquidity} FTM
               </Descriptions.Item>
-              <Descriptions.Item label="Deposit APY (Annual Yield)" span={3}>
-                {data.depositApy}%
-              </Descriptions.Item>
-              <Descriptions.Item label="can be used as collateral" span={3}>
-                {data.usageAsCollateralEnabled?'yes':'no'}
-              </Descriptions.Item>
             </Descriptions>
           </Col>
           <Col span={9} offset={4}>
@@ -62,14 +56,8 @@ export default ({ title = '', items = [], poolReserve = {}, marketRefPriceInUsd 
               <Descriptions.Item label="Asset price" span={3}>
                 {data.priceInUsd} USD
               </Descriptions.Item>
-              <Descriptions.Item label="Maximum LTV" span={3}>
-                {data.baseLTVasCollateral} FTM
-              </Descriptions.Item>
-              <Descriptions.Item label="Liquidation threshold" span={3}>
-                {data.liquidationThreshold}%
-              </Descriptions.Item>
-              <Descriptions.Item label="Liquidation penal" span={3}>
-                {data.liquidationBonus}%
+              <Descriptions.Item label="Variable loan APY (annual interest rate)" span={3}>
+                {data.baseLTVasCollateral} %
               </Descriptions.Item>
             </Descriptions>
           </Col>

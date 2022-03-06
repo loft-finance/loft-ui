@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { Space, Button } from 'antd';
+import { Space, Button, Menu, Dropdown } from 'antd';
 import React from 'react';
 import { useModel, SelectLang } from 'umi';
 import styles from './index.less';
@@ -26,7 +26,7 @@ const GlobalHeaderRight: React.FC = () => {
     className = `${styles.right}  ${styles.dark}`;
   }
 
-  const { current } = useModel('wallet');
+  const { wallet, disconnect } = useModel('wallet');
 
   const connectRef = useRef();
 
@@ -34,14 +34,24 @@ const GlobalHeaderRight: React.FC = () => {
     connect() {
       connectRef.current.show();
     },
+    disconnect(){
+      disconnect()
+    }
   };
+
+  const menu = (
+    <Menu>
+      {/* <Menu.Divider /> */}
+      <Menu.Item key="3" onClick={handler.disconnect}>DISCONNECT</Menu.Item>
+    </Menu>
+  );
 
   return (
     <>
       <Space className={className}>
         <IconFont type="icon-ic_twitter" className={styles.share} />
         <IconFont type="icon-ic_telegram" className={styles.share} />
-        {!current && (
+        {!wallet && (
           <Button
             size="small"
             style={{ borderRadius: 16, padding: '0 10px 24px' }}
@@ -50,11 +60,13 @@ const GlobalHeaderRight: React.FC = () => {
             connect
           </Button>
         )}
-        {!!current && (
-          <div className={styles.user}>
-            Ftm Network
-            <div className={styles.account}>0x00...176c</div>
-          </div>
+        {!!wallet && (
+          <Dropdown overlay={menu} trigger={['click']}>
+            <div className={styles.user}>
+              Ftm Network
+              <div className={styles.account}>0x00...176c</div>
+            </div>
+          </Dropdown>
         )}
         <SelectLang className={styles.action} />
       </Space>
