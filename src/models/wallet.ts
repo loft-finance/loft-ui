@@ -43,7 +43,7 @@ export default () => {
         provider
     } : undefined;
 
-    console.log('wallet:', wallet, error)
+    // console.log('wallet:', wallet, error)
 
     const connect  = async (type: string) => {
         if(current) return;
@@ -53,7 +53,7 @@ export default () => {
         }
 
         const res = await metamask.connector.activate()
-        console.log('connect res:', res)
+        // console.log('connect res:', res)
     }
 
     const getNetwork = (chainId: ChainId) => {
@@ -112,7 +112,7 @@ export default () => {
             return acc;
         }, {} as { [address: string]: string });
 
-        console.log('wallet balance:',aggregatedBalance)
+        // console.log('wallet balance:',aggregatedBalance)
         setBalances(aggregatedBalance)
         // setMarkets((prev) => ({ ...prev, [currentMarket]: aggregatedBalance }));
     }
