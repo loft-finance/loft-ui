@@ -63,8 +63,8 @@ const GlobalHeaderRight: React.FC = () => {
         {!!wallet && (
           <Dropdown overlay={menu} trigger={['click']}>
             <div className={styles.user}>
-              Ftm Network
-              <div className={styles.account}>0x00...176c</div>
+              Kovan Network
+              <div className={styles.account}>{wallet.currentAccount.slice(0,4)}...{wallet.currentAccount.slice(-4)}</div>
             </div>
           </Dropdown>
         )}

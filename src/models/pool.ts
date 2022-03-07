@@ -7,13 +7,13 @@ import {
     formatReserve,
     formatUserSummary,
     normalize,
-  } from '@aave/math-utils';
-  import {
+} from '@aave/math-utils';
+import {
     UiPoolDataProvider,
     ChainId,
-  } from '@aave/contract-helpers';
-  import { API_ETH_MOCK_ADDRESS } from '@aave/protocol-js';
-  import { assetsOrder } from '@aave/aave-ui-kit';
+} from '@aave/contract-helpers';
+import { API_ETH_MOCK_ADDRESS } from '@aave/protocol-js';
+import { assetsOrder } from '@aave/aave-ui-kit';
 
 
 const providers: { [network: string]: ethers.providers.Provider } = {};
@@ -114,9 +114,11 @@ export default () => {
                 lendingPoolAddressProvider,
                 wallet?.currentAccount
             );
+            console.log('userReservesResponse', userReservesResponse)
             if(userReservesResponse){
                 let res = fixUnderlyingUserReserves(reserves, userReservesResponse);
                 res = formatUserReserves(res)
+                console.log('formatUserReserves', res)
                 setUserReserves(res);
             }
         } catch (e) {
@@ -169,25 +171,25 @@ export default () => {
                 reserve.underlyingAsset.toLowerCase() === userReserve.underlyingAsset.toLowerCase()
             );
             if (reserve) {
-            const reserveWithBase = {
-                ...userReserve,
-                reserve,
-            };
-            listBase.push(reserveWithBase);
-            if (reserve.symbol.toUpperCase() === `W${networkConfig.baseAsset}`) {
-                const userReserveFixed = {
-                ...userReserve,
-                underlyingAsset: API_ETH_MOCK_ADDRESS.toLowerCase(),
-                reserve: {
-                    ...reserve,
-                    symbol: networkConfig.baseAsset,
-                    underlyingAsset: API_ETH_MOCK_ADDRESS.toLowerCase(),
-                },
+                const reserveWithBase = {
+                    ...userReserve,
+                    reserve,
                 };
-                list.push(userReserveFixed);
-            } else {
-                list.push(reserveWithBase);
-            }
+                listBase.push(reserveWithBase);
+                if (reserve.symbol.toUpperCase() === `W${networkConfig.baseAsset}`) {
+                    const userReserveFixed = {
+                    ...userReserve,
+                    underlyingAsset: API_ETH_MOCK_ADDRESS.toLowerCase(),
+                    reserve: {
+                        ...reserve,
+                        symbol: networkConfig.baseAsset,
+                        underlyingAsset: API_ETH_MOCK_ADDRESS.toLowerCase(),
+                    },
+                    };
+                    list.push(userReserveFixed);
+                } else {
+                    list.push(reserveWithBase);
+                }
             }
         });
 
@@ -220,9 +222,8 @@ export default () => {
 
     const formatUserReserves = (rawUserReserves: any) => {
         const currentTimestamp = dayjs().unix();
-        const marketRefCurrencyDecimals = 18;
-        let marketRefPriceInUsd = baseCurrency?.marketReferenceCurrencyPriceInUsd ? baseCurrency.marketReferenceCurrencyPriceInUsd
-        : '0';
+        const marketRefCurrencyDecimals = baseCurrency?.marketReferenceCurrencyDecimals ? baseCurrency?.marketReferenceCurrencyDecimals : 18;
+        let marketRefPriceInUsd = baseCurrency?.marketReferenceCurrencyPriceInUsd ? baseCurrency.marketReferenceCurrencyPriceInUsd : '0';
         marketRefPriceInUsd = normalize(marketRefPriceInUsd, 8)
 
         const computedUserData =
@@ -234,6 +235,7 @@ export default () => {
                 rawUserReserves: rawUserReserves,
                 })
             : undefined;
+            console.log('computedUserData',currentTimestamp,computedUserData)
         return {
             id: wallet?.currentAccount,
             ...computedUserData

@@ -156,12 +156,12 @@ export default defineConfig({
       icon: 'icon-ic_platform_currency',
       component: './manage',
     },
-    {
-      path: '/pledge',
-      name: 'pledge',
-      icon: 'icon-ic_Pledge',
-      component: './pledge',
-    },
+    // {
+    //   path: '/pledge',
+    //   name: 'pledge',
+    //   icon: 'icon-ic_Pledge',
+    //   component: './pledge',
+    // },
     {
       path: '/control',
       name: 'control',

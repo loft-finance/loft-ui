@@ -10,7 +10,7 @@ import styles from './style.less';
 
 
 export default () => {
-  const { reserves, start } = useModel('pool')
+  const { reserves } = useModel('pool')
   
   let list: any = []
 
@@ -68,7 +68,7 @@ export default () => {
   // console.log('data:', list)
 
   useEffect(() => {
-    // start()
+
   },[])
 
   const handler = {

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useModel } from 'umi';
 import { Card, Row, Col, Button, Switch, Spin } from 'antd';
 import { GridContent } from '@ant-design/pro-layout';
@@ -7,7 +7,7 @@ import { Pie } from '@ant-design/plots';
 import { valueToBigNumber } from '@aave/protocol-js';
 import styles from './detail.less';
 
-export default (props) => {
+export default (props: any) => {
   const { match: { params: { underlyingAsset,id } } } = props
 
   const { wallet } = useModel('wallet')
@@ -16,47 +16,18 @@ export default (props) => {
         id? res.id === id : res.underlyingAsset.toLowerCase() === underlyingAsset.toLowerCase()
       );
   const marketRefPriceInUsd = baseCurrency?.marketRefPriceInUsd;
-  const totalLiquidityInUsd = valueToBigNumber(poolReserve.totalLiquidity)
+  const totalLiquidityInUsd = valueToBigNumber(poolReserve?.totalLiquidity)
       .multipliedBy(poolReserve?.priceInMarketReferenceCurrency)
       .multipliedBy(marketRefPriceInUsd)
       .toString();
-    const totalBorrowsInUsd = valueToBigNumber(poolReserve.totalDebt)
-      .multipliedBy(poolReserve.priceInMarketReferenceCurrency)
+    const totalBorrowsInUsd = valueToBigNumber(poolReserve?.totalDebt)
+      .multipliedBy(poolReserve?.priceInMarketReferenceCurrency)
       .multipliedBy(marketRefPriceInUsd)
       .toString();
-    const availableLiquidityInUsd = valueToBigNumber(poolReserve.availableLiquidity)
-      .multipliedBy(poolReserve.priceInMarketReferenceCurrency)
+    const availableLiquidityInUsd = valueToBigNumber(poolReserve?.availableLiquidity)
+      .multipliedBy(poolReserve?.priceInMarketReferenceCurrency)
       .multipliedBy(marketRefPriceInUsd)
       .toString();
-  const reserveOverviewData = {
-    totalLiquidityInUsd,
-    totalBorrowsInUsd,
-    availableLiquidityInUsd,
-    totalLiquidity: poolReserve.totalLiquidity,
-    totalBorrows: poolReserve.totalDebt,
-    availableLiquidity: poolReserve.availableLiquidity,
-    supplyAPY: Number(poolReserve.supplyAPY),
-    supplyAPR: Number(poolReserve.supplyAPR),
-    avg30DaysLiquidityRate: Number(poolReserve.avg30DaysLiquidityRate),
-    stableAPY: Number(poolReserve.stableBorrowAPY),
-    stableAPR: Number(poolReserve.stableBorrowAPR),
-    variableAPY: Number(poolReserve.variableBorrowAPY),
-    variableAPR: Number(poolReserve.variableBorrowAPR),
-    stableOverTotal: valueToBigNumber(poolReserve.totalStableDebt)
-      .dividedBy(poolReserve.totalDebt)
-      .toNumber(),
-    variableOverTotal: valueToBigNumber(poolReserve.totalVariableDebt)
-      .dividedBy(poolReserve.totalDebt)
-      .toNumber(),
-    avg30DaysVariableRate: Number(poolReserve.avg30DaysVariableBorrowRate),
-    utilizationRate: Number(poolReserve.utilizationRate),
-    baseLTVasCollateral: Number(poolReserve.baseLTVasCollateral),
-    liquidationThreshold: Number(poolReserve.reserveLiquidationThreshold),
-    liquidationBonus: Number(poolReserve.reserveLiquidationBonus),
-    usageAsCollateralEnabled: poolReserve.usageAsCollateralEnabled,
-    stableBorrowRateEnabled: poolReserve.stableBorrowRateEnabled,
-    borrowingEnabled: poolReserve.borrowingEnabled,
-  };
 
 
   const userReserve = user
@@ -75,63 +46,65 @@ export default (props) => {
     const availableBorrows = availableBorrowsMarketReferenceCurrency.gt(0)
       ? BigNumber.min(
           availableBorrowsMarketReferenceCurrency
-            .div(poolReserve.priceInMarketReferenceCurrency)
+            .div(poolReserve?.priceInMarketReferenceCurrency)
             .multipliedBy(user && user.totalBorrowsMarketReferenceCurrency !== '0' ? '0.99' : '1'),
-          poolReserve.availableLiquidity
+          poolReserve?.availableLiquidity
         ).toNumber()
       : 0;
-  console.log('user:', user, userReserve)
 
   const [data, setData] = useState<any>({})
 
   useEffect(() => {
     if(id){
-      const { marketRefPriceInUsd } = baseCurrency
+      const { marketReferenceCurrencyPriceInUsd: marketRefPriceInUsd } = baseCurrency
       const poolReserve = reserves.find((res: any) => res.id === id)
-      const totalLiquidityInUsd = valueToBigNumber(poolReserve.totalLiquidity)
-        .multipliedBy(poolReserve.priceInMarketReferenceCurrency)
-        .multipliedBy(marketRefPriceInUsd)
-        .toString();
-      const totalBorrowsInUsd = valueToBigNumber(poolReserve.totalDebt)
-        .multipliedBy(poolReserve.priceInMarketReferenceCurrency)
-        .multipliedBy(marketRefPriceInUsd)
-        .toString();
-      const availableLiquidityInUsd = valueToBigNumber(poolReserve.availableLiquidity)
-        .multipliedBy(poolReserve.priceInMarketReferenceCurrency)
-        .multipliedBy(marketRefPriceInUsd)
-        .toString();
 
-      const data = {
-        totalLiquidityInUsd,
-        totalBorrowsInUsd,
-        availableLiquidityInUsd,
-        totalLiquidity: poolReserve.totalLiquidity,
-        totalBorrows: poolReserve.totalDebt,
-        availableLiquidity: poolReserve.availableLiquidity,
-        supplyAPY: Number(poolReserve.supplyAPY),
-        supplyAPR: Number(poolReserve.supplyAPR),
-        avg30DaysLiquidityRate: Number(poolReserve.avg30DaysLiquidityRate),
-        stableAPY: Number(poolReserve.stableBorrowAPY),
-        stableAPR: Number(poolReserve.stableBorrowAPR),
-        variableAPY: Number(poolReserve.variableBorrowAPY),
-        variableAPR: Number(poolReserve.variableBorrowAPR),
-        stableOverTotal: valueToBigNumber(poolReserve.totalStableDebt)
-          .dividedBy(poolReserve.totalDebt)
-          .toNumber(),
-        variableOverTotal: valueToBigNumber(poolReserve.totalVariableDebt)
-          .dividedBy(poolReserve.totalDebt)
-          .toNumber(),
-        avg30DaysVariableRate: Number(poolReserve.avg30DaysVariableBorrowRate),
-        utilizationRate: Number(poolReserve.utilizationRate),
-        baseLTVasCollateral: Number(poolReserve.baseLTVasCollateral),
-        liquidationThreshold: Number(poolReserve.reserveLiquidationThreshold),
-        liquidationBonus: Number(poolReserve.reserveLiquidationBonus),
-        usageAsCollateralEnabled: poolReserve.usageAsCollateralEnabled,
-        stableBorrowRateEnabled: poolReserve.stableBorrowRateEnabled,
-        borrowingEnabled: poolReserve.borrowingEnabled,
-      };
+      if(poolReserve){
+        const totalLiquidityInUsd = valueToBigNumber(poolReserve?.totalLiquidity)
+          .multipliedBy(poolReserve?.priceInMarketReferenceCurrency)
+          .multipliedBy(marketRefPriceInUsd)
+          .toString();
+        const totalBorrowsInUsd = valueToBigNumber(poolReserve?.totalDebt)
+          .multipliedBy(poolReserve?.priceInMarketReferenceCurrency)
+          .multipliedBy(marketRefPriceInUsd)
+          .toString();
+        const availableLiquidityInUsd = valueToBigNumber(poolReserve?.availableLiquidity)
+          .multipliedBy(poolReserve?.priceInMarketReferenceCurrency)
+          .multipliedBy(marketRefPriceInUsd)
+          .toString();
 
-      setData(data)
+        const data = {
+          totalLiquidityInUsd,
+          totalBorrowsInUsd,
+          availableLiquidityInUsd,
+          totalLiquidity: poolReserve?.totalLiquidity,
+          totalBorrows: poolReserve?.totalDebt,
+          availableLiquidity: poolReserve?.availableLiquidity,
+          supplyAPY: Number(poolReserve?.supplyAPY),
+          supplyAPR: Number(poolReserve?.supplyAPR),
+          avg30DaysLiquidityRate: Number(poolReserve?.avg30DaysLiquidityRate),
+          stableAPY: Number(poolReserve?.stableBorrowAPY),
+          stableAPR: Number(poolReserve?.stableBorrowAPR),
+          variableAPY: Number(poolReserve?.variableBorrowAPY),
+          variableAPR: Number(poolReserve?.variableBorrowAPR),
+          stableOverTotal: valueToBigNumber(poolReserve?.totalStableDebt)
+            .dividedBy(poolReserve?.totalDebt)
+            .toNumber(),
+          variableOverTotal: valueToBigNumber(poolReserve?.totalVariableDebt)
+            .dividedBy(poolReserve?.totalDebt)
+            .toNumber(),
+          avg30DaysVariableRate: Number(poolReserve?.avg30DaysVariableBorrowRate),
+          utilizationRate: Number(poolReserve?.utilizationRate),
+          baseLTVasCollateral: Number(poolReserve?.baseLTVasCollateral),
+          liquidationThreshold: Number(poolReserve?.reserveLiquidationThreshold),
+          liquidationBonus: Number(poolReserve?.reserveLiquidationBonus),
+          usageAsCollateralEnabled: poolReserve?.usageAsCollateralEnabled,
+          stableBorrowRateEnabled: poolReserve?.stableBorrowRateEnabled,
+          borrowingEnabled: poolReserve?.borrowingEnabled,
+        };
+
+        setData(data)
+      }
     }
   },[id])
 
@@ -140,11 +113,11 @@ export default (props) => {
     data: [
       {
         type: 'Total borrowings',
-        value: 14,
+        value: Number(Number(data.availableLiquidity).toFixed(2)),
       },
       {
         type: 'Total',
-        value: 74,
+        value: Number(Number(data.totalBorrows).toFixed(2)),
       },
     ],
     with: 200,
@@ -203,7 +176,9 @@ export default (props) => {
       <div className={styles.alert}>
         Please confirm you installed Metamask and selected Binance Smart Chain Network.
       </div>
+      
       <Row>
+        {!!poolReserve &&
         <Col span={16} style={{ paddingRight: 10 }}>
           <div className={styles.title}>Reserve status & configuration</div>
           <Row>
@@ -224,11 +199,11 @@ export default (props) => {
                             ></span>
                             Total borrowings
                           </div>
-                          <div className={styles.amount}>{data.totalBorrows}</div>
-                          <div className={styles.value}>${data.totalBorrowsInUsd}</div>
+                          <div className={styles.amount}>{Number(data.totalBorrows).toFixed(2)}</div>
+                          <div className={styles.value}>${Number(data.totalBorrowsInUsd).toFixed(2)}</div>
                           <div className={styles.card}>
                             <div className={styles.name}>Reserve scale</div>
-                            <div className={styles.value}>$ {reserveOverviewData.totalLiquidityInUsd}</div>
+                            <div className={styles.value}>$ {Number(data.totalLiquidityInUsd).toFixed(2)}</div>
                           </div>
                         </div>
                       </Col>
@@ -241,11 +216,11 @@ export default (props) => {
                             ></span>
                             Total borrowings
                           </div>
-                          <div className={styles.amount}>{data.availableLiquidity}</div>
-                          <div className={styles.value}>${data.availableLiquidityInUsd}</div>
+                          <div className={styles.amount}>{Number(data.availableLiquidity).toFixed(2)}</div>
+                          <div className={styles.value}>${Number(data.availableLiquidityInUsd).toFixed(2)}</div>
                           <div className={styles.card}>
                             <div className={styles.name}>Reserve scale</div>
-                            <div className={styles.value}>$ {Number(reserveOverviewData.totalBorrows)}</div>
+                            <div className={styles.value}>$ {Number(data.totalBorrows).toFixed(2)}</div>
                           </div>
                         </div>
                       </Col>
@@ -330,6 +305,12 @@ export default (props) => {
             </Col>
           </Row>
         </Col>
+        }
+        {!poolReserve && 
+        <Col span={16} style={{ paddingRight: 10 }}>
+          <Spin />
+        </Col>
+        }
         <Col span={8}>
           <div className={styles.title}>Your message</div>
           {!wallet && <WalletDisconnected showBack={false} />}
