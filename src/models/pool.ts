@@ -114,11 +114,9 @@ export default () => {
                 lendingPoolAddressProvider,
                 wallet?.currentAccount
             );
-            console.log('userReservesResponse', userReservesResponse)
             if(userReservesResponse){
                 let res = fixUnderlyingUserReserves(reserves, userReservesResponse);
                 res = formatUserReserves(res)
-                console.log('formatUserReserves', res)
                 setUserReserves(res);
             }
         } catch (e) {
@@ -235,7 +233,6 @@ export default () => {
                 rawUserReserves: rawUserReserves,
                 })
             : undefined;
-            console.log('computedUserData',currentTimestamp,computedUserData)
         return {
             id: wallet?.currentAccount,
             ...computedUserData

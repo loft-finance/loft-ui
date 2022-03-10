@@ -48,8 +48,8 @@
   ],
   "dependencies": {
     "@aave/aave-ui-kit": "^0.1.26",
-    "@aave/contract-helpers": "0.27.3",
-    "@aave/math-utils": "0.27.3",
+    "@aave/contract-helpers": "0.27.2",
+    "@aave/math-utils": "0.27.2",
     "@aave/protocol-js": "^4.3.0",
     "@ant-design/charts": "^0.9.4",
     "@ant-design/icons": "^4.5.0",
