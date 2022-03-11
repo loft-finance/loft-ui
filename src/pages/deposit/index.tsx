@@ -184,6 +184,7 @@ export default () => {
             rowKey={'id'}
             columns={columns}
             dataSource={list(true)}
+            loading={!list(true)}
             pagination={false}
             scroll={{ y: 600 }}
             onRow={(record) => ({ onClick: () => handler.detail(record) })}
@@ -211,7 +212,7 @@ export default () => {
                     />
                   </Col>
                   <Col span={12}>
-                    <span className={styles.value}>{item.underlyingBalance.toString()}</span>
+                    <span className={styles.value}>{Number(item.underlyingBalance.toString()).toFixed(2)}</span>
                   </Col>
                 </Row>
               </Menu.Item>
@@ -219,7 +220,7 @@ export default () => {
             {totalValue > 0 &&<Menu.Divider /> }
             <Menu.Item key="total">
               Total
-              <span className={styles.value}>{totalValue}</span>
+              <span className={styles.value}>{Number(totalValue).toFixed(2)}</span>
             </Menu.Item>
           </Menu>
         </Col>

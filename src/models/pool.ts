@@ -26,6 +26,7 @@ export default () => {
 
     const [loading, setLoading] = useState(false);
     const [baseCurrency, setbaseCurrency] = useState<any>({})
+    const [reservesBase, setReservesBase] = useState<any>([]);
     const [reserves, setReserves] = useState([]);
     const [userReserves, setUserReserves] = useState<any>(undefined);
     const [userReservesBase, setUserReservesBase] = useState<any>([]);
@@ -83,7 +84,7 @@ export default () => {
             const { reservesData, baseCurrencyData } = await contract.getReservesHumanized(
                 lendingPoolAddressProvider
             );
-            
+            setReservesBase(reservesData)
             let reserves = fixUnderlyingReserves(reservesData);
 
             reserves = formatReserves(reserves)
@@ -115,7 +116,7 @@ export default () => {
                 wallet?.currentAccount
             );
             if(userReservesResponse){
-                let res = fixUnderlyingUserReserves(reserves, userReservesResponse);
+                let res = fixUnderlyingUserReserves(reservesBase, userReservesResponse);
                 res = formatUserReserves(res)
                 setUserReserves(res);
             }

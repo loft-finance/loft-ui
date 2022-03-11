@@ -196,6 +196,7 @@ export default () => {
             rowKey={'id'}
             columns={columns}
             dataSource={list}
+            loading={!list || !list.length}
             onRow={(record) => ({ onClick: () => handler.detail(record) })}
             pagination={false}
             scroll={{ y: 400 }}

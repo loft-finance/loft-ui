@@ -1,14 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useModel } from 'umi';
 import { Card, Row, Col, Button, Descriptions, Steps, Divider, Badge, Spin } from 'antd';
-import { calculateHealthFactorFromBalancesBigUnits, valueToBigNumber } from '@aave/protocol-js';
+import { calculateHealthFactorFromBalancesBigUnits, InterestRate, valueToBigNumber } from '@aave/protocol-js';
 import { EthTransactionData, sendEthTransaction, TxStatusType } from '@/lib/helpers/send-ethereum-tx';
 
 import Back from '@/components/Back';
 import styles from './confirm.less';
 const { Step } = Steps;
 
-export default ({ poolReserve, maxAmountToDeposit, match: { params: { amount: amount0 } }, }: any,) => {
+export default ({ poolReserve, maxAmountToDeposit, location:{ query }, match: { params: { amount: amount0 } }, }: any,) => {
     const amount = valueToBigNumber(amount0);
 
     const [steps, setSteps] = useState<any>([]);
@@ -22,6 +22,12 @@ export default ({ poolReserve, maxAmountToDeposit, match: { params: { amount: am
     const { wallet } = useModel('wallet');
     const provider = wallet?.provider
     const { lendingPool } = useModel('lendingPool');
+
+
+    const interestRateMode =
+    typeof query.rateMode === 'string'
+      ? InterestRate[query.rateMode as InterestRate]
+      : InterestRate.Variable;
 
 
     const amountIntEth = amount.multipliedBy(poolReserve.priceInMarketReferenceCurrency);

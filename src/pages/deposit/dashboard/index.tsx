@@ -20,8 +20,8 @@ export default ({ depositedPositions }: any) => {
             </Col>
             <Col span={5}>
               <div className={styles.multi}>
-                {Number(item.underlyingBalance)}
-                <div className={styles.tag}>${item.underlyingBalanceUSD}</div>
+                {Number(item.underlyingBalance).toFixed(2)}
+                <div className={styles.tag}>${Number(item.underlyingBalanceUSD).toFixed(2)}</div>
               </div>
             </Col>
             <Col span={7} className={styles.single}>
