@@ -40,7 +40,7 @@ export default ({ poolReserve, maxAmountToBorrow }: any) => {
                 >
                   <div className={styles.able}>
                     <span>Can be borrowed</span>
-                    <span className={styles.amount}>{maxAmountToBorrow} {symbol}</span>
+                    <span className={styles.amount}>{Number(maxAmountToBorrow).toFixed(2)} {symbol}</span>
                   </div>
                   <Form.Item
                     name="amount"

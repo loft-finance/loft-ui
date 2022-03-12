@@ -57,6 +57,12 @@ export default ({ poolReserve, maxAmountToDeposit, location:{ query }, match: { 
         (!userReserve?.underlyingBalance ||
             userReserve.underlyingBalance === '0' ||
             userReserve.usageAsCollateralEnabledOnUser);
+    const currentStableBorrowRate =
+    userReserve && userReserve.stableBorrows !== '0' && poolReserve.stableBorrowAPY;
+    const newBorrowRate =
+    interestRateMode === InterestRate.Variable
+        ? poolReserve.variableBorrowAPY
+        : poolReserve.stableBorrowAPY;
 
     useEffect(() => {
         if (wallet) {
@@ -79,6 +85,7 @@ export default ({ poolReserve, maxAmountToDeposit, location:{ query }, match: { 
                         ? poolReserve.variableDebtTokenAddress
                         : poolReserve.stableDebtTokenAddress,
                 });
+
                 const mainTxType = ''
                 const approvalTx = txs.find((tx) => tx.txType === 'ERC20_APPROVAL');
                 const actionTx = txs.find((tx) =>
@@ -320,7 +327,7 @@ export default ({ poolReserve, maxAmountToDeposit, location:{ query }, match: { 
                                     span={3}
                                     contentStyle={{ color: '#3163E2' }}
                                 >
-                                    {healthFactorAfterDeposit.toString()}
+                                    {healthFactorAfterDeposit.decimalPlaces(3).toString()}
                                 </Descriptions.Item>
                             </Descriptions>
                         </Col>

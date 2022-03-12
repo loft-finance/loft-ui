@@ -25,12 +25,12 @@ export default ({borrowedPositions}: any) => {
         </Col>
         <Col span={5}>
           <div className={styles.multi}>
-            {Number(item.currentBorrows)}
-            <div className={styles.tag}>${Number(item.currentBorrowsUSD)}</div>
+            {Number(item.currentBorrows).toFixed(2)}
+            <div className={styles.tag}>${Number(item.currentBorrowsUSD).toFixed(2)}</div>
           </div>
         </Col>
         <Col span={7} className={styles.single}>
-        {Number(item.borrowRate)}
+        {Number(item.borrowRate).toFixed(2)}
         </Col>
         <Col span={3} className={styles.single}>
           <Switch defaultChecked checked={item.borrowRateMode === BorrowRateMode.Variable} checkedChildren="yes" unCheckedChildren="no" />

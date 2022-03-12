@@ -307,7 +307,7 @@ export default ({ poolReserve, maxAmountToDeposit, match: { params: { amount: am
                                     span={3}
                                     contentStyle={{ color: '#3163E2' }}
                                 >
-                                    {healthFactorAfterDeposit.toString()}
+                                    {healthFactorAfterDeposit.decimalPlaces(3).toString()}
                                 </Descriptions.Item>
                             </Descriptions>
                         </Col>

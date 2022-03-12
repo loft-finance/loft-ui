@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import { useModel, history } from 'umi';
 import { Table, Row, Col, Menu, Radio, Input } from 'antd';
 import { GridContent } from '@ant-design/pro-layout';
-import { valueToBigNumber } from '@aave/protocol-js';
+import { valueToBigNumber, BigNumber } from '@aave/protocol-js';
 import { isAssetStable } from '@/lib/config/assets'
 import { TokenIcon } from '@aave/aave-ui-kit';
 
@@ -192,6 +192,7 @@ export default () => {
             columns={columns}
             dataSource={list(true)}
             pagination={false}
+            loading={!list(true)?.length}
             scroll={{ y: 600 }}
             onRow={(record) => ({ onClick: () => handler.detail(record) })}
           />
