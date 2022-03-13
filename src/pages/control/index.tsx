@@ -261,8 +261,8 @@ export default () => {
                 <Col span={12} style={{ marginTop: 20 }}>
                   <div className={styles.label}>Approximate balance</div>
                   <div className={styles.value}>
-                    ${user?.totalLiquidityUSD}
-                    <span className={styles.dollar}>{Number(user?.totalLiquidityMarketReferenceCurrency || 0)} USD</span>
+                    ${Number(user?.totalLiquidityUSD || 0).toFixed(2)}
+                    <span className={styles.dollar}>{Number(user?.totalLiquidityMarketReferenceCurrency || 0).toFixed(2)} USD</span>
                   </div>
                 </Col>
                 <Col span={12}>
@@ -282,11 +282,11 @@ export default () => {
                   <Row>
                     <Col span={24}>
                       <div className={styles.label}>Borrowed</div>
-                      <div className={styles.value}>${user?.totalBorrowsUSD} USD</div>
+                      <div className={styles.value}>${Number(user?.totalBorrowsUSD || 0).toFixed(2)} USD</div>
                     </Col>
                     <Col span={24} style={{ marginTop: 15 }}>
                       <div className={styles.label}>Your collateral</div>
-                      <div className={styles.value}>${user?.totalCollateralUSD} USD</div>
+                      <div className={styles.value}>${Number(user?.totalCollateralUSD || 0).toFixed(2)} USD</div>
                     </Col>
                     <Col span={24} style={{ marginTop: 15 }}>
                       <div className={styles.label}>Current LTV</div>
@@ -313,7 +313,7 @@ export default () => {
                     <Col span={24} style={{ marginTop: 15 }}>
                       <div className={styles.label}>Fitness factor</div>
                       <div className={styles.value} style={{ color: '#37A967' }}>
-                        {user?.healthFactor || '-1'}
+                        {user?.healthFactor ? Number(user?.healthFactor).toFixed(2) : '-1'}
                       </div>
                     </Col>
                     <Col span={24} style={{ marginTop: 15 }}>

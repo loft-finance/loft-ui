@@ -1,6 +1,6 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { useModel, history } from 'umi';
-import { Table, Row, Col, Menu, Radio, Input, Empty } from 'antd';
+import { Table, Row, Col, Menu, Radio, Input } from 'antd';
 import { GridContent } from '@ant-design/pro-layout';
 import { valueToBigNumber } from '@aave/protocol-js';
 import { isAssetStable } from '@/lib/config/assets'
@@ -20,11 +20,11 @@ export default () => {
 
   const { wallet } = useModel('wallet')
 
-  const { reserveIncentives, userIncentives } = useModel('incentives')
+  const { reserveIncentives } = useModel('incentives')
 
   const [sortName, setSortName] = useState('');
   const [sortDesc, setSortDesc] = useState(false);
-  
+
 
   const filteredReserves = reserves.filter(
     (reserve) =>
@@ -41,7 +41,7 @@ export default () => {
         );
         const walletBalance = wallet?.balance ? valueToBigNumber(wallet?.balance || '0').dividedBy(
           valueToBigNumber('10').pow(reserve.decimals)
-        ): valueToBigNumber('0');
+        ) : valueToBigNumber('0');
         const walletBalanceInUSD = walletBalance
           .multipliedBy(reserve.priceInMarketReferenceCurrency)
           .multipliedBy(marketRefPriceInUsd)
@@ -91,10 +91,10 @@ export default () => {
   };
 
   const handler = {
-    detail(record) {
+    detail(record: any) {
       history.push(`/deposit/detail/${record.underlyingAsset}/${record.id}`);
     },
-    data () {
+    data() {
       reserves.map((reserve) => {
         const userReserve = user?.userReservesData.find(
           (userRes) => userRes.reserve.symbol === reserve.symbol
@@ -103,8 +103,8 @@ export default () => {
           walletData[reserve.underlyingAsset] === '0'
             ? valueToBigNumber('0')
             : valueToBigNumber(walletData[reserve.underlyingAsset] || '0').dividedBy(
-                valueToBigNumber('10').pow(reserve.decimals)
-              );
+              valueToBigNumber('10').pow(reserve.decimals)
+            );
         const walletBalanceInUSD = walletBalance
           .multipliedBy(reserve.priceInMarketReferenceCurrency)
           .multipliedBy(marketRefPriceInUsd)
@@ -142,7 +142,7 @@ export default () => {
       title: 'Assets',
       dataIndex: 'symbol',
       render: (text: any) => {
-        return <TokenIcon 
+        return <TokenIcon
           tokenSymbol={text}
           height={35}
           width={35}
@@ -172,9 +172,9 @@ export default () => {
     <GridContent>
       <Row>
         <Col span={12}>
-          <Radio.Group defaultValue={showOnlyStableCoins?"stable":"all"} buttonStyle="solid" onChange={(e)=>{setShowOnlyStableCoins(e.target.value === 'stable')}} >
-            <Radio.Button value="all" style={{width:112, textAlign:'center', borderRadius: '6px 0 0 6px'}}>All</Radio.Button>
-            <Radio.Button value="stable" style={{ borderRadius: '0 6px 6px 0'}}>Stable Coins</Radio.Button>
+          <Radio.Group defaultValue={showOnlyStableCoins ? "stable" : "all"} buttonStyle="solid" onChange={(e) => { setShowOnlyStableCoins(e.target.value === 'stable') }} >
+            <Radio.Button value="all" style={{ width: 112, textAlign: 'center', borderRadius: '6px 0 0 6px' }}>All</Radio.Button>
+            <Radio.Button value="stable" style={{ borderRadius: '0 6px 6px 0' }}>Stable Coins</Radio.Button>
           </Radio.Group>
         </Col>
         <Col span={12}>
@@ -201,12 +201,12 @@ export default () => {
             >
               My deposits
             </Menu.Item>
-            { list(false).map((item: any, index: number) => 
-              item.underlyingBalance.toString() > '0' && 
+            {list(false).map((item: any, index: number) =>
+              item.underlyingBalance.toString() > '0' &&
               <Menu.Item key={index}>
                 <Row>
                   <Col span={12}>
-                    <TokenIcon 
+                    <TokenIcon
                       tokenSymbol={item.symbol}
                       height={25}
                       width={25}
@@ -220,7 +220,7 @@ export default () => {
                 </Row>
               </Menu.Item>
             )}
-            {totalValue > 0 &&<Menu.Divider /> }
+            {totalValue > 0 && <Menu.Divider />}
             <Menu.Item key="total">
               Total
               <span className={styles.value}>{Number(totalValue).toFixed(2)}</span>

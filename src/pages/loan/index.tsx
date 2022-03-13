@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { useModel, history } from 'umi';
 import { Table, Row, Col, Menu, Radio, Input } from 'antd';
 import { GridContent } from '@ant-design/pro-layout';
@@ -20,10 +20,8 @@ export default () => {
   const { reserves, baseCurrency, user } = useModel('pool')
   const marketRefPriceInUsd = baseCurrency.marketRefPriceInUsd
 
-  const { wallet } = useModel('wallet')
-
   const { reserveIncentives } = useModel('incentives')
-  
+
   const availableBorrowsMarketReferenceCurrency = valueToBigNumber(
     user?.availableBorrowsMarketReferenceCurrency || 0
   );
@@ -40,14 +38,14 @@ export default () => {
       reserves.map((reserve: any) => {
         const availableBorrows = availableBorrowsMarketReferenceCurrency.gt(0)
           ? BigNumber.min(
-              // one percent margin to don't fail tx
-              availableBorrowsMarketReferenceCurrency
-                .div(reserve.priceInMarketReferenceCurrency)
-                .multipliedBy(
-                  user && user.totalBorrowsMarketReferenceCurrency !== '0' ? '0.99' : '1'
-                ),
-              reserve.availableLiquidity
-            ).toNumber()
+            // one percent margin to don't fail tx
+            availableBorrowsMarketReferenceCurrency
+              .div(reserve.priceInMarketReferenceCurrency)
+              .multipliedBy(
+                user && user.totalBorrowsMarketReferenceCurrency !== '0' ? '0.99' : '1'
+              ),
+            reserve.availableLiquidity
+          ).toNumber()
           : 0;
         const availableBorrowsInUSD = valueToBigNumber(availableBorrows)
           .multipliedBy(reserve.priceInMarketReferenceCurrency)
@@ -100,7 +98,7 @@ export default () => {
     detail(record) {
       history.push(`/loan/detail/${record.underlyingAsset}/${record.id}`);
     },
-    data () {
+    data() {
       reserves.map((reserve) => {
         const userReserve = user?.userReservesData.find(
           (userRes) => userRes.reserve.symbol === reserve.symbol
@@ -109,8 +107,8 @@ export default () => {
           walletData[reserve.underlyingAsset] === '0'
             ? valueToBigNumber('0')
             : valueToBigNumber(walletData[reserve.underlyingAsset] || '0').dividedBy(
-                valueToBigNumber('10').pow(reserve.decimals)
-              );
+              valueToBigNumber('10').pow(reserve.decimals)
+            );
         const walletBalanceInUSD = walletBalance
           .multipliedBy(reserve.priceInMarketReferenceCurrency)
           .multipliedBy(marketRefPriceInUsd)
@@ -148,7 +146,7 @@ export default () => {
       title: 'Assets',
       dataIndex: 'symbol',
       render: (text: any) => {
-        return <TokenIcon 
+        return <TokenIcon
           tokenSymbol={text}
           height={35}
           width={35}
@@ -179,9 +177,9 @@ export default () => {
     <GridContent>
       <Row>
         <Col span={12}>
-          <Radio.Group defaultValue={showOnlyStableCoins?"stable":"all"} buttonStyle="solid" onChange={(e)=>{setShowOnlyStableCoins(e.target.value === 'stable')}} >
-            <Radio.Button value="all" style={{width:112, textAlign:'center', borderRadius: '6px 0 0 6px'}}>All</Radio.Button>
-            <Radio.Button value="stable" style={{ borderRadius: '0 6px 6px 0'}}>Stable Coins</Radio.Button>
+          <Radio.Group defaultValue={showOnlyStableCoins ? "stable" : "all"} buttonStyle="solid" onChange={(e) => { setShowOnlyStableCoins(e.target.value === 'stable') }} >
+            <Radio.Button value="all" style={{ width: 112, textAlign: 'center', borderRadius: '6px 0 0 6px' }}>All</Radio.Button>
+            <Radio.Button value="stable" style={{ borderRadius: '0 6px 6px 0' }}>Stable Coins</Radio.Button>
           </Radio.Group>
         </Col>
         <Col span={12}>
@@ -208,12 +206,12 @@ export default () => {
             >
               My deposits
             </Menu.Item>
-            { list(false).map((item: any, index: number) => 
-              item.currentBorrows.toString() > '0' && 
+            {list(false).map((item: any, index: number) =>
+              item.currentBorrows.toString() > '0' &&
               <Menu.Item key={index}>
                 <Row>
                   <Col span={12}>
-                    <TokenIcon 
+                    <TokenIcon
                       tokenSymbol={item.symbol}
                       height={25}
                       width={25}
@@ -227,7 +225,7 @@ export default () => {
                 </Row>
               </Menu.Item>
             )}
-            {totalValue > 0 &&<Menu.Divider /> }
+            {totalValue > 0 && <Menu.Divider />}
             <Menu.Item key="total">
               Total
               <span className={styles.value}>{totalValue}</span>

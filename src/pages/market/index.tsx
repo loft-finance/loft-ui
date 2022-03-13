@@ -11,8 +11,6 @@ import styles from './style.less';
 
 export default () => {
   const { reserves, baseCurrency } = useModel('pool')
-
-  console.log('baseCurrency',baseCurrency)
   
   let list: any = []
 

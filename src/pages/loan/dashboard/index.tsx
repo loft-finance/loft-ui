@@ -1,4 +1,5 @@
 import { Row, Col, Button, Switch, Empty } from 'antd';
+import { history } from 'umi';
 import { TokenIcon } from '@aave/aave-ui-kit';
 import styles from './index.less';
 export enum BorrowRateMode {
@@ -7,6 +8,12 @@ export enum BorrowRateMode {
   Variable = 'Variable',
 }
 export default ({borrowedPositions}: any) => {
+    const handler = {
+      loan(record: any){
+        const { id, underlyingAsset  } = record.reserve
+        history.push(`/loan/detail/${underlyingAsset}/${id}`);
+      }
+    }
     return (<div className={styles.table}>
       <Row className={styles.head}>
         <Col span={7}>current balance</Col>
@@ -36,7 +43,7 @@ export default ({borrowedPositions}: any) => {
           <Switch defaultChecked checked={item.borrowRateMode === BorrowRateMode.Variable} checkedChildren="yes" unCheckedChildren="no" />
         </Col>
         <Col span={7} className={styles.single}>
-          <Button size="small" type="primary" shape={'round'} style={{ marginLeft: 5 }}>
+          <Button size="small" type="primary" shape={'round'} style={{ marginLeft: 5 }} onClick={()=>handler.loan(item)}>
             loan
           </Button>
           <Button size="small" shape={'round'} style={{ marginLeft: 5 }}>
