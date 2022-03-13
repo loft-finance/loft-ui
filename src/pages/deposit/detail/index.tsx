@@ -5,8 +5,7 @@ import Info from '@/components/Info';
 import Overview from '@/components/Overview';
 import WalletDisconnected from '@/components/Wallet/Disconnected';
 import WalletEmpty from '@/components/Wallet/Empty';
-import Deposit from '@/components/Wallet/Deposit';
-import { valueToBigNumber } from '@aave/protocol-js';
+import { BigNumber, valueToBigNumber } from '@aave/protocol-js';
 import { getAssetInfo } from '@/lib/config/assets'
 import { networks } from '@/lib/config/networks';
 import { ChainId } from '@aave/contract-helpers';

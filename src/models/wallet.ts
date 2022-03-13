@@ -1,18 +1,14 @@
 import { useEffect, useState } from 'react';
 import { message } from 'antd';
 import { useModel } from 'umi';
-import { ethers } from 'ethers';
-import { BigNumber, valueToBigNumber } from '@aave/protocol-js';
-import { networks } from '@/lib/config/networks';
-import { ChainId } from '@aave/contract-helpers';
+import { valueToBigNumber } from '@aave/protocol-js';
 import { hooks, metaMask } from '@/lib/connectors/metaMask'
 import { WalletBalanceProviderFactory } from '@/lib/contracts/WalletBalanceProviderContract';
+import { getProvider, getNetwork } from '@/lib/helpers/provider';
 
 const { useChainId, useAccounts, useError, useIsActivating, useIsActive, useProvider, useENSNames } = hooks
 
 const isMetaMaskReady = () => window.ethereum && typeof window.ethereum === 'object';
-
-const providers: { [network: string]: ethers.providers.Provider } = {};
 
 export default () => {
 
@@ -30,7 +26,7 @@ export default () => {
     }
 
     const provider = useProvider();
-    const error = useError()
+    // const error = useError()
     const current = metamask.isActive ? 'MetaMask' : '';
     const currentAccount = metamask.accounts ? metamask.accounts[0] : ''
     const connecting = metamask.isActivating ? true : false
@@ -56,41 +52,6 @@ export default () => {
         // console.log('connect res:', res)
     }
 
-    const getNetwork = (chainId: ChainId) => {
-        const config = networks[chainId];
-        if (!config) {
-            throw new Error(`Network with chainId "${chainId}" was not configured`);
-        }
-        return { ...config };
-    }
-    const getProvider = (chainId: ChainId): ethers.providers.Provider => {
-        if (!providers[chainId]) {
-            const config = getNetwork(chainId);
-            const chainProviders: ethers.providers.StaticJsonRpcProvider[] = [];
-            if (config.privateJsonRPCUrl) {
-                providers[chainId] = new ethers.providers.StaticJsonRpcProvider(
-                    config.privateJsonRPCUrl,
-                    chainId
-                );
-                return providers[chainId];
-            }
-            if (config.publicJsonRPCUrl.length) {
-                config.publicJsonRPCUrl.map((rpc) =>
-                    chainProviders.push(new ethers.providers.StaticJsonRpcProvider(rpc, chainId))
-                );
-            }
-            if (!chainProviders.length) {
-                throw new Error(`${chainId} has no jsonRPCUrl configured`);
-            }
-            if (chainProviders.length === 1) {
-                providers[chainId] = chainProviders[0];
-            } else {
-                providers[chainId] = new ethers.providers.FallbackProvider(chainProviders);
-            }
-        }
-
-        return providers[chainId];
-    }
     const getBalance = async () => {
         const chainId = currentMarket.chainId
         const provider = getProvider(chainId);
