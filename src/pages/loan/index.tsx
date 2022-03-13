@@ -137,6 +137,9 @@ export default () => {
             : '0',
         };
       });
+    },
+    search(value: string) {
+      setSearchValue(value)
     }
   };
 
@@ -182,7 +185,7 @@ export default () => {
           </Radio.Group>
         </Col>
         <Col span={12}>
-          <Search placeholder="search" style={{ width: 200 }} />
+          <Search placeholder="search" style={{ width: 200 }} onSearch={handler.search} />
         </Col>
       </Row>
       <Row>

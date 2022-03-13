@@ -4,18 +4,20 @@ import { Table, Row, Col, Card, Button, Image, Spin } from 'antd';
 import { history, useModel } from 'umi';
 import { valueToBigNumber } from '@aave/protocol-js';
 import { TokenIcon } from '@aave/aave-ui-kit';
-
+import { normalize } from '@aave/math-utils';
 
 import styles from './style.less';
 
 
 export default () => {
-  const { reserves } = useModel('pool')
+  const { reserves, baseCurrency } = useModel('pool')
+
+  console.log('baseCurrency',baseCurrency)
   
   let list: any = []
 
   let totalLockedInUsd = valueToBigNumber('0');
-  let marketRefPriceInUsd = '0'
+  const marketRefPriceInUsd = normalize(baseCurrency?.marketReferenceCurrencyPriceInUsd?baseCurrency?.marketReferenceCurrencyPriceInUsd:'0', 8)
   if(reserves){
     list = reserves
     .filter((res: any) => res.isActive && !res.isFrozen)
@@ -138,7 +140,7 @@ export default () => {
                 Is an open source and non-custodial liquidity agreement used to earn interest on
                 deposits and borrowed assets
               </div>
-              <div className={styles.value}>$ {totalLockedInUsd.toString()}</div>
+              <div className={styles.value}>$ {totalLockedInUsd.toNumber().toFixed(2)}</div>
               <div>
                 <Button type="primary" size="large" style={{ width: 200 }}>
                   To trade coins

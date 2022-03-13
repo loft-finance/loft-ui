@@ -16,7 +16,7 @@ export default () => {
   const [showOnlyStableCoins, setShowOnlyStableCoins] = useState(false);
 
   const { reserves, baseCurrency, user } = useModel('pool')
-  const marketRefPriceInUsd = baseCurrency.marketRefPriceInUsd
+  const marketRefPriceInUsd = baseCurrency.marketReferenceCurrencyPriceInUsd
 
   const { wallet } = useModel('wallet')
 
@@ -131,6 +131,9 @@ export default () => {
             : '0',
         };
       });
+    },
+    search(value: string) {
+      setSearchValue(value)
     }
   };
 
@@ -175,7 +178,7 @@ export default () => {
           </Radio.Group>
         </Col>
         <Col span={12}>
-          <Search placeholder="search" style={{ width: 200 }} />
+          <Search placeholder="search" style={{ width: 200 }} onSearch={handler.search} />
         </Col>
       </Row>
       <Row>

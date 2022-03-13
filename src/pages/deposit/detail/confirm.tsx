@@ -1,8 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useModel } from 'umi';
+import { useEffect, useState } from 'react';
+import { useModel, history } from 'umi';
 import { Card, Row, Col, Button, Descriptions, Steps, Divider, Badge, Spin } from 'antd';
 import { calculateHealthFactorFromBalancesBigUnits, valueToBigNumber } from '@aave/protocol-js';
-import { EthTransactionData, sendEthTransaction, TxStatusType } from '@/lib/helpers/send-ethereum-tx';
+import { sendEthTransaction, TxStatusType } from '@/lib/helpers/send-ethereum-tx';
 
 import Back from '@/components/Back';
 import styles from './confirm.less';
@@ -254,7 +254,7 @@ export default ({ poolReserve, maxAmountToDeposit, match: { params: { amount: am
             }else if(actionTxData && steps[current]?.key === 'deposit'){
                 handler.action.submit()
             }else if(steps[current]?.key === 'completed'){
-                console.log('control panel')
+                history.push('/control')
             }
         }
     };
@@ -334,9 +334,6 @@ export default ({ poolReserve, maxAmountToDeposit, match: { params: { amount: am
                         </p>
 
                         <p className={styles.tip} style={steps[current]?.error?{ color: '#F46D6D' }:{}}>{steps[current]?.error?steps[current]?.error:steps[current]?.description}</p>
-                        {/* <p className={styles.tip} style={{ color: '#F46D6D' }}>
-                        The transaction failed for the following reasons:Please approve before depositing
-                        </p> */}
                     </Col>
                     <Col span={3}>
                         <Button type="primary" shape="round" loading={steps[current]?.loading?true:false} onClick={handler.submit}>
