@@ -1,25 +1,12 @@
 import { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
-import { networks } from '@/lib/config/networks';
 import { useModel } from 'umi';
 
-import {
-    calculateAllUserIncentives,
-    calculateAllReserveIncentives,
-    ReserveIncentiveDict,
-    UserIncentiveDict,
-    WEI_DECIMALS,
-    ReserveCalculationData,
-    UserReserveCalculationData,
-  } from '@aave/math-utils';
+import { calculateAllUserIncentives, calculateAllReserveIncentives, WEI_DECIMALS } from '@aave/math-utils';
 
 import { API_ETH_MOCK_ADDRESS, calculateSupplies } from '@aave/protocol-js';
-import {
-    UiIncentiveDataProvider,
-    UserReserveIncentiveDataHumanizedResponse,
-    Denominations,
-    ChainId,
-} from '@aave/contract-helpers';
+import { UiIncentiveDataProvider, UserReserveIncentiveDataHumanizedResponse, Denominations } from '@aave/contract-helpers';
+import { getProvider, getNetwork } from '@/lib/helpers/provider';
 
 import dayjs from 'dayjs';
 
@@ -28,7 +15,6 @@ const POOLING_INTERVAL = 30 * 1000;
 // decreased interval in case there was a network error for faster recovery
 const RECOVER_INTERVAL = 10 * 1000;
 
-const providers: { [network: string]: ethers.providers.Provider } = {};
 
 export default () => {
     const { current: currentMarket } = useModel('market');
@@ -47,46 +33,9 @@ export default () => {
 
     const loading = loadingReserveIncentives || loadingUserIncentives
 
-    const getNetwork = (chainId: ChainId) => {
-        const config = networks[chainId];
-        if (!config) {
-            throw new Error(`Network with chainId "${chainId}" was not configured`);
-        }
-        return { ...config };
-    }
-
     const chainId = currentMarket.chainId
     const networkConfig = getNetwork(chainId);
 
-    const getProvider = (chainId: ChainId): ethers.providers.Provider => {
-        if (!providers[chainId]) {
-            const config = getNetwork(chainId);
-            const chainProviders: ethers.providers.StaticJsonRpcProvider[] = [];
-            if (config.privateJsonRPCUrl) {
-                providers[chainId] = new ethers.providers.StaticJsonRpcProvider(
-                    config.privateJsonRPCUrl,
-                    chainId
-                );
-                return providers[chainId];
-            }
-            if (config.publicJsonRPCUrl.length) {
-                config.publicJsonRPCUrl.map((rpc) =>
-                    chainProviders.push(new ethers.providers.StaticJsonRpcProvider(rpc, chainId))
-                );
-            }
-            if (!chainProviders.length) {
-                throw new Error(`${chainId} has no jsonRPCUrl configured`);
-            }
-            if (chainProviders.length === 1) {
-                providers[chainId] = chainProviders[0];
-            } else {
-                providers[chainId] = new ethers.providers.FallbackProvider(chainProviders);
-            }
-        }
-
-        return providers[chainId];
-    }
-    
     // Fetch reserve incentive data and user incentive data only if currentAccount is set
     const fetchData = async (
         currentAccount: string | undefined,

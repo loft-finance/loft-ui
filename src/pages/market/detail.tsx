@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useModel } from 'umi';
+import { useModel, history } from 'umi';
 import { Card, Row, Col, Button, Switch, Spin } from 'antd';
 import { GridContent } from '@ant-design/pro-layout';
 import WalletDisconnected from '@/components/Wallet/Disconnected';
@@ -12,6 +12,11 @@ export default (props: any) => {
 
   const { wallet } = useModel('wallet')
   const { reserves, user, baseCurrency } = useModel('pool')
+
+  if(!reserves?.length){
+    history.push('/market')
+  }
+
   const poolReserve = reserves.find((res) =>
         id? res.id === id : res.underlyingAsset.toLowerCase() === underlyingAsset.toLowerCase()
       );
