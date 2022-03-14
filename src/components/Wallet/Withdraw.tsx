@@ -8,7 +8,7 @@ export default () => (
     <Back />
     <Card bordered={false}>
       <div className={styles.desc}>
-        <div className={styles.title}>Withdrawal</div>
+        <div className={styles.title}>Withdrawa</div>
         <div className={styles.text}>How much do you want to withdraw</div>
       </div>
       <div className={styles.form}>

@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useModel, history } from 'umi';
 import { Card, Row, Col, Button, Descriptions, Steps, Divider, Badge, Spin } from 'antd';
-import { calculateHealthFactorFromBalancesBigUnits, InterestRate, valueToBigNumber } from '@aave/protocol-js';
+import { calculateHealthFactorFromBalancesBigUnits, valueToBigNumber, InterestRate } from '@aave/protocol-js';
 import { sendEthTransaction, TxStatusType } from '@/lib/helpers/send-ethereum-tx';
 
 import Back from '@/components/Back';
 import styles from './confirm.less';
 const { Step } = Steps;
 
-export default ({ poolReserve, maxAmountToDeposit, location:{ query }, match: { params: { amount: amount0 } }, }: any,) => {
+export default ({ poolReserve, maxAmountToDeposit, debtType, match: { params: { amount: amount0 } }, }: any,) => {
     const amount = valueToBigNumber(amount0);
 
     const [steps, setSteps] = useState<any>([]);
@@ -22,12 +22,6 @@ export default ({ poolReserve, maxAmountToDeposit, location:{ query }, match: { 
     const { wallet } = useModel('wallet');
     const provider = wallet?.provider
     const { lendingPool } = useModel('lendingPool');
-
-
-    const interestRateMode =
-    typeof query.rateMode === 'string'
-      ? InterestRate[query.rateMode as InterestRate]
-      : InterestRate.Variable;
 
 
     const amountIntEth = amount.multipliedBy(poolReserve.priceInMarketReferenceCurrency);
@@ -57,35 +51,23 @@ export default ({ poolReserve, maxAmountToDeposit, location:{ query }, match: { 
         (!userReserve?.underlyingBalance ||
             userReserve.underlyingBalance === '0' ||
             userReserve.usageAsCollateralEnabledOnUser);
-    const currentStableBorrowRate =
-    userReserve && userReserve.stableBorrows !== '0' && poolReserve.stableBorrowAPY;
-    const newBorrowRate =
-    interestRateMode === InterestRate.Variable
-        ? poolReserve.variableBorrowAPY
-        : poolReserve.stableBorrowAPY;
 
     useEffect(() => {
         if (wallet) {
-            handler.getTx({ loaning: false })
+            handler.getTx({ repaying: false })
         }
     }, [wallet]);
 
     const handler = {
-        async getTx({ loaning = false }) {
+        async getTx({ repaying = false }) {
             try {
-                const referralCode = undefined;
-                const txs = await lendingPool.borrow({
-                    interestRateMode,
-                    referralCode,
+                const txs = await lendingPool.withdraw({
                     user: user.id,
-                    amount: amount.toString(),
                     reserve: poolReserve.underlyingAsset,
-                    debtTokenAddress:
-                        interestRateMode === InterestRate.Variable
-                        ? poolReserve.variableDebtTokenAddress
-                        : poolReserve.stableDebtTokenAddress,
+                    amount: amount.toString(),
+                    interestRateMode: debtType as InterestRate,
                 });
-
+                console.log('txs', txs)
                 const mainTxType = ''
                 const approvalTx = txs.find((tx) => tx.txType === 'ERC20_APPROVAL');
                 const actionTx = txs.find((tx) =>
@@ -110,7 +92,7 @@ export default ({ poolReserve, maxAmountToDeposit, location:{ query }, match: { 
                     setApproveTxData(approve)
                 }
                 if (actionTx) {
-                    const mainTxName = 'Loan'
+                    const mainTxName = 'Repay'
                     action = {
                         txType: actionTx.txType,
                         unsignedData: actionTx.tx,
@@ -128,17 +110,17 @@ export default ({ poolReserve, maxAmountToDeposit, location:{ query }, match: { 
                             title: approve.name,
                             buttonText: approve.name,
                             stepText: approve.name,
-                            description: 'Please approve before loaning',
+                            description: 'Please approve before repaying',
                             loading: false,
                             error: '',
                         },
                         {
-                            key: 'loan',
+                            key: 'repay',
                             title: action.name,
                             buttonText: action.name,
                             stepText: action.name,
-                            description: 'Please submit a loan',
-                            loading: loaning ? true:false,
+                            description: 'Please submit a repay',
+                            loading: repaying ? true:false,
                             error: '',
                         },
                         {
@@ -154,12 +136,12 @@ export default ({ poolReserve, maxAmountToDeposit, location:{ query }, match: { 
                 }else if(action){
                     setSteps([
                         {
-                            key: 'loan',
+                            key: 'repay',
                             title: action.name,
                             buttonText: action.name,
                             stepText: action.name,
-                            description: 'Please submit a loan',
-                            loading: loaning ? true:false,
+                            description: 'Please submit a repay',
+                            loading: repaying ? true:false,
                             error: '',
                         },
                         {
@@ -203,11 +185,11 @@ export default ({ poolReserve, maxAmountToDeposit, location:{ query }, match: { 
         },
         action: {
             async submit() {
-                handler.loading.set('loan', true);
-                handler.records.set('loan', 'loan', 'wait')
-                const success = await handler.getTx({ loaning: true })
+                handler.loading.set('repay', true);
+                handler.records.set('repay', 'repay', 'wait')
+                const success = await handler.getTx({ repaying: true })
                 if (success) {
-                    handler.loading.set('loan', true);
+                    handler.loading.set('repay', true);
                     return sendEthTransaction(
                         actionTxData.unsignedData,
                         provider,
@@ -225,16 +207,16 @@ export default ({ poolReserve, maxAmountToDeposit, location:{ query }, match: { 
                         loading: false,
                         error: 'transaction no longer valid',
                     }));
-                    handler.loading.set('loan', false);
+                    handler.loading.set('repay', false);
                 }
             },
             executed(){
-                console.log('--------loan executed----')
+                console.log('--------repay executed----')
             },
             confirmed(){
-                handler.records.set('loan', 'loan', 'confirmed')
+                handler.records.set('repay', 'repay', 'confirmed')
                 setCurrent(current + 1);
-                handler.loading.set('loan', false);
+                handler.loading.set('repay', false);
             }
         },
         records: {
@@ -271,7 +253,7 @@ export default ({ poolReserve, maxAmountToDeposit, location:{ query }, match: { 
         async submit() {
             if(approveTxData && steps[current]?.key === 'approval'){
                 handler.approve.submit()
-            }else if(actionTxData && steps[current]?.key === 'loan'){
+            }else if(actionTxData && steps[current]?.key === 'repay'){
                 handler.action.submit()
             }else if(steps[current]?.key === 'completed'){
                 history.push('/control')
@@ -286,7 +268,7 @@ export default ({ poolReserve, maxAmountToDeposit, location:{ query }, match: { 
                 <Row>
                     <Col span={12} offset={6}>
                         <div className={styles.desc}>
-                            <div className={styles.title}>Overview of borrowing</div>
+                            <div className={styles.title}>Overview of repay</div>
                             <div className={styles.text}>
                                 These are your transaction details. Please be sure to check whether it is
                                 correct before submitting
