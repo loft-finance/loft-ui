@@ -12,7 +12,11 @@ export default ({borrowedPositions}: any) => {
       loan(record: any){
         const { id, underlyingAsset  } = record.reserve
         history.push(`/loan/detail/${underlyingAsset}/${id}`);
-      }
+      },
+      repay(record: any){
+        const { id, underlyingAsset  } = record.reserve
+        history.push(`/loan/repay/${underlyingAsset}/${id}`);
+      },
     }
     return (<div className={styles.table}>
       <Row className={styles.head}>
@@ -46,7 +50,7 @@ export default ({borrowedPositions}: any) => {
           <Button size="small" type="primary" shape={'round'} style={{ marginLeft: 5 }} onClick={()=>handler.loan(item)}>
             loan
           </Button>
-          <Button size="small" shape={'round'} style={{ marginLeft: 5 }}>
+          <Button size="small" shape={'round'} style={{ marginLeft: 5 }} onClick={()=>handler.repay(item)}>
             repay
           </Button>
         </Col>

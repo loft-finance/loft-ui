@@ -75,7 +75,6 @@ export default defineConfig({
         {
           path: '/deposit/detail/:underlyingAsset/:id',
           name: 'detail',
-          // component: '@/pages/deposit/detail',
           hideInMenu: true,
           routes: [
             {
@@ -97,6 +96,35 @@ export default defineConfig({
               component: '@/pages/deposit/detail/confirm',
               wrappers: [
                 '@/pages/deposit/detail',
+              ],
+              hideInMenu: true,
+            }
+          ]
+        },
+        {
+          path: '/deposit/withdraw/:underlyingAsset/:id',
+          name: 'withdraw',
+          hideInMenu: true,
+          routes: [
+            {
+              path: '/deposit/withdraw/:underlyingAsset/:id',
+              redirect: '/deposit/withdraw/:underlyingAsset/:id/amount',
+            },
+            {
+              path: '/deposit/withdraw/:underlyingAsset/:id/amount',
+              name: 'amount',
+              component: '@/pages/deposit/withdraw/amount',
+              wrappers: [
+                '@/pages/deposit/withdraw/index',
+              ],
+              hideInMenu: true,
+            },
+            {
+              path: '/deposit/withdraw/:underlyingAsset/:id/confirm/:amount',
+              name: 'confirm',
+              component: '@/pages/deposit/withdraw/confirm',
+              wrappers: [
+                '@/pages/deposit/withdraw',
               ],
               hideInMenu: true,
             }
@@ -143,6 +171,35 @@ export default defineConfig({
               component: '@/pages/loan/detail/confirm',
               wrappers: [
                 '@/pages/loan/detail',
+              ],
+              hideInMenu: true,
+            }
+          ]
+        },
+        {
+          path: '/loan/repay/:underlyingAsset/:id',
+          name: 'repay',
+          hideInMenu: true,
+          routes: [
+            {
+              path: '/loan/repay/:underlyingAsset/:id',
+              redirect: '/loan/repay/:underlyingAsset/:id/amount',
+            },
+            {
+              path: '/loan/repay/:underlyingAsset/:id/amount',
+              name: 'amount',
+              component: '@/pages/loan/repay/amount',
+              wrappers: [
+                '@/pages/loan/repay/index',
+              ],
+              hideInMenu: true,
+            },
+            {
+              path: '/loan/repay/:underlyingAsset/:id/confirm/:amount',
+              name: 'confirm',
+              component: '@/pages/loan/repay/confirm',
+              wrappers: [
+                '@/pages/loan/repay/index',
               ],
               hideInMenu: true,
             }

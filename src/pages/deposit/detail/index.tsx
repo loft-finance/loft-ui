@@ -7,11 +7,10 @@ import WalletDisconnected from '@/components/Wallet/Disconnected';
 import WalletEmpty from '@/components/Wallet/Empty';
 import { BigNumber, valueToBigNumber } from '@aave/protocol-js';
 import { getAssetInfo } from '@/lib/config/assets'
-import { networks } from '@/lib/config/networks';
-import { ChainId } from '@aave/contract-helpers';
+import { getNetwork } from '@/lib/helpers/provider';
 
 export default (props) => {
-  const { match: { params: { underlyingAsset,id } }, children } = props
+  const { match: { params: { underlyingAsset,id } } } = props
 
   const { wallet, balances } = useModel('wallet');
   const { reserves, user, baseCurrency } = useModel('pool')
@@ -23,14 +22,6 @@ export default (props) => {
         id? res.id === id : res.underlyingAsset.toLowerCase() === underlyingAsset.toLowerCase()
       );
   const asset = getAssetInfo(id);
-
-  const getNetwork = (chainId: ChainId) => {
-      const config = networks[chainId];
-      if (!config) {
-          throw new Error(`Network with chainId "${chainId}" was not configured`);
-      }
-      return { ...config };
-  }
 
   const chainId = currentMarket.chainId
   const networkConfig = getNetwork(chainId);
