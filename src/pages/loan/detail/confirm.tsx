@@ -1,8 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useModel } from 'umi';
+import { useEffect, useState } from 'react';
+import { useModel, history } from 'umi';
 import { Card, Row, Col, Button, Descriptions, Steps, Divider, Badge, Spin } from 'antd';
 import { calculateHealthFactorFromBalancesBigUnits, InterestRate, valueToBigNumber } from '@aave/protocol-js';
-import { EthTransactionData, sendEthTransaction, TxStatusType } from '@/lib/helpers/send-ethereum-tx';
+import { sendEthTransaction, TxStatusType } from '@/lib/helpers/send-ethereum-tx';
 
 import Back from '@/components/Back';
 import styles from './confirm.less';
@@ -66,12 +66,12 @@ export default ({ poolReserve, maxAmountToDeposit, location:{ query }, match: { 
 
     useEffect(() => {
         if (wallet) {
-            handler.getTx({ depositing: false })
+            handler.getTx({ loaning: false })
         }
     }, [wallet]);
 
     const handler = {
-        async getTx({ depositing = false }) {
+        async getTx({ loaning = false }) {
             try {
                 const referralCode = undefined;
                 const txs = await lendingPool.borrow({
@@ -128,17 +128,17 @@ export default ({ poolReserve, maxAmountToDeposit, location:{ query }, match: { 
                             title: approve.name,
                             buttonText: approve.name,
                             stepText: approve.name,
-                            description: 'Please approve before depositing',
+                            description: 'Please approve before loaning',
                             loading: false,
                             error: '',
                         },
                         {
-                            key: 'deposit',
+                            key: 'loan',
                             title: action.name,
                             buttonText: action.name,
                             stepText: action.name,
-                            description: 'Please submit a deposit',
-                            loading: depositing ? true:false,
+                            description: 'Please submit a loan',
+                            loading: loaning ? true:false,
                             error: '',
                         },
                         {
@@ -154,12 +154,12 @@ export default ({ poolReserve, maxAmountToDeposit, location:{ query }, match: { 
                 }else if(action){
                     setSteps([
                         {
-                            key: 'deposit',
+                            key: 'loan',
                             title: action.name,
                             buttonText: action.name,
                             stepText: action.name,
-                            description: 'Please submit a deposit',
-                            loading: depositing ? true:false,
+                            description: 'Please submit a loan',
+                            loading: loaning ? true:false,
                             error: '',
                         },
                         {
@@ -203,11 +203,11 @@ export default ({ poolReserve, maxAmountToDeposit, location:{ query }, match: { 
         },
         action: {
             async submit() {
-                handler.loading.set('deposit', true);
-                handler.records.set('deposit', 'deposit', 'wait')
-                const success = await handler.getTx({ depositing: true })
+                handler.loading.set('loan', true);
+                handler.records.set('loan', 'loan', 'wait')
+                const success = await handler.getTx({ loaning: true })
                 if (success) {
-                    handler.loading.set('deposit', true);
+                    handler.loading.set('loan', true);
                     return sendEthTransaction(
                         actionTxData.unsignedData,
                         provider,
@@ -225,16 +225,16 @@ export default ({ poolReserve, maxAmountToDeposit, location:{ query }, match: { 
                         loading: false,
                         error: 'transaction no longer valid',
                     }));
-                    handler.loading.set('deposit', false);
+                    handler.loading.set('loan', false);
                 }
             },
             executed(){
-                console.log('--------deposit executed----')
+                console.log('--------loan executed----')
             },
             confirmed(){
-                handler.records.set('deposit', 'deposit', 'confirmed')
+                handler.records.set('loan', 'loan', 'confirmed')
                 setCurrent(current + 1);
-                handler.loading.set('deposit', false);
+                handler.loading.set('loan', false);
             }
         },
         records: {
@@ -271,10 +271,10 @@ export default ({ poolReserve, maxAmountToDeposit, location:{ query }, match: { 
         async submit() {
             if(approveTxData && steps[current]?.key === 'approval'){
                 handler.approve.submit()
-            }else if(actionTxData && steps[current]?.key === 'deposit'){
+            }else if(actionTxData && steps[current]?.key === 'loan'){
                 handler.action.submit()
             }else if(steps[current]?.key === 'completed'){
-                console.log('control panel')
+                history.push('/control')
             }
         }
     };
@@ -354,9 +354,6 @@ export default ({ poolReserve, maxAmountToDeposit, location:{ query }, match: { 
                         </p>
 
                         <p className={styles.tip} style={steps[current]?.error?{ color: '#F46D6D' }:{}}>{steps[current]?.error?steps[current]?.error:steps[current]?.description}</p>
-                        {/* <p className={styles.tip} style={{ color: '#F46D6D' }}>
-                        The transaction failed for the following reasons:Please approve before depositing
-                        </p> */}
                     </Col>
                     <Col span={3}>
                         <Button type="primary" shape="round" loading={steps[current]?.loading?true:false} onClick={handler.submit}>

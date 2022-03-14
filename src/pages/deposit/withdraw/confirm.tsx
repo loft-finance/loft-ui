@@ -54,18 +54,20 @@ export default ({ poolReserve, maxAmountToDeposit, match: { params: { amount: am
 
     useEffect(() => {
         if (wallet) {
-            handler.getTx({ depositing: false })
+            handler.getTx({ withdrawing: false })
         }
     }, [wallet]);
 
     const handler = {
-        async getTx({ depositing = false }) {
+        async getTx({ withdrawing = false }) {
             try {
-                const txs = await lendingPool.deposit({
+                const txs = await lendingPool.withdraw({
                     user: user.id,
                     reserve: poolReserve.underlyingAsset,
                     amount: amount.toString(),
+                    aTokenAddress: poolReserve.aTokenAddress,
                 });
+                console.log('txs', txs)
                 const mainTxType = ''
                 const approvalTx = txs.find((tx) => tx.txType === 'ERC20_APPROVAL');
                 const actionTx = txs.find((tx) =>
@@ -90,7 +92,7 @@ export default ({ poolReserve, maxAmountToDeposit, match: { params: { amount: am
                     setApproveTxData(approve)
                 }
                 if (actionTx) {
-                    const mainTxName = 'Deposit'
+                    const mainTxName = 'Withdraw'
                     action = {
                         txType: actionTx.txType,
                         unsignedData: actionTx.tx,
@@ -108,17 +110,17 @@ export default ({ poolReserve, maxAmountToDeposit, match: { params: { amount: am
                             title: approve.name,
                             buttonText: approve.name,
                             stepText: approve.name,
-                            description: 'Please approve before depositing',
+                            description: 'Please approve before withdrawing',
                             loading: false,
                             error: '',
                         },
                         {
-                            key: 'deposit',
+                            key: 'withdraw',
                             title: action.name,
                             buttonText: action.name,
                             stepText: action.name,
-                            description: 'Please submit a deposit',
-                            loading: depositing ? true:false,
+                            description: 'Please submit a withdraw',
+                            loading: withdrawing ? true:false,
                             error: '',
                         },
                         {
@@ -134,12 +136,12 @@ export default ({ poolReserve, maxAmountToDeposit, match: { params: { amount: am
                 }else if(action){
                     setSteps([
                         {
-                            key: 'deposit',
+                            key: 'withdraw',
                             title: action.name,
                             buttonText: action.name,
                             stepText: action.name,
-                            description: 'Please submit a deposit',
-                            loading: depositing ? true:false,
+                            description: 'Please submit a withdraw',
+                            loading: withdrawing ? true:false,
                             error: '',
                         },
                         {
@@ -183,11 +185,11 @@ export default ({ poolReserve, maxAmountToDeposit, match: { params: { amount: am
         },
         action: {
             async submit() {
-                handler.loading.set('deposit', true);
-                handler.records.set('deposit', 'deposit', 'wait')
-                const success = await handler.getTx({ depositing: true })
+                handler.loading.set('withdraw', true);
+                handler.records.set('withdraw', 'withdraw', 'wait')
+                const success = await handler.getTx({ withdrawing: true })
                 if (success) {
-                    handler.loading.set('deposit', true);
+                    handler.loading.set('withdraw', true);
                     return sendEthTransaction(
                         actionTxData.unsignedData,
                         provider,
@@ -205,16 +207,16 @@ export default ({ poolReserve, maxAmountToDeposit, match: { params: { amount: am
                         loading: false,
                         error: 'transaction no longer valid',
                     }));
-                    handler.loading.set('deposit', false);
+                    handler.loading.set('withdraw', false);
                 }
             },
             executed(){
-                console.log('--------deposit executed----')
+                console.log('--------withdraw executed----')
             },
             confirmed(){
-                handler.records.set('deposit', 'deposit', 'confirmed')
+                handler.records.set('withdraw', 'withdraw', 'confirmed')
                 setCurrent(current + 1);
-                handler.loading.set('deposit', false);
+                handler.loading.set('withdraw', false);
             }
         },
         records: {
@@ -251,7 +253,7 @@ export default ({ poolReserve, maxAmountToDeposit, match: { params: { amount: am
         async submit() {
             if(approveTxData && steps[current]?.key === 'approval'){
                 handler.approve.submit()
-            }else if(actionTxData && steps[current]?.key === 'deposit'){
+            }else if(actionTxData && steps[current]?.key === 'withdraw'){
                 handler.action.submit()
             }else if(steps[current]?.key === 'completed'){
                 history.push('/control')

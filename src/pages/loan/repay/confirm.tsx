@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useModel, history } from 'umi';
 import { Card, Row, Col, Button, Descriptions, Steps, Divider, Badge, Spin } from 'antd';
-import { calculateHealthFactorFromBalancesBigUnits, valueToBigNumber } from '@aave/protocol-js';
+import { calculateHealthFactorFromBalancesBigUnits, valueToBigNumber, InterestRate } from '@aave/protocol-js';
 import { sendEthTransaction, TxStatusType } from '@/lib/helpers/send-ethereum-tx';
 
 import Back from '@/components/Back';
 import styles from './confirm.less';
 const { Step } = Steps;
 
-export default ({ poolReserve, maxAmountToDeposit, match: { params: { amount: amount0 } }, }: any,) => {
+export default ({ poolReserve, maxAmountToDeposit, debtType, match: { params: { amount: amount0 } }, }: any,) => {
     const amount = valueToBigNumber(amount0);
 
     const [steps, setSteps] = useState<any>([]);
@@ -54,18 +54,20 @@ export default ({ poolReserve, maxAmountToDeposit, match: { params: { amount: am
 
     useEffect(() => {
         if (wallet) {
-            handler.getTx({ depositing: false })
+            handler.getTx({ repaying: false })
         }
     }, [wallet]);
 
     const handler = {
-        async getTx({ depositing = false }) {
+        async getTx({ repaying = false }) {
             try {
-                const txs = await lendingPool.deposit({
+                const txs = await lendingPool.withdraw({
                     user: user.id,
                     reserve: poolReserve.underlyingAsset,
                     amount: amount.toString(),
+                    interestRateMode: debtType as InterestRate,
                 });
+                console.log('txs', txs)
                 const mainTxType = ''
                 const approvalTx = txs.find((tx) => tx.txType === 'ERC20_APPROVAL');
                 const actionTx = txs.find((tx) =>
@@ -90,7 +92,7 @@ export default ({ poolReserve, maxAmountToDeposit, match: { params: { amount: am
                     setApproveTxData(approve)
                 }
                 if (actionTx) {
-                    const mainTxName = 'Deposit'
+                    const mainTxName = 'Repay'
                     action = {
                         txType: actionTx.txType,
                         unsignedData: actionTx.tx,
@@ -108,17 +110,17 @@ export default ({ poolReserve, maxAmountToDeposit, match: { params: { amount: am
                             title: approve.name,
                             buttonText: approve.name,
                             stepText: approve.name,
-                            description: 'Please approve before depositing',
+                            description: 'Please approve before repaying',
                             loading: false,
                             error: '',
                         },
                         {
-                            key: 'deposit',
+                            key: 'repay',
                             title: action.name,
                             buttonText: action.name,
                             stepText: action.name,
-                            description: 'Please submit a deposit',
-                            loading: depositing ? true:false,
+                            description: 'Please submit a repay',
+                            loading: repaying ? true:false,
                             error: '',
                         },
                         {
@@ -134,12 +136,12 @@ export default ({ poolReserve, maxAmountToDeposit, match: { params: { amount: am
                 }else if(action){
                     setSteps([
                         {
-                            key: 'deposit',
+                            key: 'repay',
                             title: action.name,
                             buttonText: action.name,
                             stepText: action.name,
-                            description: 'Please submit a deposit',
-                            loading: depositing ? true:false,
+                            description: 'Please submit a repay',
+                            loading: repaying ? true:false,
                             error: '',
                         },
                         {
@@ -183,11 +185,11 @@ export default ({ poolReserve, maxAmountToDeposit, match: { params: { amount: am
         },
         action: {
             async submit() {
-                handler.loading.set('deposit', true);
-                handler.records.set('deposit', 'deposit', 'wait')
-                const success = await handler.getTx({ depositing: true })
+                handler.loading.set('repay', true);
+                handler.records.set('repay', 'repay', 'wait')
+                const success = await handler.getTx({ repaying: true })
                 if (success) {
-                    handler.loading.set('deposit', true);
+                    handler.loading.set('repay', true);
                     return sendEthTransaction(
                         actionTxData.unsignedData,
                         provider,
@@ -205,16 +207,16 @@ export default ({ poolReserve, maxAmountToDeposit, match: { params: { amount: am
                         loading: false,
                         error: 'transaction no longer valid',
                     }));
-                    handler.loading.set('deposit', false);
+                    handler.loading.set('repay', false);
                 }
             },
             executed(){
-                console.log('--------deposit executed----')
+                console.log('--------repay executed----')
             },
             confirmed(){
-                handler.records.set('deposit', 'deposit', 'confirmed')
+                handler.records.set('repay', 'repay', 'confirmed')
                 setCurrent(current + 1);
-                handler.loading.set('deposit', false);
+                handler.loading.set('repay', false);
             }
         },
         records: {
@@ -251,7 +253,7 @@ export default ({ poolReserve, maxAmountToDeposit, match: { params: { amount: am
         async submit() {
             if(approveTxData && steps[current]?.key === 'approval'){
                 handler.approve.submit()
-            }else if(actionTxData && steps[current]?.key === 'deposit'){
+            }else if(actionTxData && steps[current]?.key === 'repay'){
                 handler.action.submit()
             }else if(steps[current]?.key === 'completed'){
                 history.push('/control')
@@ -266,7 +268,7 @@ export default ({ poolReserve, maxAmountToDeposit, match: { params: { amount: am
                 <Row>
                     <Col span={12} offset={6}>
                         <div className={styles.desc}>
-                            <div className={styles.title}>Deposit overview</div>
+                            <div className={styles.title}>Overview of repay</div>
                             <div className={styles.text}>
                                 These are your transaction details. Please be sure to check whether it is
                                 correct before submitting

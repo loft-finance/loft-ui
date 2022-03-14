@@ -1,16 +1,14 @@
-import React, { useRef, useState } from 'react';
 import { Card, Row, Col, Button, Typography, Input, Divider, Form } from 'antd';
 import { DollarCircleOutlined } from '@ant-design/icons';
 import { GridContent } from '@ant-design/pro-layout';
 import Info from '@/components/Info';
 import WalletDisconnected from '@/components/Wallet/Disconnected';
-import { useModel, history } from 'umi';
+import { useModel } from 'umi';
 const { Title } = Typography;
 import styles from './index.less';
 
 export default () => {
-  const { initialState } = useModel('@@initialState');
-  const { wallet } = initialState;
+  const { wallet } = useModel('wallet')
 
   return (
     <GridContent>
