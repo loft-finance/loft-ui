@@ -8,64 +8,70 @@ import { valueToBigNumber, BigNumber } from '@aave/protocol-js';
 import Bignumber from '@/components/Bignumber';
 import styles from './detail.less';
 
+export enum BorrowRateMode {
+  None = 'None',
+  Stable = 'Stable',
+  Variable = 'Variable',
+}
+
 export default (props: any) => {
-  const { match: { params: { underlyingAsset,id } } } = props
+  const { match: { params: { underlyingAsset, id } } } = props
 
   const { wallet } = useModel('wallet')
   const { reserves, user, baseCurrency } = useModel('pool')
 
-  if(!reserves?.length){
+  if (!reserves?.length) {
     history.push('/market')
   }
 
-  const poolReserve = reserves.find((res) =>
-        id? res.id === id : res.underlyingAsset.toLowerCase() === underlyingAsset.toLowerCase()
-      );
+  const poolReserve: any = reserves.find((res) =>
+    id ? res.id === id : res.underlyingAsset.toLowerCase() === underlyingAsset.toLowerCase()
+  );
   const marketRefPriceInUsd = baseCurrency?.marketRefPriceInUsd;
   const totalLiquidityInUsd = valueToBigNumber(poolReserve?.totalLiquidity)
-      .multipliedBy(poolReserve?.priceInMarketReferenceCurrency)
-      .multipliedBy(marketRefPriceInUsd)
-      .toString();
-    const totalBorrowsInUsd = valueToBigNumber(poolReserve?.totalDebt)
-      .multipliedBy(poolReserve?.priceInMarketReferenceCurrency)
-      .multipliedBy(marketRefPriceInUsd)
-      .toString();
-    const availableLiquidityInUsd = valueToBigNumber(poolReserve?.availableLiquidity)
-      .multipliedBy(poolReserve?.priceInMarketReferenceCurrency)
-      .multipliedBy(marketRefPriceInUsd)
-      .toString();
+    .multipliedBy(poolReserve?.priceInMarketReferenceCurrency)
+    .multipliedBy(marketRefPriceInUsd)
+    .toString();
+  const totalBorrowsInUsd = valueToBigNumber(poolReserve?.totalDebt)
+    .multipliedBy(poolReserve?.priceInMarketReferenceCurrency)
+    .multipliedBy(marketRefPriceInUsd)
+    .toString();
+  const availableLiquidityInUsd = valueToBigNumber(poolReserve?.availableLiquidity)
+    .multipliedBy(poolReserve?.priceInMarketReferenceCurrency)
+    .multipliedBy(marketRefPriceInUsd)
+    .toString();
 
 
   const userReserve = user
-        ? user.userReservesData.find((userReserve) =>
-            id
-              ? userReserve.reserve.id === id
-              : userReserve.reserve.underlyingAsset.toLowerCase() === underlyingAsset.toLowerCase()
-          )
-        : undefined;
-    const totalBorrows = valueToBigNumber(userReserve?.totalBorrows || '0').toNumber();
-    const underlyingBalance = valueToBigNumber(userReserve?.underlyingBalance || '0').toNumber();
+    ? user.userReservesData.find((userReserve) =>
+      id
+        ? userReserve.reserve.id === id
+        : userReserve.reserve.underlyingAsset.toLowerCase() === underlyingAsset.toLowerCase()
+    )
+    : undefined;
+  const totalBorrows = valueToBigNumber(userReserve?.totalBorrows || '0').toNumber();
+  const underlyingBalance = valueToBigNumber(userReserve?.underlyingBalance || '0').toNumber();
 
-    const availableBorrowsMarketReferenceCurrency = valueToBigNumber(
-      user?.availableBorrowsMarketReferenceCurrency || 0
-    );
-    const availableBorrows = availableBorrowsMarketReferenceCurrency.gt(0)
-      ? BigNumber.min(
-          availableBorrowsMarketReferenceCurrency
-            .div(poolReserve?.priceInMarketReferenceCurrency)
-            .multipliedBy(user && user.totalBorrowsMarketReferenceCurrency !== '0' ? '0.99' : '1'),
-          poolReserve?.availableLiquidity
-        ).toNumber()
-      : 0;
+  const availableBorrowsMarketReferenceCurrency = valueToBigNumber(
+    user?.availableBorrowsMarketReferenceCurrency || 0
+  );
+  const availableBorrows = availableBorrowsMarketReferenceCurrency.gt(0)
+    ? BigNumber.min(
+      availableBorrowsMarketReferenceCurrency
+        .div(poolReserve?.priceInMarketReferenceCurrency)
+        .multipliedBy(user && user.totalBorrowsMarketReferenceCurrency !== '0' ? '0.99' : '1'),
+      poolReserve?.availableLiquidity
+    ).toNumber()
+    : 0;
 
   const [data, setData] = useState<any>({})
 
   useEffect(() => {
-    if(id){
+    if (id) {
       const { marketReferenceCurrencyPriceInUsd: marketRefPriceInUsd } = baseCurrency
       const poolReserve = reserves.find((res: any) => res.id === id)
 
-      if(poolReserve){
+      if (poolReserve) {
         const totalLiquidityInUsd = valueToBigNumber(poolReserve?.totalLiquidity)
           .multipliedBy(poolReserve?.priceInMarketReferenceCurrency)
           .multipliedBy(marketRefPriceInUsd)
@@ -112,7 +118,31 @@ export default (props: any) => {
         setData(data)
       }
     }
-  },[id])
+  }, [id])
+
+  const handler = {
+    deposit() {
+      const { id, underlyingAsset } = poolReserve
+      history.push(`/deposit/detail/${underlyingAsset}/${id}`);
+    },
+    withdraw() {
+      const { id, underlyingAsset } = poolReserve
+      history.push(`/deposit/withdraw/${underlyingAsset}/${id}`);
+    },
+    collateral() {
+      const { id, underlyingAsset } = poolReserve
+      const { usageAsCollateralEnabledOnUser, usageAsCollateralEnabledOnThePool } = userReserve
+      history.push(`/deposit/collateral/${underlyingAsset}/${id}/confirm/${usageAsCollateralEnabledOnUser && usageAsCollateralEnabledOnThePool ? 0 : 1}`);
+    },
+    loan() {
+      const { id, underlyingAsset } = poolReserve
+      history.push(`/loan/detail/${underlyingAsset}/${id}`);
+    },
+    repay() {
+      const { id, underlyingAsset } = poolReserve
+      history.push(`/loan/repay/${underlyingAsset}/${id}`);
+    },
+  }
 
   const config = {
     appendPadding: 10,
@@ -154,9 +184,8 @@ export default (props: any) => {
       content: {
         customHtml: (container, view, datum, data) => {
           const { width } = container.getBoundingClientRect();
-          return `<img style="width:${
-            (3 * width) / 4
-          }px; border-radius:50%;" src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fwww.ccvalue.cn%2Fupload%2F2020%2F0217%2F3f5dae19531be0617b6dc6a966d60c08.jpg&refer=http%3A%2F%2Fwww.ccvalue.cn&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1647253782&t=ebc9ea3e23e24cf30dd232075f6551aa" />`;
+          return `<img style="width:${(3 * width) / 4
+            }px; border-radius:50%;" src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fwww.ccvalue.cn%2Fupload%2F2020%2F0217%2F3f5dae19531be0617b6dc6a966d60c08.jpg&refer=http%3A%2F%2Fwww.ccvalue.cn&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1647253782&t=ebc9ea3e23e24cf30dd232075f6551aa" />`;
         },
       },
     },
@@ -182,140 +211,140 @@ export default (props: any) => {
       <div className={styles.alert}>
         Please confirm you installed Metamask and selected Binance Smart Chain Network.
       </div>
-      
+
       <Row>
         {!!poolReserve &&
-        <Col span={16} style={{ paddingRight: 10 }}>
-          <div className={styles.title}>Reserve status & configuration</div>
-          <Row>
-            <Col span={24}>
-              <Card bordered={false}>
-                <Row>
-                  <Col span={8}>
-                    <Pie {...config} />
-                  </Col>
-                  <Col span={16}>
-                    <Row>
-                      <Col span={12}>
-                        <div className={styles.legend}>
-                          <div className={styles.name}>
-                            <span
-                              className={styles.dot}
-                              style={{ backgroundColor: '#26A984' }}
-                            ></span>
-                            Total borrowings
+          <Col span={16} style={{ paddingRight: 10 }}>
+            <div className={styles.title}>Reserve status & configuration</div>
+            <Row>
+              <Col span={24}>
+                <Card bordered={false}>
+                  <Row>
+                    <Col span={8}>
+                      <Pie {...config} />
+                    </Col>
+                    <Col span={16}>
+                      <Row>
+                        <Col span={12}>
+                          <div className={styles.legend}>
+                            <div className={styles.name}>
+                              <span
+                                className={styles.dot}
+                                style={{ backgroundColor: '#26A984' }}
+                              ></span>
+                              Total borrowings
+                            </div>
+                            <div className={styles.amount}><Bignumber value={data.totalBorrows} /></div>
+                            <div className={styles.value}>$<Bignumber value={data.totalBorrowsInUsd} /></div>
+                            <div className={styles.card}>
+                              <div className={styles.name}>Reserve scale</div>
+                              <div className={styles.value}>$ <Bignumber value={data.totalLiquidityInUsd} /></div>
+                            </div>
                           </div>
-                          <div className={styles.amount}><Bignumber value={data.totalBorrows} /></div>
-                          <div className={styles.value}>$<Bignumber value={data.totalBorrowsInUsd} /></div>
-                          <div className={styles.card}>
-                            <div className={styles.name}>Reserve scale</div>
-                            <div className={styles.value}>$ <Bignumber value={data.totalLiquidityInUsd} /></div>
-                          </div>
-                        </div>
-                      </Col>
-                      <Col span={12}>
-                        <div className={styles.legend}>
-                          <div className={styles.name}>
-                            <span
-                              className={styles.dot}
-                              style={{ backgroundColor: '#7BDBBF' }}
-                            ></span>
-                            Available Liquidity
-                          </div>
-                          <div className={styles.amount}><Bignumber value={data.availableLiquidity} /></div>
-                          <div className={styles.value}>$<Bignumber value={data.availableLiquidityInUsd} /></div>
-                          <div className={styles.card}>
-                            <div className={styles.name}>Reserve scale</div>
+                        </Col>
+                        <Col span={12}>
+                          <div className={styles.legend}>
+                            <div className={styles.name}>
+                              <span
+                                className={styles.dot}
+                                style={{ backgroundColor: '#7BDBBF' }}
+                              ></span>
+                              Available Liquidity
+                            </div>
+                            <div className={styles.amount}><Bignumber value={data.availableLiquidity} /></div>
                             <div className={styles.value}>$<Bignumber value={data.availableLiquidityInUsd} /></div>
+                            <div className={styles.card}>
+                              <div className={styles.name}>Reserve scale</div>
+                              <div className={styles.value}>$<Bignumber value={data.availableLiquidityInUsd} /></div>
+                            </div>
                           </div>
-                        </div>
-                      </Col>
-                    </Row>
-                  </Col>
-                </Row>
-                <Row style={{ marginTop: 15 }}>
-                  <Col span={12} style={{ paddingRight: 5 }}>
-                    <Card
-                      title="Deposit"
-                      className="CardInfo"
-                      headStyle={{ textAlign: 'center', backgroundColor: '#ECF3FF', height: 38 }}
-                      bodyStyle={{ padding: '15px 15px 5px' }}
-                    >
-                      <Row className={styles.CardInfo}>
-                        <Col span={12} className={styles.label}>
-                          Deposit APY (Annual Yield)
-                        </Col>
-                        <Col span={12} className={styles.value}>
-                          {Number(data.supplyAPY).toFixed(4)}%
-                        </Col>
-                        <Col span={12} className={styles.label}>
-                          Average of the past 30 days
-                        </Col>
-                        <Col span={12} className={styles.value}>
-                          {Number(data.supplyAPR).toFixed(4)}
                         </Col>
                       </Row>
-                    </Card>
-                  </Col>
-                  <Col span={12} style={{ paddingLeft: 5 }}>
-                    <Card
-                      title="Variable borrowing"
-                      className="CardInfo"
-                      headStyle={{ textAlign: 'center', backgroundColor: '#ECF3FF', height: 38 }}
-                      bodyStyle={{ padding: '15px 15px 5px' }}
-                    >
-                      <Row className={styles.CardInfo}>
-                        <Col span={12} className={styles.label}>
-                          Borrow APY
-                        </Col>
-                        <Col span={12} className={styles.value}>
-                          {data.variableAPY.toFixed(4)}%
-                        </Col>
-                        <Col span={12} className={styles.label}>
-                          Average of the past 30 days
-                        </Col>
-                        <Col span={12} className={styles.value}>
-                          {data.variableAPR.toFixed(4)}
-                        </Col>
-                        <Col span={12} className={styles.label}>
-                          Percentage of total
-                        </Col>
-                        <Col span={12} className={styles.value}>
-                          {data.variableOverTotal.toFixed(4)}%
-                        </Col>
-                      </Row>
-                    </Card>
-                  </Col>
-                </Row>
-                <Row style={{ marginTop: 15 }} className={styles.info}>
-                  <Col span={6}>
-                    <div className={styles.label}>Max LTV</div>
-                    <div className={styles.value}>{data.baseLTVasCollateral}%</div>
-                  </Col>
-                  <Col span={6}>
-                    <div className={styles.label}>Liquidation threshold</div>
-                    <div className={styles.value}>{ data.liquidationBonus <= 0
-                  ? 0
-                  : data.liquidationThreshold}%</div>
-                  </Col>
-                  <Col span={6}>
-                    <div className={styles.label}>Liquidation penalty</div>
-                    <div className={styles.value}>{data.liquidationBonus}%</div>
-                  </Col>
-                  <Col span={6}>
-                    <div className={styles.label}>Used as collatera</div>
-                    <div className={styles.bool}>{data.usageAsCollateralEnabled ? 'yes': 'no'}</div>
-                  </Col>
-                </Row>
-              </Card>
-            </Col>
-          </Row>
-        </Col>
+                    </Col>
+                  </Row>
+                  <Row style={{ marginTop: 15 }}>
+                    <Col span={12} style={{ paddingRight: 5 }}>
+                      <Card
+                        title="Deposit"
+                        className="CardInfo"
+                        headStyle={{ textAlign: 'center', backgroundColor: '#ECF3FF', height: 38 }}
+                        bodyStyle={{ padding: '15px 15px 5px' }}
+                      >
+                        <Row className={styles.CardInfo}>
+                          <Col span={12} className={styles.label}>
+                            Deposit APY (Annual Yield)
+                          </Col>
+                          <Col span={12} className={styles.value}>
+                            {Number(data.supplyAPY).toFixed(4)}%
+                          </Col>
+                          <Col span={12} className={styles.label}>
+                            Average of the past 30 days
+                          </Col>
+                          <Col span={12} className={styles.value}>
+                            {Number(data.supplyAPR).toFixed(4)}
+                          </Col>
+                        </Row>
+                      </Card>
+                    </Col>
+                    <Col span={12} style={{ paddingLeft: 5 }}>
+                      <Card
+                        title="Variable borrowing"
+                        className="CardInfo"
+                        headStyle={{ textAlign: 'center', backgroundColor: '#ECF3FF', height: 38 }}
+                        bodyStyle={{ padding: '15px 15px 5px' }}
+                      >
+                        <Row className={styles.CardInfo}>
+                          <Col span={12} className={styles.label}>
+                            Borrow APY
+                          </Col>
+                          <Col span={12} className={styles.value}>
+                            {Number(data.variableAPY).toFixed(4)}%
+                          </Col>
+                          <Col span={12} className={styles.label}>
+                            Average of the past 30 days
+                          </Col>
+                          <Col span={12} className={styles.value}>
+                            {Number(data.variableAPR).toFixed(4)}
+                          </Col>
+                          <Col span={12} className={styles.label}>
+                            Percentage of total
+                          </Col>
+                          <Col span={12} className={styles.value}>
+                            {Number(data.variableOverTotal).toFixed(4)}%
+                          </Col>
+                        </Row>
+                      </Card>
+                    </Col>
+                  </Row>
+                  <Row style={{ marginTop: 15 }} className={styles.info}>
+                    <Col span={6}>
+                      <div className={styles.label}>Max LTV</div>
+                      <div className={styles.value}>{data.baseLTVasCollateral}%</div>
+                    </Col>
+                    <Col span={6}>
+                      <div className={styles.label}>Liquidation threshold</div>
+                      <div className={styles.value}>{data.liquidationBonus <= 0
+                        ? 0
+                        : data.liquidationThreshold}%</div>
+                    </Col>
+                    <Col span={6}>
+                      <div className={styles.label}>Liquidation penalty</div>
+                      <div className={styles.value}>{data.liquidationBonus}%</div>
+                    </Col>
+                    <Col span={6}>
+                      <div className={styles.label}>Used as collatera</div>
+                      <div className={styles.bool}>{data.usageAsCollateralEnabled ? 'yes' : 'no'}</div>
+                    </Col>
+                  </Row>
+                </Card>
+              </Col>
+            </Row>
+          </Col>
         }
-        {!poolReserve && 
-        <Col span={16} style={{ paddingRight: 10 }}>
-          <Spin />
-        </Col>
+        {!poolReserve &&
+          <Col span={16} style={{ paddingRight: 10 }}>
+            <Spin />
+          </Col>
         }
         <Col span={8}>
           <div className={styles.title}>Your message</div>
@@ -330,11 +359,11 @@ export default (props: any) => {
                       <Col span={24}>
                         <Row>
                           <Col span={6}>deposit</Col>
-                          <Col span={18} style={{ textAlign: 'right' }}>
-                            <Button size="small" type="primary" shape="round">
+                          <Col span={18} style={{ textAlign: 'right' }} >
+                            <Button size="small" type="primary" shape="round" onClick={handler.deposit}>
                               deposit
                             </Button>
-                            <Button size="small" shape="round" style={{ marginLeft: 8 }}>
+                            <Button onClick={handler.withdraw} size="small" shape="round" style={{ marginLeft: 8 }}>
                               withdraw
                             </Button>
                           </Col>
@@ -350,14 +379,14 @@ export default (props: any) => {
                             You have deposited
                           </Col>
                           <Col span={12} className={styles.value}>
-                            {underlyingBalance} USDT
+                            {Number(underlyingBalance).toFixed(2)} USDT
                           </Col>
                           <Col span={12} className={styles.label}>
                             Used as collateral
                           </Col>
                           <Col span={12} className={styles.value}>
-                            No <Switch checked={userReserve?.usageAsCollateralEnabledOnUser &&
-                      poolReserve?.usageAsCollateralEnabled} />
+                            No <Switch onClick={handler.collateral} checked={userReserve?.usageAsCollateralEnabledOnUser &&
+                              poolReserve?.usageAsCollateralEnabled} />
                           </Col>
                         </Row>
                       </Col>
@@ -379,11 +408,11 @@ export default (props: any) => {
                         <Row className={styles.msg}>
                           <Col span={12} className={styles.label}>Borrowed</Col>
                           <Col span={12} className={styles.value}>
-                            {totalBorrows || 0} USDT
+                            {Number(totalBorrows || 0).toFixed(2)} USDT
                           </Col>
                           <Col span={12} className={styles.label}>Fitness factor</Col>
                           <Col span={12} className={styles.value}>
-                            {user?.healthFactor || '-1'}
+                            {Number(user?.healthFactor || '-1').toFixed(2)}
                           </Col>
                           <Col span={12} className={styles.label}>Loan appreciation</Col>
                           <Col span={12} className={styles.value}>
@@ -391,7 +420,7 @@ export default (props: any) => {
                           </Col>
                           <Col span={12} className={styles.label}>Available</Col>
                           <Col span={12} className={styles.value}>
-                            {availableBorrows} USDT
+                            {Number(availableBorrows).toFixed(2)} USDT
                           </Col>
                         </Row>
                       </Col>
@@ -411,14 +440,14 @@ export default (props: any) => {
                     <Row className={styles.loan}>
                       <Col span={8} className={styles.label}>FUSDT</Col>
                       <Col span={6} className={styles.value}>
-                        <div>{availableBorrows}</div>
-                        <div className={styles.tag}>${availableBorrows}</div>
+                        <div>{Number(availableBorrows).toFixed(2)}</div>
+                        <div className={styles.tag}>${Number(availableBorrows).toFixed(2)}</div>
                       </Col>
                       <Col span={9} offset={1} className={styles.label}>
-                        <Button size="small" type="primary" shape="round">
+                        <Button size="small" type="primary" shape="round" onClick={handler.loan}>
                           loan
                         </Button>
-                        <Button size="small" shape="round" style={{ marginLeft: 8 }}>
+                        <Button size="small" shape="round" style={{ marginLeft: 8 }} onClick={handler.repay}>
                           repay
                         </Button>
                       </Col>
