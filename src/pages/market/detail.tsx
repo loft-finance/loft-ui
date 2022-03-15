@@ -4,7 +4,8 @@ import { Card, Row, Col, Button, Switch, Spin } from 'antd';
 import { GridContent } from '@ant-design/pro-layout';
 import WalletDisconnected from '@/components/Wallet/Disconnected';
 import { Pie } from '@ant-design/plots';
-import { valueToBigNumber } from '@aave/protocol-js';
+import { valueToBigNumber, BigNumber } from '@aave/protocol-js';
+import Bignumber from '@/components/Bignumber';
 import styles from './detail.less';
 
 export default (props: any) => {
@@ -117,11 +118,11 @@ export default (props: any) => {
     appendPadding: 10,
     data: [
       {
-        type: 'Total borrowings',
+        type: 'Available Liquidity',
         value: Number(Number(data.availableLiquidity).toFixed(2)),
       },
       {
-        type: 'Total',
+        type: 'Total borrowings',
         value: Number(Number(data.totalBorrows).toFixed(2)),
       },
     ],
@@ -204,11 +205,11 @@ export default (props: any) => {
                             ></span>
                             Total borrowings
                           </div>
-                          <div className={styles.amount}>{Number(data.totalBorrows).toFixed(2)}</div>
-                          <div className={styles.value}>${Number(data.totalBorrowsInUsd).toFixed(2)}</div>
+                          <div className={styles.amount}><Bignumber value={data.totalBorrows} /></div>
+                          <div className={styles.value}>$<Bignumber value={data.totalBorrowsInUsd} /></div>
                           <div className={styles.card}>
                             <div className={styles.name}>Reserve scale</div>
-                            <div className={styles.value}>$ {Number(data.totalLiquidityInUsd).toFixed(2)}</div>
+                            <div className={styles.value}>$ <Bignumber value={data.totalLiquidityInUsd} /></div>
                           </div>
                         </div>
                       </Col>
@@ -219,13 +220,13 @@ export default (props: any) => {
                               className={styles.dot}
                               style={{ backgroundColor: '#7BDBBF' }}
                             ></span>
-                            Total borrowings
+                            Available Liquidity
                           </div>
-                          <div className={styles.amount}>{Number(data.availableLiquidity).toFixed(2)}</div>
-                          <div className={styles.value}>${Number(data.availableLiquidityInUsd).toFixed(2)}</div>
+                          <div className={styles.amount}><Bignumber value={data.availableLiquidity} /></div>
+                          <div className={styles.value}>$<Bignumber value={data.availableLiquidityInUsd} /></div>
                           <div className={styles.card}>
                             <div className={styles.name}>Reserve scale</div>
-                            <div className={styles.value}>$ {Number(data.totalBorrows).toFixed(2)}</div>
+                            <div className={styles.value}>$<Bignumber value={data.availableLiquidityInUsd} /></div>
                           </div>
                         </div>
                       </Col>
@@ -245,13 +246,13 @@ export default (props: any) => {
                           Deposit APY (Annual Yield)
                         </Col>
                         <Col span={12} className={styles.value}>
-                          {data.supplyAPY}%
+                          {Number(data.supplyAPY).toFixed(4)}%
                         </Col>
                         <Col span={12} className={styles.label}>
                           Average of the past 30 days
                         </Col>
                         <Col span={12} className={styles.value}>
-                          {data.supplyAPR}
+                          {Number(data.supplyAPR).toFixed(4)}
                         </Col>
                       </Row>
                     </Card>
@@ -268,19 +269,19 @@ export default (props: any) => {
                           Borrow APY
                         </Col>
                         <Col span={12} className={styles.value}>
-                          {data.variableAPY}%
+                          {data.variableAPY.toFixed(4)}%
                         </Col>
                         <Col span={12} className={styles.label}>
                           Average of the past 30 days
                         </Col>
                         <Col span={12} className={styles.value}>
-                          {data.variableAPR}
+                          {data.variableAPR.toFixed(4)}
                         </Col>
                         <Col span={12} className={styles.label}>
                           Percentage of total
                         </Col>
                         <Col span={12} className={styles.value}>
-                          {data.variableOverTotal}%
+                          {data.variableOverTotal.toFixed(4)}%
                         </Col>
                       </Row>
                     </Card>

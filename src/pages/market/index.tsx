@@ -6,11 +6,14 @@ import { valueToBigNumber } from '@aave/protocol-js';
 import { TokenIcon } from '@aave/aave-ui-kit';
 import { normalize } from '@aave/math-utils';
 
+import Bignumber from '@/components/Bignumber'
+
 import styles from './style.less';
 
 
 export default () => {
   const { reserves, baseCurrency } = useModel('pool')
+  const { reserveIncentives } = useModel('incentives')
   
   let list: any = []
 
@@ -37,8 +40,8 @@ export default () => {
         .multipliedBy(reserve.priceInMarketReferenceCurrency)
         .multipliedBy(marketRefPriceInUsd)
         .toNumber();
-      // const reserveIncentiveData = reserveIncentives[reserve.underlyingAsset.toLowerCase()];
-      const reserveIncentiveData = false
+      const reserveIncentiveData = reserveIncentives[reserve.underlyingAsset.toLowerCase()] || false;
+      // const reserveIncentiveData = false
       return {
         totalLiquidity,
         totalLiquidityInUSD,
@@ -65,7 +68,7 @@ export default () => {
     });
   }
 
-  // console.log('data:', list)
+  // console.log('data:', totalLockedInUsd)
 
   useEffect(() => {
 
@@ -98,14 +101,14 @@ export default () => {
       dataIndex: 'totalBorrows',
       width: 200,
       render: (text: any, record: any) => {
-        return record.isPriceInUSD ? ('$' +record.totalLiquidityInUSD.toFixed(2)) : record.totalLiquidity.toFixed(2)
+        return record.isPriceInUSD ? <>$ <Bignumber value={record.totalLiquidityInUSD} /></> : <Bignumber value={record.totalLiquidity} />
       }
     },
     {
       title: 'total borrowings',
       dataIndex: 'totalBorrowsInUSD',
       render: (text: any, record: any) => {
-        return text < 0 ? '--' : ( '$ ' + (text ? text.toFixed(2) : text) )
+        return text < 0 ? <>--</> : <>$ <Bignumber value={text} /></>
       },
       width: 200,
       align: 'center'
@@ -133,19 +136,19 @@ export default () => {
       <div className={styles.pageHeaderContent}>
         <div className={styles.main}>
           <Row>
-            <Col span={12}>
+            <Col span={16}>
               <div className={styles.text}>
                 Is an open source and non-custodial liquidity agreement used to earn interest on
                 deposits and borrowed assets
               </div>
-              <div className={styles.value}>$ {totalLockedInUsd.toNumber().toFixed(2)}</div>
+              <div className={styles.value}>$ <Bignumber value={totalLockedInUsd.toNumber()} /></div>
               <div>
                 <Button type="primary" size="large" style={{ width: 200 }}>
                   To trade coins
                 </Button>
               </div>
             </Col>
-            <Col span={8}>
+            <Col span={6}>
               <Image width={260} preview={false} src="/homeimg@3x.png" />
             </Col>
           </Row>

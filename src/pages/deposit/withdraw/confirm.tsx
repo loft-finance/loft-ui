@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useModel, history } from 'umi';
 import { Card, Row, Col, Button, Descriptions, Steps, Divider, Badge, Spin } from 'antd';
-import { calculateHealthFactorFromBalancesBigUnits, valueToBigNumber } from '@aave/protocol-js';
+import { LoadingOutlined } from '@ant-design/icons'
+import { calculateHealthFactorFromBalancesBigUnits, valueToBigNumber, BigNumber } from '@aave/protocol-js';
 import { sendEthTransaction, TxStatusType } from '@/lib/helpers/send-ethereum-tx';
 
 import Back from '@/components/Back';
 import styles from './confirm.less';
 const { Step } = Steps;
 
-export default ({ poolReserve, maxAmountToDeposit, match: { params: { amount: amount0 } }, }: any,) => {
+export default ({ poolReserve, user, userReserve,  maxAmountToDeposit, match: { params: { amount: amount0 } }, }: any,) => {
     const amount = valueToBigNumber(amount0);
 
     const [steps, setSteps] = useState<any>([]);
@@ -18,39 +19,95 @@ export default ({ poolReserve, maxAmountToDeposit, match: { params: { amount: am
     const [customGasPrice, setCustomGasPrice] = useState<string | null>(null);
     const [records, setRecords] = useState<any>([]);
     
-    const { user, userReserve, baseCurrency } = useModel('pool')
     const { wallet } = useModel('wallet');
     const provider = wallet?.provider
     const { lendingPool } = useModel('lendingPool');
 
-
-    const amountIntEth = amount.multipliedBy(poolReserve.priceInMarketReferenceCurrency);
-    const amountInUsd = amountIntEth.multipliedBy(baseCurrency.marketReferenceCurrencyPriceInUsd);
-    const totalCollateralMarketReferenceCurrencyAfter = valueToBigNumber(
-        user.totalCollateralMarketReferenceCurrency
-    ).plus(amountIntEth);
-
-
-    const liquidationThresholdAfter = valueToBigNumber(user.totalCollateralMarketReferenceCurrency)
-        .multipliedBy(user.currentLiquidationThreshold)
-        .plus(amountIntEth.multipliedBy(poolReserve.reserveLiquidationThreshold))
-        .dividedBy(totalCollateralMarketReferenceCurrencyAfter);
-
-    const healthFactorAfterDeposit = calculateHealthFactorFromBalancesBigUnits(
-        totalCollateralMarketReferenceCurrencyAfter,
-        valueToBigNumber(user.totalBorrowsMarketReferenceCurrency),
-        liquidationThresholdAfter
-    );
-
-
-    const notShowHealthFactor =
-        user.totalBorrowsMarketReferenceCurrency !== '0' && poolReserve.usageAsCollateralEnabled;
 
     const usageAsCollateralEnabledOnDeposit =
         poolReserve.usageAsCollateralEnabled &&
         (!userReserve?.underlyingBalance ||
             userReserve.underlyingBalance === '0' ||
             userReserve.usageAsCollateralEnabledOnUser);
+
+    const underlyingBalance = valueToBigNumber(userReserve.underlyingBalance);
+    const availableLiquidity = valueToBigNumber(poolReserve.availableLiquidity);
+    let maxAmountToWithdraw = BigNumber.min(underlyingBalance, availableLiquidity);
+    let maxCollateralToWithdrawInETH = valueToBigNumber('0');
+    
+    if (
+        userReserve.usageAsCollateralEnabledOnUser &&
+        poolReserve.usageAsCollateralEnabled &&
+        user.totalBorrowsMarketReferenceCurrency !== '0'
+    ) {
+        // if we have any borrowings we should check how much we can withdraw without liquidation
+        // with 0.5% gap to avoid reverting of tx
+        const excessHF = valueToBigNumber(user.healthFactor).minus('1');
+        if (excessHF.gt('0')) {
+        maxCollateralToWithdrawInETH = excessHF
+            .multipliedBy(user.totalBorrowsMarketReferenceCurrency)
+            // because of the rounding issue on the contracts side this value still can be incorrect
+            .div(Number(poolReserve.reserveLiquidationThreshold) + 0.01)
+            .multipliedBy('0.99');
+        }
+        maxAmountToWithdraw = BigNumber.min(
+        maxAmountToWithdraw,
+        maxCollateralToWithdrawInETH.dividedBy(poolReserve.priceInMarketReferenceCurrency)
+        );
+    }
+    
+    let amountToWithdraw = amount;
+    let displayAmountToWithdraw = amount;
+    
+    if (amountToWithdraw.eq('-1')) {
+        if (user.totalBorrowsMarketReferenceCurrency !== '0') {
+        if (!maxAmountToWithdraw.eq(underlyingBalance)) {
+            amountToWithdraw = maxAmountToWithdraw;
+        }
+        }
+        displayAmountToWithdraw = maxAmountToWithdraw;
+    }
+    
+    let blockingError = '';
+    let totalCollateralInETHAfterWithdraw = valueToBigNumber(
+        user.totalCollateralMarketReferenceCurrency
+    );
+    let liquidationThresholdAfterWithdraw = user.currentLiquidationThreshold;
+    let healthFactorAfterWithdraw = valueToBigNumber(user.healthFactor);
+    
+    if (userReserve.usageAsCollateralEnabledOnUser && poolReserve.usageAsCollateralEnabled) {
+        const amountToWithdrawInEth = displayAmountToWithdraw.multipliedBy(
+        poolReserve.priceInMarketReferenceCurrency
+        );
+        totalCollateralInETHAfterWithdraw =
+        totalCollateralInETHAfterWithdraw.minus(amountToWithdrawInEth);
+    
+        liquidationThresholdAfterWithdraw = valueToBigNumber(
+        user.totalCollateralMarketReferenceCurrency
+        )
+        .multipliedBy(user.currentLiquidationThreshold)
+        .minus(
+            valueToBigNumber(amountToWithdrawInEth).multipliedBy(
+            poolReserve.reserveLiquidationThreshold
+            )
+        )
+        .div(totalCollateralInETHAfterWithdraw)
+        .toFixed(4, BigNumber.ROUND_DOWN);
+    
+        healthFactorAfterWithdraw = calculateHealthFactorFromBalancesBigUnits(
+        totalCollateralInETHAfterWithdraw,
+        user.totalBorrowsMarketReferenceCurrency,
+        liquidationThresholdAfterWithdraw
+        );
+    
+        if (healthFactorAfterWithdraw.lt('1') && user.totalBorrowsMarketReferenceCurrency !== '0') {
+        blockingError = intl.formatMessage(messages.errorCanNotWithdrawThisAmount);
+        }
+    }
+
+    const isHealthFactorDangerous =
+    user.totalBorrowsMarketReferenceCurrency !== '0' &&
+    healthFactorAfterWithdraw.toNumber() <= 1.05;
 
     useEffect(() => {
         if (wallet) {
@@ -64,7 +121,7 @@ export default ({ poolReserve, maxAmountToDeposit, match: { params: { amount: am
                 const txs = await lendingPool.withdraw({
                     user: user.id,
                     reserve: poolReserve.underlyingAsset,
-                    amount: amount.toString(),
+                    amount: amountToWithdraw.toString(),
                     aTokenAddress: poolReserve.aTokenAddress,
                 });
                 console.log('txs', txs)
@@ -268,7 +325,7 @@ export default ({ poolReserve, maxAmountToDeposit, match: { params: { amount: am
                 <Row>
                     <Col span={12} offset={6}>
                         <div className={styles.desc}>
-                            <div className={styles.title}>Deposit overview</div>
+                            <div className={styles.title}>Withdraw overview</div>
                             <div className={styles.text}>
                                 These are your transaction details. Please be sure to check whether it is
                                 correct before submitting
@@ -295,7 +352,7 @@ export default ({ poolReserve, maxAmountToDeposit, match: { params: { amount: am
                                         marginTop: -20,
                                     }}
                                 >
-                                    ${amountInUsd.toString()}
+                                    ${displayAmountToWithdraw.toString()}
                                 </Descriptions.Item>
                                 <Descriptions.Item
                                     label="Collateral Usage"
@@ -309,7 +366,7 @@ export default ({ poolReserve, maxAmountToDeposit, match: { params: { amount: am
                                     span={3}
                                     contentStyle={{ color: '#3163E2' }}
                                 >
-                                    {healthFactorAfterDeposit.decimalPlaces(3).toString()}
+                                    {Number(user.healthFactor).toFixed(2)}
                                 </Descriptions.Item>
                             </Descriptions>
                         </Col>
@@ -350,7 +407,7 @@ export default ({ poolReserve, maxAmountToDeposit, match: { params: { amount: am
                             {records.map((item: any) => <>
                             <Col span={8}>{item.name}</Col>
                             <Col span={8}>
-                                {item.status} <Badge status={item.status == 'confirmed' ? "success": (item.status == 'wait'? "processing" : "error")} />
+                                {item.status} {item.status == 'wait' ? <LoadingOutlined /> : <Badge status={item.status == 'confirmed' ? "success" : "error"} />}
                             </Col>
                             <Col span={8}>Explorer</Col>
                             </>)}
