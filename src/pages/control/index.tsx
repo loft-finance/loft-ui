@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { GridContent } from '@ant-design/pro-layout';
-import { Card, Row, Col, Button, Typography, Divider, Switch } from 'antd';
+import { Card, Row, Col, Button, Typography, Divider, Spin } from 'antd';
 import WalletDisconnected from '@/components/Wallet/Disconnected';
 import { valueToBigNumber, InterestRate } from '@aave/protocol-js';
 import { Pie } from '@ant-design/plots';
@@ -246,183 +246,185 @@ export default () => {
   };
 
   return (
-    <GridContent>
-      {!wallet && <WalletDisconnected showBack={false} />}
-      {wallet && (
-        <Row>
-          <Col span={12} style={{ paddingRight: 10 }}>
-            <Card bordered={false} style={{ height: '100%' }}>
-              <Row>
-                <Col span={18}>
-                  <Title level={3}>Deposit information</Title>
-                </Col>
+    <Spin spinning={!reserves || !reserves.length}>
+      <GridContent>
+        {!wallet && <WalletDisconnected showBack={false} />}
+        {wallet && (
+          <Row>
+            <Col span={12} style={{ paddingRight: 10 }}>
+              <Card bordered={false} style={{ height: '100%' }}>
+                <Row>
+                  <Col span={18}>
+                    <Title level={3}>Deposit information</Title>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col span={12} style={{ marginTop: 20 }}>
+                    <div className={styles.label}>Approximate balance</div>
+                    <div className={styles.value}>
+                      ${Number(user?.totalLiquidityUSD || 0).toFixed(2)}
+                      <span className={styles.dollar}>{Number(user?.totalLiquidityMarketReferenceCurrency || 0).toFixed(2)} USD</span>
+                    </div>
+                  </Col>
+                  <Col span={12}>
+                    <Pie {...config} />
+                    <div className={styles.tip} style={{ textAlign: 'center', fontSize: 10 }}>
+                      Deposit composition
+                    </div>
+                  </Col>
+                </Row>
+              </Card>
+            </Col>
+            <Col span={12} style={{ paddingLeft: 10 }}>
+              <Card bordered={false}>
+                <Row>
+                  <Col span={12}>
+                    <Title level={3}>Loan information</Title>
+                    <Row>
+                      <Col span={24}>
+                        <div className={styles.label}>Borrowed</div>
+                        <div className={styles.value}>${Number(user?.totalBorrowsUSD || 0).toFixed(2)} USD</div>
+                      </Col>
+                      <Col span={24} style={{ marginTop: 15 }}>
+                        <div className={styles.label}>Your collateral</div>
+                        <div className={styles.value}>${Number(user?.totalCollateralUSD || 0).toFixed(2)} USD</div>
+                      </Col>
+                      <Col span={24} style={{ marginTop: 15 }}>
+                        <div className={styles.label}>Current LTV</div>
+                        <div className={styles.value}>5.41%</div>
+                      </Col>
+                    </Row>
+                  </Col>
+                  <Col span={12}>
+                    <Row style={{ marginTop: -10 }}>
+                      <Col span={12}>
+                        <Pie {...config} />
+                        <div className={styles.tip} style={{ textAlign: 'center', fontSize: 10 }}>
+                          Loan composition
+                        </div>
+                      </Col>
+                      <Col span={12}>
+                        <Pie {...config3} />
+                        <div className={styles.tip} style={{ textAlign: 'center', fontSize: 10 }}>
+                          Collateral composition
+                        </div>
+                      </Col>
+                    </Row>
+                    <Row style={{ paddingLeft: 15 }}>
+                      <Col span={24} style={{ marginTop: 15 }}>
+                        <div className={styles.label}>Fitness factor</div>
+                        <div className={styles.value} style={{ color: '#37A967' }}>
+                          {user?.healthFactor ? Number(user?.healthFactor).toFixed(2) : '-1'}
+                        </div>
+                      </Col>
+                      <Col span={24} style={{ marginTop: 15 }}>
+                        <div className={styles.label}>Used borrowing capacity</div>
+                        <div className={styles.value}>10.23%</div>
+                      </Col>
+                    </Row>
+                  </Col>
+                </Row>
+              </Card>
+            </Col>
+            <Col span={24} style={{ marginTop: 15 }} className={styles.statistic}>
+              <Row style={{ padding: 12 }}>
+                <Col span={5}>Lend borrow to earn GEIST rewards</Col>
+                <Col span={3}>Earned</Col>
+                <Col span={3}>APY</Col>
+                <Col span={4}>Your stacked balance</Col>
+                <Col span={4}>Your locked balance</Col>
               </Row>
               <Row>
-                <Col span={12} style={{ marginTop: 20 }}>
-                  <div className={styles.label}>Approximate balance</div>
-                  <div className={styles.value}>
-                    ${Number(user?.totalLiquidityUSD || 0).toFixed(2)}
-                    <span className={styles.dollar}>{Number(user?.totalLiquidityMarketReferenceCurrency || 0).toFixed(2)} USD</span>
-                  </div>
-                </Col>
-                <Col span={12}>
-                  <Pie {...config} />
-                  <div className={styles.tip} style={{ textAlign: 'center', fontSize: 10 }}>
-                    Deposit composition
-                  </div>
+                <Col span={24}>
+                  <Card bordered={false} bodyStyle={{ padding: '6px 12px' }}>
+                    <Row>
+                      <Col span={5} className={styles.single}>
+                        {' '}
+                        GEIST
+                      </Col>
+                      <Col span={3}>
+                        <div className={styles.multi}>
+                          0.015
+                          <div className={styles.tag}>$0.138</div>
+                        </div>
+                      </Col>
+                      <Col span={3} className={styles.single}>
+                        8,178.59%
+                      </Col>
+                      <Col span={4}>
+                        <div className={styles.multi}>
+                          20.904
+                          <div className={styles.tag}>$194.234</div>
+                        </div>
+                      </Col>
+                      <Col span={4}>
+                        <Row>
+                          <Col span={6} style={{ textAlign: 'right' }}>
+                            <div className={styles.multi}>
+                              0<div className={styles.tag}>$0</div>
+                            </div>
+                          </Col>
+                          <Col span={12} className={styles.single}>
+                            <Divider type="vertical" />
+                            5.132%
+                          </Col>
+                        </Row>
+                      </Col>
+                      <Col span={2} className={styles.single}>
+                        $0 USD
+                      </Col>
+                      <Col span={3} className={styles.single}>
+                        <Button size="small" type="primary" shape="round">
+                          To trade coins
+                        </Button>
+                      </Col>
+                    </Row>
+                  </Card>
                 </Col>
               </Row>
-            </Card>
-          </Col>
-          <Col span={12} style={{ paddingLeft: 10 }}>
-            <Card bordered={false}>
+            </Col>
+            <Col span={24} style={{ marginTop: 5 }}>
+              <Row style={{ padding: 12 }}>
+                <Col span={12}>Stake Spookyswap LP tokens to earn GEIST rewards</Col>
+              </Row>
               <Row>
-                <Col span={12}>
-                  <Title level={3}>Loan information</Title>
-                  <Row>
-                    <Col span={24}>
-                      <div className={styles.label}>Borrowed</div>
-                      <div className={styles.value}>${Number(user?.totalBorrowsUSD || 0).toFixed(2)} USD</div>
-                    </Col>
-                    <Col span={24} style={{ marginTop: 15 }}>
-                      <div className={styles.label}>Your collateral</div>
-                      <div className={styles.value}>${Number(user?.totalCollateralUSD || 0).toFixed(2)} USD</div>
-                    </Col>
-                    <Col span={24} style={{ marginTop: 15 }}>
-                      <div className={styles.label}>Current LTV</div>
-                      <div className={styles.value}>5.41%</div>
-                    </Col>
-                  </Row>
-                </Col>
-                <Col span={12}>
-                  <Row style={{ marginTop: -10 }}>
-                    <Col span={12}>
-                      <Pie {...config} />
-                      <div className={styles.tip} style={{ textAlign: 'center', fontSize: 10 }}>
-                        Loan composition
-                      </div>
-                    </Col>
-                    <Col span={12}>
-                      <Pie {...config3} />
-                      <div className={styles.tip} style={{ textAlign: 'center', fontSize: 10 }}>
-                        Collateral composition
-                      </div>
-                    </Col>
-                  </Row>
-                  <Row style={{ paddingLeft: 15 }}>
-                    <Col span={24} style={{ marginTop: 15 }}>
-                      <div className={styles.label}>Fitness factor</div>
-                      <div className={styles.value} style={{ color: '#37A967' }}>
-                        {user?.healthFactor ? Number(user?.healthFactor).toFixed(2) : '-1'}
-                      </div>
-                    </Col>
-                    <Col span={24} style={{ marginTop: 15 }}>
-                      <div className={styles.label}>Used borrowing capacity</div>
-                      <div className={styles.value}>10.23%</div>
-                    </Col>
-                  </Row>
+                <Col span={24}>
+                  <Card bordered={false} bodyStyle={{ padding: 12 }}>
+                    <Row>
+                      <Col span={5}> GEIST</Col>
+                      <Col span={3}>0</Col>
+                      <Col span={3}>8,178.59%</Col>
+                      <Col span={4}>0</Col>
+                    </Row>
+                  </Card>
                 </Col>
               </Row>
-            </Card>
-          </Col>
-          <Col span={24} style={{ marginTop: 15 }} className={styles.statistic}>
-            <Row style={{ padding: 12 }}>
-              <Col span={5}>Lend borrow to earn GEIST rewards</Col>
-              <Col span={3}>Earned</Col>
-              <Col span={3}>APY</Col>
-              <Col span={4}>Your stacked balance</Col>
-              <Col span={4}>Your locked balance</Col>
-            </Row>
-            <Row>
-              <Col span={24}>
-                <Card bordered={false} bodyStyle={{ padding: '6px 12px' }}>
-                  <Row>
-                    <Col span={5} className={styles.single}>
-                      {' '}
-                      GEIST
-                    </Col>
-                    <Col span={3}>
-                      <div className={styles.multi}>
-                        0.015
-                        <div className={styles.tag}>$0.138</div>
-                      </div>
-                    </Col>
-                    <Col span={3} className={styles.single}>
-                      8,178.59%
-                    </Col>
-                    <Col span={4}>
-                      <div className={styles.multi}>
-                        20.904
-                        <div className={styles.tag}>$194.234</div>
-                      </div>
-                    </Col>
-                    <Col span={4}>
-                      <Row>
-                        <Col span={6} style={{ textAlign: 'right' }}>
-                          <div className={styles.multi}>
-                            0<div className={styles.tag}>$0</div>
-                          </div>
-                        </Col>
-                        <Col span={12} className={styles.single}>
-                          <Divider type="vertical" />
-                          5.132%
-                        </Col>
-                      </Row>
-                    </Col>
-                    <Col span={2} className={styles.single}>
-                      $0 USD
-                    </Col>
-                    <Col span={3} className={styles.single}>
-                      <Button size="small" type="primary" shape="round">
-                        To trade coins
-                      </Button>
-                    </Col>
-                  </Row>
-                </Card>
-              </Col>
-            </Row>
-          </Col>
-          <Col span={24} style={{ marginTop: 5 }}>
-            <Row style={{ padding: 12 }}>
-              <Col span={12}>Stake Spookyswap LP tokens to earn GEIST rewards</Col>
-            </Row>
-            <Row>
-              <Col span={24}>
-                <Card bordered={false} bodyStyle={{ padding: 12 }}>
-                  <Row>
-                    <Col span={5}> GEIST</Col>
-                    <Col span={3}>0</Col>
-                    <Col span={3}>8,178.59%</Col>
-                    <Col span={4}>0</Col>
-                  </Row>
-                </Card>
-              </Col>
-            </Row>
-          </Col>
-          <Col span={12} style={{ marginTop: 15, paddingRight: 10 }}>
-            <Card bordered={false}>
-              <Row>
-                <Col span={18}>
-                  <Title level={3}>Your deposit</Title>
-                </Col>
-                <Col span={6}></Col>
-              </Row>
-              <DepositDashbord depositedPositions={depositedPositions} />
-            </Card>
-          </Col>
-          <Col span={12} style={{ marginTop: 15, paddingLeft: 10 }}>
-            <Card bordered={false}>
-              <Row>
-                <Col span={18}>
-                  <Title level={3}>Your loan</Title>
-                </Col>
-                <Col span={6}></Col>
-              </Row>
-              <LoanDashboard borrowedPositions={borrowedPositions} />
-            </Card>
-          </Col>
-        </Row>
-      )}
-    </GridContent>
+            </Col>
+            <Col span={12} style={{ marginTop: 15, paddingRight: 10 }}>
+              <Card bordered={false}>
+                <Row>
+                  <Col span={18}>
+                    <Title level={3}>Your deposit</Title>
+                  </Col>
+                  <Col span={6}></Col>
+                </Row>
+                <DepositDashbord depositedPositions={depositedPositions} />
+              </Card>
+            </Col>
+            <Col span={12} style={{ marginTop: 15, paddingLeft: 10 }}>
+              <Card bordered={false}>
+                <Row>
+                  <Col span={18}>
+                    <Title level={3}>Your loan</Title>
+                  </Col>
+                  <Col span={6}></Col>
+                </Row>
+                <LoanDashboard borrowedPositions={borrowedPositions} />
+              </Card>
+            </Col>
+          </Row>
+        )}
+      </GridContent>
+    </Spin>
   );
 };

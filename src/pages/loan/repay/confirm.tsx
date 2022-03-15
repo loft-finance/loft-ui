@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useModel, history } from 'umi';
 import { Card, Row, Col, Button, Descriptions, Steps, Divider, Badge, Spin } from 'antd';
-import { calculateHealthFactorFromBalancesBigUnits, valueToBigNumber, InterestRate } from '@aave/protocol-js';
+import { LoadingOutlined } from '@ant-design/icons'
+import { calculateHealthFactorFromBalancesBigUnits, valueToBigNumber, BigNumber, InterestRate } from '@aave/protocol-js';
 import { sendEthTransaction, TxStatusType } from '@/lib/helpers/send-ethereum-tx';
 
 import Back from '@/components/Back';
 import styles from './confirm.less';
 const { Step } = Steps;
 
-export default ({ poolReserve, maxAmountToDeposit, debtType, match: { params: { amount: amount0 } }, }: any,) => {
+export default ({ poolReserve, user, userReserve, maxAmountToRepay, debtType, walletBalance, networkConfig, match: { params: { amount: amount0 } }, }: any,) => {
     const amount = valueToBigNumber(amount0);
 
     const [steps, setSteps] = useState<any>([]);
@@ -17,34 +18,45 @@ export default ({ poolReserve, maxAmountToDeposit, debtType, match: { params: { 
     const [actionTxData, setActionTxData] = useState<any>(undefined)
     const [customGasPrice, setCustomGasPrice] = useState<string | null>(null);
     const [records, setRecords] = useState<any>([]);
-    
-    const { user, userReserve, baseCurrency } = useModel('pool')
+
+    const { baseCurrency } = useModel('pool')
     const { wallet } = useModel('wallet');
     const provider = wallet?.provider
     const { lendingPool } = useModel('lendingPool');
 
-
-    const amountIntEth = amount.multipliedBy(poolReserve.priceInMarketReferenceCurrency);
-    const amountInUsd = amountIntEth.multipliedBy(baseCurrency.marketReferenceCurrencyPriceInUsd);
-    const totalCollateralMarketReferenceCurrencyAfter = valueToBigNumber(
-        user.totalCollateralMarketReferenceCurrency
-    ).plus(amountIntEth);
+    const marketRefPriceInUsd = baseCurrency.marketReferenceCurrencyPriceInUsd
 
 
-    const liquidationThresholdAfter = valueToBigNumber(user.totalCollateralMarketReferenceCurrency)
-        .multipliedBy(user.currentLiquidationThreshold)
-        .plus(amountIntEth.multipliedBy(poolReserve.reserveLiquidationThreshold))
-        .dividedBy(totalCollateralMarketReferenceCurrencyAfter);
+    const safeAmountToRepayAll = valueToBigNumber(maxAmountToRepay).multipliedBy('1.0025');
 
-    const healthFactorAfterDeposit = calculateHealthFactorFromBalancesBigUnits(
-        totalCollateralMarketReferenceCurrencyAfter,
-        valueToBigNumber(user.totalBorrowsMarketReferenceCurrency),
-        liquidationThresholdAfter
+    let amountToRepay = amount.toString();
+    let amountToRepayUI = amount;
+    if (amountToRepay === '-1') {
+        amountToRepayUI = BigNumber.min(walletBalance, safeAmountToRepayAll);
+        if (
+            userReserve.reserve.symbol.toUpperCase() === networkConfig.baseAsset ||
+            walletBalance.eq(amountToRepayUI)
+        ) {
+            amountToRepay = BigNumber.min(walletBalance, safeAmountToRepayAll).toString();
+        }
+    }
+
+    const displayAmountToRepay = BigNumber.min(amountToRepayUI, maxAmountToRepay);
+    const displayAmountToRepayInUsd = displayAmountToRepay
+        .multipliedBy(poolReserve.priceInMarketReferenceCurrency)
+        .multipliedBy(marketRefPriceInUsd);
+
+    const amountAfterRepay = maxAmountToRepay.minus(amountToRepayUI).toString();
+    const displayAmountAfterRepay = BigNumber.min(amountAfterRepay, maxAmountToRepay);
+    const displayAmountAfterRepayInUsd = displayAmountAfterRepay
+        .multipliedBy(poolReserve.priceInMarketReferenceCurrency)
+        .multipliedBy(marketRefPriceInUsd);
+
+    const healthFactorAfterRepay = calculateHealthFactorFromBalancesBigUnits(
+        user?.totalCollateralUSD,
+        valueToBigNumber(user?.totalBorrowsUSD).minus(displayAmountToRepayInUsd.toNumber()),
+        user?.currentLiquidationThreshold
     );
-
-
-    const notShowHealthFactor =
-        user.totalBorrowsMarketReferenceCurrency !== '0' && poolReserve.usageAsCollateralEnabled;
 
     const usageAsCollateralEnabledOnDeposit =
         poolReserve.usageAsCollateralEnabled &&
@@ -64,7 +76,7 @@ export default ({ poolReserve, maxAmountToDeposit, debtType, match: { params: { 
                 const txs = await lendingPool.withdraw({
                     user: user.id,
                     reserve: poolReserve.underlyingAsset,
-                    amount: amount.toString(),
+                    amount: amountToRepay.toString(),
                     interestRateMode: debtType as InterestRate,
                 });
                 console.log('txs', txs)
@@ -80,7 +92,7 @@ export default ({ poolReserve, maxAmountToDeposit, debtType, match: { params: { 
                         mainTxType,
                     ].includes(tx.txType)
                 );
-                
+
                 let approve, action: any;
                 if (approvalTx) {
                     approve = {
@@ -102,8 +114,8 @@ export default ({ poolReserve, maxAmountToDeposit, debtType, match: { params: { 
                     setActionTxData(action)
                 }
 
-                if((approve || approveTxData) && action){
-                    if(!approve) approve = approveTxData
+                if ((approve || approveTxData) && action) {
+                    if (!approve) approve = approveTxData
                     setSteps([
                         {
                             key: 'approval',
@@ -120,7 +132,7 @@ export default ({ poolReserve, maxAmountToDeposit, debtType, match: { params: { 
                             buttonText: action.name,
                             stepText: action.name,
                             description: 'Please submit a repay',
-                            loading: repaying ? true:false,
+                            loading: repaying ? true : false,
                             error: '',
                         },
                         {
@@ -133,7 +145,7 @@ export default ({ poolReserve, maxAmountToDeposit, debtType, match: { params: { 
                             error: '',
                         },
                     ]);
-                }else if(action){
+                } else if (action) {
                     setSteps([
                         {
                             key: 'repay',
@@ -141,7 +153,7 @@ export default ({ poolReserve, maxAmountToDeposit, debtType, match: { params: { 
                             buttonText: action.name,
                             stepText: action.name,
                             description: 'Please submit a repay',
-                            loading: repaying ? true:false,
+                            loading: repaying ? true : false,
                             error: '',
                         },
                         {
@@ -155,7 +167,7 @@ export default ({ poolReserve, maxAmountToDeposit, debtType, match: { params: { 
                         },
                     ]);
                 }
-                
+
                 return true;
             } catch (e) {
                 console.log('Error on txs loading', e);
@@ -172,11 +184,11 @@ export default ({ poolReserve, maxAmountToDeposit, debtType, match: { params: { 
                     setApproveTxData,
                     customGasPrice,
                     {
-                      onConfirmation: handler.approve.confirmed,
+                        onConfirmation: handler.approve.confirmed,
                     }
                 )
             },
-            confirmed(){
+            confirmed() {
                 console.log('approve confirmed----')
                 handler.loading.set('approval', false);
                 handler.records.set('approval', 'approval', 'confirmed')
@@ -210,24 +222,24 @@ export default ({ poolReserve, maxAmountToDeposit, debtType, match: { params: { 
                     handler.loading.set('repay', false);
                 }
             },
-            executed(){
+            executed() {
                 console.log('--------repay executed----')
             },
-            confirmed(){
+            confirmed() {
                 handler.records.set('repay', 'repay', 'confirmed')
                 setCurrent(current + 1);
                 handler.loading.set('repay', false);
             }
         },
         records: {
-            set(key: string, name: string, status: string){
-                let id = records.findIndex((item: any)=>item.key == key)
-                if(id !==  -1){
+            set(key: string, name: string, status: string) {
+                let id = records.findIndex((item: any) => item.key == key)
+                if (id !== -1) {
                     records[id] = {
                         ...records[id],
                         status
                     }
-                }else{
+                } else {
                     records.push({
                         key,
                         name,
@@ -235,13 +247,13 @@ export default ({ poolReserve, maxAmountToDeposit, debtType, match: { params: { 
                     })
                 }
 
-                setRecords([ ...records ])
+                setRecords([...records])
             }
         },
         loading: {
-            set(key: string, status: boolean){
-                let list = steps.map((item: any)=>{
-                    if(item.key === key){
+            set(key: string, status: boolean) {
+                let list = steps.map((item: any) => {
+                    if (item.key === key) {
                         item.loading = status
                     }
                     return item;
@@ -251,11 +263,11 @@ export default ({ poolReserve, maxAmountToDeposit, debtType, match: { params: { 
             }
         },
         async submit() {
-            if(approveTxData && steps[current]?.key === 'approval'){
+            if (approveTxData && steps[current]?.key === 'approval') {
                 handler.approve.submit()
-            }else if(actionTxData && steps[current]?.key === 'repay'){
+            } else if (actionTxData && steps[current]?.key === 'repay') {
                 handler.action.submit()
-            }else if(steps[current]?.key === 'completed'){
+            } else if (steps[current]?.key === 'completed') {
                 history.push('/control')
             }
         }
@@ -284,7 +296,7 @@ export default ({ poolReserve, maxAmountToDeposit, debtType, match: { params: { 
                                 contentStyle={{ justifyContent: 'end', color: '#29292D', fontWeight: 'bold' }}
                             >
                                 <Descriptions.Item label="Quantity" span={3}>
-                                    {amount.toString()}
+                                    {displayAmountToRepay.toString()}
                                 </Descriptions.Item>
                                 <Descriptions.Item
                                     span={3}
@@ -295,7 +307,7 @@ export default ({ poolReserve, maxAmountToDeposit, debtType, match: { params: { 
                                         marginTop: -20,
                                     }}
                                 >
-                                    ${amountInUsd.toString()}
+                                    ${displayAmountToRepayInUsd.toString()}
                                 </Descriptions.Item>
                                 <Descriptions.Item
                                     label="Collateral Usage"
@@ -309,54 +321,54 @@ export default ({ poolReserve, maxAmountToDeposit, debtType, match: { params: { 
                                     span={3}
                                     contentStyle={{ color: '#3163E2' }}
                                 >
-                                    {healthFactorAfterDeposit.decimalPlaces(3).toString()}
+                                    {user?.healthFactor.toString()}
                                 </Descriptions.Item>
                             </Descriptions>
                         </Col>
                     </Row>
                 </div>
-                {!steps.length && <Row><Col span={10} offset={7} style={{ marginTop: 20, textAlign:'center' }}><Spin /></Col></Row>}
+                {!steps.length && <Row><Col span={10} offset={7} style={{ marginTop: 20, textAlign: 'center' }}><Spin /></Col></Row>}
                 {steps.length > 0 &&
-                <Row>
-                    <Col span={10} offset={7} style={{ marginBottom: 20 }}>
-                        <Steps
-                            type="navigation"
-                            size="small"
-                            current={current}
-                            className="site-navigation-steps"
-                        >
-                            {steps.map((item) => (
-                                <Step title={item.title} />
-                            ))}
-                        </Steps>
-                    </Col>
-                    <Col span={7} offset={7}>
-                        <p className={styles.tip}>
-                            {current + 1}/{steps.length} {steps[current]?.stepText}
-                        </p>
+                    <Row>
+                        <Col span={10} offset={7} style={{ marginBottom: 20 }}>
+                            <Steps
+                                type="navigation"
+                                size="small"
+                                current={current}
+                                className="site-navigation-steps"
+                            >
+                                {steps.map((item) => (
+                                    <Step title={item.title} />
+                                ))}
+                            </Steps>
+                        </Col>
+                        <Col span={7} offset={7}>
+                            <p className={styles.tip}>
+                                {current + 1}/{steps.length} {steps[current]?.stepText}
+                            </p>
 
-                        <p className={styles.tip} style={steps[current]?.error?{ color: '#F46D6D' }:{}}>{steps[current]?.error?steps[current]?.error:steps[current]?.description}</p>
-                    </Col>
-                    <Col span={3}>
-                        <Button type="primary" shape="round" loading={steps[current]?.loading?true:false} onClick={handler.submit}>
-                            {steps[current]?.buttonText}
-                        </Button>
-                    </Col>
-                    <Col span={10} offset={7}>
-                        <Divider style={{ margin: '12px 0' }} />
-                    </Col>
-                    <Col span={10} offset={7}>
-                        <Row>
-                            {records.map((item: any) => <>
-                            <Col span={8}>{item.name}</Col>
-                            <Col span={8}>
-                                {item.status} <Badge status={item.status == 'confirmed' ? "success": (item.status == 'wait'? "processing" : "error")} />
-                            </Col>
-                            <Col span={8}>Explorer</Col>
-                            </>)}
-                        </Row>
-                    </Col>
-                </Row>
+                            <p className={styles.tip} style={steps[current]?.error ? { color: '#F46D6D' } : {}}>{steps[current]?.error ? steps[current]?.error : steps[current]?.description}</p>
+                        </Col>
+                        <Col span={3}>
+                            <Button type="primary" shape="round" loading={steps[current]?.loading ? true : false} onClick={handler.submit}>
+                                {steps[current]?.buttonText}
+                            </Button>
+                        </Col>
+                        <Col span={10} offset={7}>
+                            <Divider style={{ margin: '12px 0' }} />
+                        </Col>
+                        <Col span={10} offset={7}>
+                            <Row>
+                                {records.map((item: any) => <>
+                                    <Col span={8}>{item.name}</Col>
+                                    <Col span={8}>
+                                    {item.status} {item.status == 'wait' ? <LoadingOutlined /> : <Badge status={item.status == 'confirmed' ? "success" : "error"} />}
+                                    </Col>
+                                    <Col span={8}>Explorer</Col>
+                                </>)}
+                            </Row>
+                        </Col>
+                    </Row>
                 }
             </Card>
         </Card>

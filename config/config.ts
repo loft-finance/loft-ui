@@ -207,12 +207,12 @@ export default defineConfig({
         },
       ],
     },
-    {
-      path: '/manage',
-      name: 'manage',
-      icon: 'icon-ic_platform_currency',
-      component: './manage',
-    },
+    // {
+    //   path: '/manage',
+    //   name: 'manage',
+    //   icon: 'icon-ic_platform_currency',
+    //   component: './manage',
+    // },
     // {
     //   path: '/pledge',
     //   name: 'pledge',

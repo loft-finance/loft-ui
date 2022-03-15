@@ -21,7 +21,7 @@ export default (props) => {
     const balance = balances ? balances[underlyingAsset] : '0'
 
     const poolReserve = reserves.find((res) => id ? res.id === id : res.underlyingAsset.toLowerCase() === underlyingAsset.toLowerCase());
-
+    
     let walletBalance = valueToBigNumber('0').dividedBy(valueToBigNumber(10).pow(18))
 
     if (balance && poolReserve) {
@@ -42,7 +42,7 @@ export default (props) => {
 
     const maxAmountToRepay = BigNumber.min(
         normalizedWalletBalance,
-        debtType == InterestRate.Stable ? userReserve.stableBorrows : userReserve.variableBorrows
+        debtType == InterestRate.Stable ? userReserve?.stableBorrows : userReserve?.variableBorrows
     );
 
     return (
@@ -72,7 +72,7 @@ export default (props) => {
 
             {wallet && walletBalance.eq('0') && <WalletEmpty symbol={poolReserve ? poolReserve?.symbol : ''} />}
 
-            {wallet && !walletBalance.eq('0') && React.cloneElement(props.children, { poolReserve, maxAmountToRepay: maxAmountToRepay.toString(10), debtType })}
+            {wallet && !walletBalance.eq('0') && React.cloneElement(props.children, { poolReserve, user, userReserve, maxAmountToRepay, walletBalance, networkConfig, debtType })}
         </GridContent>
     );
 };

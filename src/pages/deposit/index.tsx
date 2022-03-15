@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useModel, history } from 'umi';
-import { Table, Row, Col, Menu, Radio, Input } from 'antd';
+import { Table, Row, Col, Menu, Radio, Input, Spin } from 'antd';
 import { GridContent } from '@ant-design/pro-layout';
 import { valueToBigNumber } from '@aave/protocol-js';
 import { isAssetStable } from '@/lib/config/assets'
@@ -155,7 +155,7 @@ export default () => {
       title: 'Your wallet balance',
       dataIndex: 'walletBalance',
       render: (text: any) => {
-        return text.toString()
+        return Number(text).toFixed(2)
       }
     },
     {
@@ -169,65 +169,67 @@ export default () => {
 
   const totalValue = list(false).reduce((a, b) => a + (+b['underlyingBalanceInUSD'] || 0), 0)
   return (
-    <GridContent>
-      <Row>
-        <Col span={12}>
-          <Radio.Group defaultValue={showOnlyStableCoins ? "stable" : "all"} buttonStyle="solid" onChange={(e) => { setShowOnlyStableCoins(e.target.value === 'stable') }} >
-            <Radio.Button value="all" style={{ width: 112, textAlign: 'center', borderRadius: '6px 0 0 6px' }}>All</Radio.Button>
-            <Radio.Button value="stable" style={{ borderRadius: '0 6px 6px 0' }}>Stable Coins</Radio.Button>
-          </Radio.Group>
-        </Col>
-        <Col span={12}>
-          <Search placeholder="search" style={{ width: 200 }} onSearch={handler.search} />
-        </Col>
-      </Row>
-      <Row>
-        <Col span={16}>
-          <Table
-            rowKey={'id'}
-            columns={columns}
-            dataSource={list(true)}
-            loading={!list(true)?.length}
-            pagination={false}
-            scroll={{ y: 600 }}
-            onRow={(record) => ({ onClick: () => handler.detail(record) })}
-          />
-        </Col>
-        <Col style={{ marginTop: 20 }} span={6} offset={1}>
-          <Menu className={styles.menu} selectable={false}>
-            <Menu.Item
-              key="header"
-              style={{ borderRadius: '3px 3px 0 0', background: '#151515', color: '#fff' }}
-            >
-              My deposits
-            </Menu.Item>
-            {list(false).map((item: any, index: number) =>
-              item.underlyingBalance.toString() > '0' &&
-              <Menu.Item key={index}>
-                <Row>
-                  <Col span={12}>
-                    <TokenIcon
-                      tokenSymbol={item.symbol}
-                      height={25}
-                      width={25}
-                      tokenFullName={item.symbol}
-                      className="MarketTableItem__token"
-                    />
-                  </Col>
-                  <Col span={12}>
-                    <span className={styles.value}>{Number(item.underlyingBalance.toString()).toFixed(2)}</span>
-                  </Col>
-                </Row>
+    <Spin spinning={!reserves || !reserves.length}>
+      <GridContent>
+        <Row>
+          <Col span={12}>
+            <Radio.Group defaultValue={showOnlyStableCoins ? "stable" : "all"} buttonStyle="solid" onChange={(e) => { setShowOnlyStableCoins(e.target.value === 'stable') }} >
+              <Radio.Button value="all" style={{ width: 112, textAlign: 'center' }}>All</Radio.Button>
+              <Radio.Button value="stable">Stable Coins</Radio.Button>
+            </Radio.Group>
+          </Col>
+          <Col span={12}>
+            <Search placeholder="search" style={{ width: 200 }} onSearch={handler.search} />
+          </Col>
+        </Row>
+        <Row>
+          <Col span={16}>
+            <Table
+              rowKey={'id'}
+              columns={columns}
+              dataSource={list(true)}
+              loading={!list(true)?.length}
+              pagination={false}
+              scroll={{ y: 600 }}
+              onRow={(record) => ({ onClick: () => handler.detail(record) })}
+            />
+          </Col>
+          <Col style={{ marginTop: 20 }} span={6} offset={1}>
+            <Menu className={styles.menu} selectable={false}>
+              <Menu.Item
+                key="header"
+                style={{ borderRadius: '3px 3px 0 0', background: '#151515', color: '#fff' }}
+              >
+                My deposits
               </Menu.Item>
-            )}
-            {totalValue > 0 && <Menu.Divider />}
-            <Menu.Item key="total">
-              Total
-              <span className={styles.value}>{Number(totalValue).toFixed(2)}</span>
-            </Menu.Item>
-          </Menu>
-        </Col>
-      </Row>
-    </GridContent>
+              {list(false).map((item: any, index: number) =>
+                item.underlyingBalance.toString() > '0' &&
+                <Menu.Item key={index}>
+                  <Row>
+                    <Col span={12}>
+                      <TokenIcon
+                        tokenSymbol={item.symbol}
+                        height={25}
+                        width={25}
+                        tokenFullName={item.symbol}
+                        className="MarketTableItem__token"
+                      />
+                    </Col>
+                    <Col span={12}>
+                      <span className={styles.value}>{Number(item.underlyingBalance.toString()).toFixed(2)}</span>
+                    </Col>
+                  </Row>
+                </Menu.Item>
+              )}
+              {totalValue > 0 && <Menu.Divider />}
+              <Menu.Item key="total">
+                Total
+                <span className={styles.value}>{Number(totalValue).toFixed(2)}</span>
+              </Menu.Item>
+            </Menu>
+          </Col>
+        </Row>
+      </GridContent>
+    </Spin>
   );
 };
