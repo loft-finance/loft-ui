@@ -11,6 +11,10 @@ export default ({ depositedPositions }: any) => {
       withdraw(record: any){
         const { id, underlyingAsset  } = record.reserve
         history.push(`/deposit/withdraw/${underlyingAsset}/${id}`);
+      },
+      collateral(record: any){
+        const { id, underlyingAsset  } = record.reserve
+        history.push(`/deposit/collateral/${underlyingAsset}/${id}/confirm/${record.usageAsCollateralEnabledOnUser && record.usageAsCollateralEnabledOnThePool?0:1}`);
       }
     }
     return (<div className={styles.table}>
@@ -39,7 +43,7 @@ export default ({ depositedPositions }: any) => {
               {Number(item.avg30DaysLiquidityRate || item.aincentivesAPR).toFixed(2)}
             </Col>
             <Col span={3} className={styles.single}>
-              <Switch defaultChecked checked={item.usageAsCollateralEnabledOnUser && item.usageAsCollateralEnabledOnThePool} checkedChildren="yes" unCheckedChildren="no" />
+              <Switch onClick={()=>handler.collateral(item)} checked={item.usageAsCollateralEnabledOnUser && item.usageAsCollateralEnabledOnThePool} checkedChildren="yes" unCheckedChildren="no" />
             </Col>
             <Col span={7} className={styles.single}>
               <Button size="small" type="primary" shape={'round'} style={{ marginLeft: 5 }} onClick={()=>handler.deposit(item)}>

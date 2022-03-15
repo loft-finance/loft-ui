@@ -130,6 +130,12 @@ export default defineConfig({
             }
           ]
         },
+        {
+          path: '/deposit/collateral/:underlyingAsset/:id/confirm/:status',
+          name: 'collateral',
+          component: '@/pages/deposit/collateral/confirm',
+          hideInMenu: true,
+        }
       ],
     },
     {
@@ -205,6 +211,12 @@ export default defineConfig({
             }
           ]
         },
+        {
+          path: '/loan/rate/:underlyingAsset/:id/confirm/:rateMode',
+          name: 'rate',
+          component: '@/pages/loan/rate/confirm',
+          hideInMenu: true,
+        }
       ],
     },
     // {
