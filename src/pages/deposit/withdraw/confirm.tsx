@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useModel, history } from 'umi';
 import { Card, Row, Col, Button, Descriptions, Steps, Divider, Badge, Spin } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons'
 import { calculateHealthFactorFromBalancesBigUnits, valueToBigNumber, BigNumber } from '@aave/protocol-js';
 import { sendEthTransaction, TxStatusType } from '@/lib/helpers/send-ethereum-tx';
 
@@ -324,7 +325,7 @@ export default ({ poolReserve, user, userReserve,  maxAmountToDeposit, match: { 
                 <Row>
                     <Col span={12} offset={6}>
                         <div className={styles.desc}>
-                            <div className={styles.title}>Deposit overview</div>
+                            <div className={styles.title}>Withdraw overview</div>
                             <div className={styles.text}>
                                 These are your transaction details. Please be sure to check whether it is
                                 correct before submitting
@@ -406,7 +407,7 @@ export default ({ poolReserve, user, userReserve,  maxAmountToDeposit, match: { 
                             {records.map((item: any) => <>
                             <Col span={8}>{item.name}</Col>
                             <Col span={8}>
-                                {item.status} <Badge status={item.status == 'confirmed' ? "success": (item.status == 'wait'? "processing" : "error")} />
+                                {item.status} {item.status == 'wait' ? <LoadingOutlined /> : <Badge status={item.status == 'confirmed' ? "success" : "error"} />}
                             </Col>
                             <Col span={8}>Explorer</Col>
                             </>)}

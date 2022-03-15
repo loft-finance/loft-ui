@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useModel, history } from 'umi';
 import { Card, Row, Col, Button, Descriptions, Steps, Divider, Badge, Spin } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons'
 import { calculateHealthFactorFromBalancesBigUnits, valueToBigNumber, BigNumber, InterestRate } from '@aave/protocol-js';
 import { sendEthTransaction, TxStatusType } from '@/lib/helpers/send-ethereum-tx';
 
@@ -361,7 +362,7 @@ export default ({ poolReserve, user, userReserve, maxAmountToRepay, debtType, wa
                                 {records.map((item: any) => <>
                                     <Col span={8}>{item.name}</Col>
                                     <Col span={8}>
-                                        {item.status} <Badge status={item.status == 'confirmed' ? "success" : (item.status == 'wait' ? "processing" : "error")} />
+                                    {item.status} {item.status == 'wait' ? <LoadingOutlined /> : <Badge status={item.status == 'confirmed' ? "success" : "error"} />}
                                     </Col>
                                     <Col span={8}>Explorer</Col>
                                 </>)}
