@@ -73,7 +73,7 @@ export default ({ poolReserve, user, userReserve, maxAmountToRepay, debtType, wa
     const handler = {
         async getTx({ repaying = false }) {
             try {
-                const txs = await lendingPool.withdraw({
+                const txs = await lendingPool.repay({
                     user: user.id,
                     reserve: poolReserve.underlyingAsset,
                     amount: amountToRepay.toString(),

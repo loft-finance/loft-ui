@@ -75,6 +75,7 @@ export async function sendEthTransaction(
       ...txData,
       value: txData.value ? BigNumber.from(txData.value) : undefined,
     });
+    console.log('txResponse:', txResponse)
   } catch (e) {
     console.error('send-ethereum-tx', e);
 
