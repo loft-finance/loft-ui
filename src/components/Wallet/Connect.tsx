@@ -1,13 +1,10 @@
-import React, { useEffect, useState, useImperativeHandle } from 'react';
+import { useState, useImperativeHandle } from 'react';
 import { Modal, Row, Col, Spin, Image, Popconfirm  } from 'antd';
 import { useModel } from 'umi';
-// import { hooks, metaMask } from '@/lib/connectors/metaMask'
-
-// const { useChainId, useAccounts, useError, useIsActivating, useIsActive, useProvider, useENSNames } = hooks
 
 import styles from './Connect.less';
 
-export default function ({ refs }) {
+export default function ({ refs }: any) {
   useImperativeHandle(refs, () => {
     return {
       show: () => {
@@ -17,7 +14,7 @@ export default function ({ refs }) {
     };
   });
 
-  const { connect, disconnect, reconnect, connecting, wallet } = useModel('wallet')
+  const { connect, disconnect, status, wallet } = useModel('wallet')
 
   // console.log('wallet:', wallet)
 
@@ -26,17 +23,8 @@ export default function ({ refs }) {
       setVisible(false);
     },
     connect: (type: string) => {
-      if(wallet?.current){
-        if(wallet?.current == type){
-          return
-        }
-        reconnect(type)
-      } else {
-        connect(type)
-      }
-      
+      connect(type)
       handler.close()
-      // setVisible(false);
     },
     disconnect: () => {
       disconnect()
@@ -57,7 +45,7 @@ export default function ({ refs }) {
       }}
       footer={false}
     >
-      <Spin spinning={connecting}>
+      <Spin spinning={status === 'connecting'}>
         <div className={styles.box}>
           <Popconfirm
             title={`Are you sure to ${wallet?.current == 'MetaMask' ? 'disconnect': 'connect'} MetaMask?`}

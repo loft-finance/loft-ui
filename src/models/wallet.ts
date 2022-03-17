@@ -1,12 +1,19 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { message } from 'antd';
 import { useModel } from 'umi';
-import { valueToBigNumber } from '@aave/protocol-js';
 import { hooks, metaMask } from '@/lib/connectors/metaMask'
 import { WalletBalanceProviderFactory } from '@/lib/contracts/WalletBalanceProviderContract';
 import { getProvider, getNetwork } from '@/lib/helpers/provider';
 
-const { useChainId, useAccounts, useError, useIsActivating, useIsActive, useProvider, useENSNames } = hooks
+const { 
+    useIsActivating, 
+    useIsActive,
+    useAccounts,
+    // useChainId, 
+    // useError,
+    // useProvider, 
+    // useENSNames 
+} = hooks
 
 const isMetaMaskReady = () => window.ethereum && typeof window.ethereum === 'object';
 
@@ -14,45 +21,58 @@ export default () => {
 
     const { current: currentMarket } = useModel('market');
 
-    const [balance, setBalance] = useState(valueToBigNumber('0').dividedBy(valueToBigNumber(10).pow(18)))
+    const [current, setCurrent] = useState('');
+    const [status, setStatus] = useState('unconnect');
+    const [currentAccount, setCurrentAccount] = useState('');
     const [balances, setBalances] = useState({})
 
+    const walletRef = useRef<any>();
+
     const metamask = {
-        connector: metaMask,
         isActivating: useIsActivating(),
         isActive: useIsActive(),
-        chainId: useChainId(),
         accounts: useAccounts()
     }
 
-    const provider = useProvider();
-    // const error = useError()
-    const current = metamask.isActive ? 'MetaMask' : '';
-    const currentAccount = metamask.accounts ? metamask.accounts[0] : ''
-    const connecting = metamask.isActivating ? true : false
-
-    const wallet = metamask.isActive ? {
-        current,
-        currentAccount,
-        accounts: metamask.accounts,
-        balance,
-        provider
-    } : undefined;
-
-    // console.log('wallet:', wallet, error)
+    useEffect(() => {
+        if(current == 'MetaMask'){
+            if(metamask.isActivating && !metamask.isActive){
+                setStatus('connecting')
+            }else if(metamask.isActive){
+                setStatus('connected')
+                if(metamask?.accounts){
+                    setCurrentAccount(metamask.accounts[0])
+                }
+                localStorage.setItem('wallet', current)
+            }else{
+                setStatus('unconnect');
+                setCurrentAccount('')
+            }
+        }
+    },[metamask])
 
     const connect  = async (type: string) => {
         if(current) return;
 
-        if(type == 'MetaMask' && !isMetaMaskReady()){
-            return message.error('No MetaMask wallet detected.')
+        if(type == 'MetaMask'){
+            if(!isMetaMaskReady()){
+                return message.error('No MetaMask wallet detected.')
+            }
+            
+            setCurrent(type)
+            walletRef.current = metaMask
         }
 
-        const res = await metamask.connector.activate()
-        // console.log('connect res:', res)
+        walletRef.current.activate()
+    }
+    const disconnect = () => {
+        walletRef.current.deactivate()
+        setCurrent('')
     }
 
     const getBalance = async () => {
+        if(!currentAccount) return;
+
         const chainId = currentMarket.chainId
         const provider = getProvider(chainId);
 
@@ -73,24 +93,28 @@ export default () => {
             return acc;
         }, {} as { [address: string]: string });
 
-        // console.log('wallet balance:',aggregatedBalance)
         setBalances(aggregatedBalance)
-        // setMarkets((prev) => ({ ...prev, [currentMarket]: aggregatedBalance }));
     }
 
-    const disconnect = () => {
-        metamask.connector.deactivate()
-    }
-    const reconnect = (type: string) => {
-        console.log('reconnect')
+    const getWallet = (): any => {
+        if(status === 'connected'){
+            if(current === 'MetaMask'){
+                return {
+                    current,
+                    currentAccount,
+                    balances
+                }
+            }
+        }
+
+        return false;
     }
 
     useEffect(() => {
         if(currentAccount){
             getBalance();
-        }else{
-            setBalance(valueToBigNumber('0').dividedBy(valueToBigNumber(10).pow(18)))
         }
     },[currentAccount])
-    return { connect, disconnect, reconnect, connecting, wallet, balances }
+
+    return { connect, disconnect, status, wallet: getWallet(), balances }
 }

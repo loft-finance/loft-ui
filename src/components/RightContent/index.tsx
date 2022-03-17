@@ -7,7 +7,7 @@ import { createFromIconfontCN } from '@ant-design/icons';
 const IconFont = createFromIconfontCN({
   scriptUrl: '//at.alicdn.com/t/font_3128701_ei68zukt4a9.js',
 });
-
+import { getNetwork } from '@/lib/helpers/provider';
 import Connect from '@/components/Wallet/Connect';
 
 export type SiderTheme = 'light' | 'dark';
@@ -46,6 +46,10 @@ const GlobalHeaderRight: React.FC = () => {
     </Menu>
   );
 
+  const { current: currentMarket } = useModel('market');
+  const chainId = currentMarket.chainId
+  const networkConfig = getNetwork(chainId);
+
   return (
     <>
       <Space className={className}>
@@ -63,7 +67,7 @@ const GlobalHeaderRight: React.FC = () => {
         {!!wallet && (
           <Dropdown overlay={menu} trigger={['click']}>
             <div className={styles.user}>
-              Kovan Network
+              {networkConfig.name} Network
               <div className={styles.account}>{wallet.currentAccount.slice(0,4)}...{wallet.currentAccount.slice(-4)}</div>
             </div>
           </Dropdown>

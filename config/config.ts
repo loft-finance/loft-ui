@@ -47,6 +47,9 @@ export default defineConfig({
           path: '/market/index',
           name: 'index',
           component: './market/index',
+          wrappers: [
+            '@/pages/wrappers/index',
+          ],
           hideInMenu: true,
         },
         {
@@ -54,6 +57,9 @@ export default defineConfig({
           name: 'detail',
           component: './market/detail',
           hideInMenu: true,
+          wrappers: [
+            '@/pages/wrappers/index',
+          ],
         },
       ],
     },
@@ -71,6 +77,9 @@ export default defineConfig({
           name: 'index',
           component: './deposit/index',
           hideInMenu: true,
+          wrappers: [
+            '@/pages/wrappers/index',
+          ],
         },
         {
           path: '/deposit/detail/:underlyingAsset/:id',
@@ -86,6 +95,7 @@ export default defineConfig({
               name: 'amount',
               component: '@/pages/deposit/detail/amount',
               wrappers: [
+                '@/pages/wrappers/index',
                 '@/pages/deposit/detail/index',
               ],
               hideInMenu: true,
@@ -95,6 +105,7 @@ export default defineConfig({
               name: 'confirm',
               component: '@/pages/deposit/detail/confirm',
               wrappers: [
+                '@/pages/wrappers/index',
                 '@/pages/deposit/detail',
               ],
               hideInMenu: true,
@@ -115,6 +126,7 @@ export default defineConfig({
               name: 'amount',
               component: '@/pages/deposit/withdraw/amount',
               wrappers: [
+                '@/pages/wrappers/index',
                 '@/pages/deposit/withdraw/index',
               ],
               hideInMenu: true,
@@ -124,6 +136,7 @@ export default defineConfig({
               name: 'confirm',
               component: '@/pages/deposit/withdraw/confirm',
               wrappers: [
+                '@/pages/wrappers/index',
                 '@/pages/deposit/withdraw',
               ],
               hideInMenu: true,
@@ -135,6 +148,9 @@ export default defineConfig({
           name: 'collateral',
           component: '@/pages/deposit/collateral/confirm',
           hideInMenu: true,
+          wrappers: [
+            '@/pages/wrappers/index',
+          ],
         }
       ],
     },
@@ -152,6 +168,9 @@ export default defineConfig({
           name: 'index',
           component: './loan/index',
           hideInMenu: true,
+          wrappers: [
+            '@/pages/wrappers/index',
+          ],
         },
         {
           path: '/loan/detail/:underlyingAsset/:id',
@@ -167,6 +186,7 @@ export default defineConfig({
               name: 'amount',
               component: '@/pages/loan/detail/amount',
               wrappers: [
+                '@/pages/wrappers/index',
                 '@/pages/loan/detail/index',
               ],
               hideInMenu: true,
@@ -176,6 +196,7 @@ export default defineConfig({
               name: 'confirm',
               component: '@/pages/loan/detail/confirm',
               wrappers: [
+                '@/pages/wrappers/index',
                 '@/pages/loan/detail',
               ],
               hideInMenu: true,
@@ -196,6 +217,7 @@ export default defineConfig({
               name: 'amount',
               component: '@/pages/loan/repay/amount',
               wrappers: [
+                '@/pages/wrappers/index',
                 '@/pages/loan/repay/index',
               ],
               hideInMenu: true,
@@ -205,6 +227,7 @@ export default defineConfig({
               name: 'confirm',
               component: '@/pages/loan/repay/confirm',
               wrappers: [
+                '@/pages/wrappers/index',
                 '@/pages/loan/repay/index',
               ],
               hideInMenu: true,
@@ -216,6 +239,9 @@ export default defineConfig({
           name: 'rate',
           component: '@/pages/loan/rate/confirm',
           hideInMenu: true,
+          wrappers: [
+            '@/pages/wrappers/index',
+          ],
         }
       ],
     },
@@ -236,6 +262,9 @@ export default defineConfig({
       name: 'control',
       icon: 'icon-ic_control_panel',
       component: './control',
+      wrappers: [
+        '@/pages/wrappers/index',
+      ],
     },
     {
       path: '/',
