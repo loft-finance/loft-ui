@@ -71,7 +71,7 @@ export default () => {
   // console.log('data:', totalLockedInUsd)
 
   useEffect(() => {
-
+    
   },[])
 
   const handler = {
