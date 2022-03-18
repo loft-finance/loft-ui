@@ -2,12 +2,14 @@ import React, { useRef, useState } from 'react';
 import { useModel } from 'umi';
 import { GridContent } from '@ant-design/pro-layout';
 import Info from '@/components/Info';
-import Overview from '@/components/Overview';
+import Overview from './overview';
+import Bignumber from '@/components/Bignumber';
 import WalletDisconnected from '@/components/Wallet/Disconnected';
 import WalletEmpty from '@/components/Wallet/Empty';
 import { BigNumber, valueToBigNumber } from '@aave/protocol-js';
 import { getAssetInfo } from '@/lib/config/assets'
 import { getNetwork } from '@/lib/helpers/provider';
+
 
 export default (props) => {
   const { match: { params: { underlyingAsset,id } } } = props
@@ -40,6 +42,14 @@ export default (props) => {
   if (maxAmountToDeposit.lte(0)) {
     maxAmountToDeposit = valueToBigNumber('0');
   }
+
+  const userReserve = user
+        ? user.userReservesData.find((userReserve) =>
+            id
+                ? userReserve.reserve.id === id
+                : userReserve.reserve.underlyingAsset.toLowerCase() === underlyingAsset.toLowerCase()
+        )
+        : undefined;
   
   return (
     <GridContent>
@@ -47,15 +57,15 @@ export default (props) => {
         items={[
           {
             title: 'Your balance in Aave',
-            value: walletBalance.toString(),
+            value: <Bignumber value={userReserve?.underlyingBalance || '0'} />,
           },
           {
             title: 'Your wallet balance',
-            value: '6.92421 FUSDT',
+            value: <><Bignumber value={walletBalance} /> FUSDT</>,
           },
           {
             title: 'Fitness factor',
-            value: '14.95',
+            value: <Bignumber value={user?.healthFactor || '-1'} />,
           },
         ]}
       />

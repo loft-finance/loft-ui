@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Card, Row, Col, Button, Form, InputNumber } from 'antd';
 import { history } from 'umi';
 import { TokenIcon } from '@aave/aave-ui-kit';
+import Bignumber from '@/components/Bignumber';
 
 import Back from '@/components/Back';
 import styles from './amount.less';
@@ -38,7 +39,7 @@ export default ({ poolReserve, maxAmountToRepay }: any) => {
                 >
                   <div className={styles.able}>
                     <span>Able to repay</span>
-                    <span className={styles.amount}>{Number(maxAmountToRepay).toFixed(2)} {symbol}</span>
+                    <span className={styles.amount}><Bignumber value={maxAmountToRepay} /> {symbol}</span>
                   </div>
                   <Form.Item
                     name="amount"

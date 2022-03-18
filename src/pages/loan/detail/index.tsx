@@ -5,6 +5,7 @@ import Info from '@/components/Info';
 import Overview from './overview';
 import WalletDisconnected from '@/components/Wallet/Disconnected';
 import WalletEmpty from '@/components/Wallet/Empty';
+import Bignumber from '@/components/Bignumber';
 import { valueToBigNumber, BigNumber } from '@aave/protocol-js';
 
 export default (props: any) => {
@@ -40,6 +41,14 @@ export default (props: any) => {
     maxAmountToBorrow = maxAmountToBorrow.multipliedBy('0.99');
   }
 
+  const userReserve = user
+        ? user.userReservesData.find((userReserve) =>
+            id
+                ? userReserve.reserve.id === id
+                : userReserve.reserve.underlyingAsset.toLowerCase() === underlyingAsset.toLowerCase()
+        )
+        : undefined;
+  const currentBorrows = userReserve ? valueToBigNumber(userReserve.totalBorrows).toString() : '0';
 
   return (
     <GridContent>
@@ -47,19 +56,19 @@ export default (props: any) => {
         items={[
           {
             title: 'You have borrowed',
-            value: walletBalance.toString(),
+            value: <Bignumber value={currentBorrows} />,
           },
           {
             title: 'Total collateral',
-            value: '6.92421 FUSDT',
+            value: <><Bignumber value={user?.totalCollateralUSD} maximumValueDecimals={4} /> USD</> ,
           },
           {
             title: 'Loan value',
-            value: '64.95%',
+            value: <Bignumber value={user?.currentLoanToValue} />,
           },
           {
             title: 'Fitness factor',
-            value: '14.95',
+            value: <Bignumber value={user?.healthFactor || '-1'} />,
           }
         ]}
       />

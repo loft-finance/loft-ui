@@ -2,6 +2,7 @@ import React from 'react';
 import { useModel } from 'umi';
 import { GridContent } from '@ant-design/pro-layout';
 import Info from '@/components/Info';
+import Bignumber from '@/components/Bignumber';
 
 import WalletDisconnected from '@/components/Wallet/Disconnected';
 import WalletEmpty from '@/components/Wallet/Empty';
@@ -67,19 +68,19 @@ export default (props) => {
                 items={[
                     {
                         title: 'Your balance in the platform',
-                        value: walletBalance.toString(),
+                        value: <Bignumber value={userReserve?.underlyingBalance || '0'} />,
                     },
                     {
                         title: 'Fitness factor',
-                        value: '14.95',
+                        value: <Bignumber value={user?.healthFactor || '-1'} />,
                     },
                     {
                         title: 'Loan appreciation',
-                        value: '52.15%',
+                        value: <><Bignumber value={user?.currentLoanToValue || '0'} /> %</>,
                     },
                     {
                         title: 'Collateral composition',
-                        value: '14.95',
+                        value: '14.95%',
                     },
                 ]}
             />
