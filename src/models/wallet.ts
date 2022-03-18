@@ -9,9 +9,9 @@ const {
     useIsActivating, 
     useIsActive,
     useAccounts,
+    useProvider, 
     // useChainId, 
     // useError,
-    // useProvider, 
     // useENSNames 
 } = hooks
 
@@ -31,7 +31,8 @@ export default () => {
     const metamask = {
         isActivating: useIsActivating(),
         isActive: useIsActive(),
-        accounts: useAccounts()
+        accounts: useAccounts(),
+        provider: useProvider()
     }
 
     useEffect(() => {
@@ -102,7 +103,8 @@ export default () => {
                 return {
                     current,
                     currentAccount,
-                    balances
+                    balances,
+                    provider: metamask.provider
                 }
             }
         }
