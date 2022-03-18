@@ -1,7 +1,7 @@
 import { Row, Col, Card, Descriptions } from 'antd';
 import { valueToBigNumber } from '@aave/protocol-js';
-import Bignumber from '@/components/Bignumber';
 import styles from './overview.less';
+import Bignumber from '@/components/Bignumber';
 
 export default ({ title = '', items = [], poolReserve = {}, marketRefPriceInUsd = '0' }: any) => {
 
@@ -42,10 +42,16 @@ export default ({ title = '', items = [], poolReserve = {}, marketRefPriceInUsd 
               contentStyle={{ justifyContent: 'end', color: '#29292D', fontWeight: 'bold' }}
             >
               <Descriptions.Item label="Utilization rate" span={3}>
-                {data.utilizationRate.toFixed(4)} %
+                {data.utilizationRate.toFixed(2)}%
               </Descriptions.Item>
               <Descriptions.Item label="Available liquidity" span={3}>
                 <Bignumber value={data.availableLiquidity} /> FTM
+              </Descriptions.Item>
+              <Descriptions.Item label="Deposit APY (Annual Yield)" span={3}>
+                {data.depositApy.toFixed(2)}%
+              </Descriptions.Item>
+              <Descriptions.Item label="can be used as collateral" span={3}>
+                {data.usageAsCollateralEnabled?'yes':'no'}
               </Descriptions.Item>
             </Descriptions>
           </Col>
@@ -57,8 +63,14 @@ export default ({ title = '', items = [], poolReserve = {}, marketRefPriceInUsd 
               <Descriptions.Item label="Asset price" span={3}>
                 <Bignumber value={data.priceInUsd} /> USD
               </Descriptions.Item>
-              <Descriptions.Item label="Variable loan APY (annual interest rate)" span={3}>
-                {data.baseLTVasCollateral.toFixed(4)} %
+              <Descriptions.Item label="Maximum LTV" span={3}>
+                <Bignumber value={data.baseLTVasCollateral} /> FTM
+              </Descriptions.Item>
+              <Descriptions.Item label="Liquidation threshold" span={3}>
+                {data.liquidationThreshold.toFixed(2)}%
+              </Descriptions.Item>
+              <Descriptions.Item label="Liquidation penal" span={3}>
+                {data.liquidationBonus.toFixed(2)}%
               </Descriptions.Item>
             </Descriptions>
           </Col>

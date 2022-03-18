@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Card, Row, Col, Button, Form, InputNumber } from 'antd';
 import { history } from 'umi';
 import { TokenIcon } from '@aave/aave-ui-kit';
+import Bignumber from '@/components/Bignumber';
 
 import Back from '@/components/Back';
 import styles from './amount.less';
@@ -40,7 +41,7 @@ export default ({ poolReserve, maxAmountToDeposit }: any) => {
                 >
                   <div className={styles.able}>
                     <span>Available for deposit</span>
-                    <span className={styles.amount}>{maxAmountToDeposit} {symbol}</span>
+                    <span className={styles.amount}><Bignumber value={maxAmountToDeposit} /> {symbol}</span>
                   </div>
                   <Form.Item
                     name="amount"

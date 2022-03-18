@@ -17,8 +17,10 @@ export enum BorrowRateMode {
 export default (props: any) => {
   const { match: { params: { underlyingAsset, id } } } = props
 
-  const { wallet } = useModel('wallet')
+  const { wallet, balances } = useModel('wallet')
   const { reserves, user, baseCurrency } = useModel('pool')
+
+  const balance = balances ? balances[underlyingAsset] : '0'
 
   if (!reserves?.length) {
     history.push('/market')
@@ -41,7 +43,12 @@ export default (props: any) => {
     .multipliedBy(marketRefPriceInUsd)
     .toString();
 
+  let walletBalance = valueToBigNumber('0').dividedBy(valueToBigNumber(10).pow(18))
 
+  if(balance && poolReserve) {
+    walletBalance = valueToBigNumber(balance).dividedBy(valueToBigNumber(10).pow(poolReserve.decimals))
+  }
+  
   const userReserve = user
     ? user.userReservesData.find((userReserve) =>
       id
@@ -373,7 +380,7 @@ export default (props: any) => {
                             Your wallet balance
                           </Col>
                           <Col span={12} className={styles.value}>
-                            {wallet?.balance.toString()} USDT
+                            <Bignumber value={walletBalance} /> USDT
                           </Col>
                           <Col span={12} className={styles.label}>
                             You have deposited

@@ -4,6 +4,7 @@ import { Card, Row, Col, Button, Descriptions, Steps, Divider, Badge, Spin } fro
 import { LoadingOutlined } from '@ant-design/icons'
 import { calculateHealthFactorFromBalancesBigUnits, valueToBigNumber } from '@aave/protocol-js';
 import { sendEthTransaction, TxStatusType } from '@/lib/helpers/send-ethereum-tx';
+import Bignumber from '@/components/Bignumber';
 
 import Back from '@/components/Back';
 import styles from './confirm.less';
@@ -283,7 +284,7 @@ export default ({ poolReserve, maxAmountToDeposit, match: { params: { amount: am
                                 contentStyle={{ justifyContent: 'end', color: '#29292D', fontWeight: 'bold' }}
                             >
                                 <Descriptions.Item label="Quantity" span={3}>
-                                    {amount.toString()}
+                                    <Bignumber value={amount} />
                                 </Descriptions.Item>
                                 <Descriptions.Item
                                     span={3}
@@ -294,7 +295,7 @@ export default ({ poolReserve, maxAmountToDeposit, match: { params: { amount: am
                                         marginTop: -20,
                                     }}
                                 >
-                                    ${amountInUsd.toString()}
+                                    $ <Bignumber value={amountInUsd} maximumFractionDigits={4} />
                                 </Descriptions.Item>
                                 <Descriptions.Item
                                     label="Collateral Usage"
