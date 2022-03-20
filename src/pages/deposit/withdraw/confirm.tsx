@@ -342,9 +342,9 @@ export default ({ poolReserve, user, userReserve,  maxAmountToDeposit, match: { 
                                 contentStyle={{ justifyContent: 'end', color: '#29292D', fontWeight: 'bold' }}
                             >
                                 <Descriptions.Item label="Quantity" span={3}>
-                                    <Bignumber value={amount} />
+                                    <Bignumber value={displayAmountToWithdraw} />
                                 </Descriptions.Item>
-                                <Descriptions.Item
+                                {/* <Descriptions.Item
                                     span={3}
                                     contentStyle={{
                                         color: '#696D85',
@@ -354,7 +354,7 @@ export default ({ poolReserve, user, userReserve,  maxAmountToDeposit, match: { 
                                     }}
                                 >
                                     $ <Bignumber value={displayAmountToWithdraw} maximumFractionDigits={4} />
-                                </Descriptions.Item>
+                                </Descriptions.Item> */}
                                 <Descriptions.Item
                                     label="Collateral Usage"
                                     span={3}
