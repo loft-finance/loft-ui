@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useModel, history } from 'umi';
+import { useModel, history, FormattedMessage } from 'umi';
 import { Table, Row, Col, Menu, Radio, Input, Spin } from 'antd';
 import { GridContent } from '@ant-design/pro-layout';
 import { valueToBigNumber } from '@aave/protocol-js';
@@ -105,7 +105,7 @@ export default () => {
 
   const columns = [
     {
-      title: 'Assets',
+      title: <FormattedMessage id="pages.deposit.index.table.col.assets" />,
       dataIndex: 'symbol',
       render: (text: any) => {
         return <TokenIcon
@@ -118,14 +118,14 @@ export default () => {
       },
     },
     {
-      title: 'Your wallet balance',
+      title: <FormattedMessage id="pages.deposit.index.table.col.balance" />,
       dataIndex: 'walletBalance',
       render: (text: any) => {
         return Number(text).toFixed(2)
       }
     },
     {
-      title: 'Aunual rate of return',
+      title: <FormattedMessage id="pages.deposit.index.table.col.rate" />,
       dataIndex: 'liquidityRate',
       render: (text: any) => {
         return Number(text).toFixed(2) + '%'
@@ -140,8 +140,12 @@ export default () => {
         <Row>
           <Col span={12}>
             <Radio.Group defaultValue={showOnlyStableCoins ? "stable" : "all"} buttonStyle="solid" onChange={(e) => { setShowOnlyStableCoins(e.target.value === 'stable') }} >
-              <Radio.Button value="all" style={{ width: 112, textAlign: 'center' }}>All</Radio.Button>
-              <Radio.Button value="stable">Stable Coins</Radio.Button>
+              <Radio.Button value="all" style={{ width: 112, textAlign: 'center' }}>
+                <FormattedMessage id="pages.deposit.index.filter.all" />
+              </Radio.Button>
+              <Radio.Button value="stable">
+                <FormattedMessage id="pages.deposit.index.filter.stable" /> 
+              </Radio.Button>
             </Radio.Group>
           </Col>
           <Col span={12}>
@@ -166,7 +170,7 @@ export default () => {
                 key="header"
                 style={{ borderRadius: '3px 3px 0 0', background: '#151515', color: '#fff' }}
               >
-                My deposits
+                <FormattedMessage id="pages.deposit.index.my" />
               </Menu.Item>
               {list(false).map((item: any, index: number) =>
                 item.underlyingBalance.toString() > '0' &&
@@ -189,7 +193,7 @@ export default () => {
               )}
               {totalValue > 0 && <Menu.Divider />}
               <Menu.Item key="total">
-                Total
+                <FormattedMessage id="pages.deposit.index.my.total" />
                 <span className={styles.value}>{Number(totalValue).toFixed(2)}</span>
               </Menu.Item>
             </Menu>

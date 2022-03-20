@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Table, Row, Col, Card, Button, Image, Spin } from 'antd';
-import { history, useModel } from 'umi';
+import { history, useModel, FormattedMessage } from 'umi';
 import { valueToBigNumber } from '@aave/protocol-js';
 import { TokenIcon } from '@aave/aave-ui-kit';
 import { normalize } from '@aave/math-utils';
@@ -79,9 +79,9 @@ export default () => {
     }
   };
 
-  const columns = [
+  const columns: any = [
     {
-      title: 'Assets',
+      title: <FormattedMessage id="pages.market.index.table.collumn.assets" />,
       dataIndex: 'currencySymbol',
       width: 240,
       render: (text: any, record: any) => {
@@ -96,7 +96,7 @@ export default () => {
       // align: 'center'
     },
     {
-      title: 'Market Size',
+      title: <FormattedMessage id="pages.market.index.table.collumn.MarketSize" />,
       dataIndex: 'totalBorrows',
       width: 200,
       render: (text: any, record: any) => {
@@ -104,7 +104,7 @@ export default () => {
       }
     },
     {
-      title: 'total borrowings',
+      title: <FormattedMessage id="pages.market.index.table.collumn.TotalBorrowings" />,
       dataIndex: 'totalBorrowsInUSD',
       render: (text: any, record: any) => {
         return text < 0 ? <>--</> : <>$ <Bignumber value={text} /></>
@@ -113,7 +113,7 @@ export default () => {
       align: 'center'
     },
     {
-      title: <div style={{textAlign:'center'}}>deposit APY <p>(annual rate of return)</p></div>,
+      title: <div style={{textAlign:'center'}}><FormattedMessage id="pages.market.index.table.collumn.DepositApy" /> <p><FormattedMessage id="pages.market.index.table.collumn.DepositApyAnnotation" /></p></div>,
       dataIndex: 'depositAPY',
       render: (text: any, record: any) => {
         return <div className={styles.TagBox}>{text < 0 ? '--' : (text.toFixed(2) + '%')} <div className={styles.tag}>{record.aincentivesAPR}% <span>APR</span></div></div>
@@ -121,7 +121,7 @@ export default () => {
       align: 'center'
     },
     {
-      title: 'annual interest rate of borrowing',
+      title: <FormattedMessage id="pages.market.index.table.collumn.BorrowingRate" />,
       dataIndex: 'variableBorrowRate',
       align: 'center',
       render: (text: any, record: any) => {
@@ -137,13 +137,12 @@ export default () => {
           <Row>
             <Col span={16}>
               <div className={styles.text}>
-                Is an open source and non-custodial liquidity agreement used to earn interest on
-                deposits and borrowed assets
+                <FormattedMessage id="pages.market.index.describe" />
               </div>
               <div className={styles.value}>$ <Bignumber value={totalLockedInUsd.toNumber()} /></div>
               <div>
                 <Button type="primary" size="large" style={{ width: 200 }}>
-                  To trade coins
+                  <FormattedMessage id="pages.market.index.button" />
                 </Button>
               </div>
             </Col>
@@ -157,7 +156,7 @@ export default () => {
             <Col span={6}>
               <Card className={styles.card} bordered={false}>
                 <div className={styles.value}>113M</div>
-                <div className={styles.title}>Pledge coin</div>
+                <div className={styles.title}><FormattedMessage id="pages.market.index.info.pledge" /></div>
               </Card>
             </Col>
             <Col span={6}>
@@ -165,7 +164,7 @@ export default () => {
                 <div style={{ color: '#FF5E2C' }} className={styles.value}>
                   $9.54
                 </div>
-                <div className={styles.title}>Coin price</div>
+                <div className={styles.title}><FormattedMessage id="pages.market.index.info.price" /></div>
               </Card>
             </Col>
             <Col span={6}>
@@ -173,7 +172,7 @@ export default () => {
                 <div style={{ color: '#6464E7' }} className={styles.value}>
                   5.3M
                 </div>
-                <div className={styles.title}>Fluidity</div>
+                <div className={styles.title}><FormattedMessage id="pages.market.index.info.fluidity" /></div>
               </Card>
             </Col>
             <Col span={6}>
@@ -181,7 +180,7 @@ export default () => {
                 <div style={{ color: '#FF5E2C' }} className={styles.value}>
                   $49.5M
                 </div>
-                <div className={styles.title}>Market value</div>
+                <div className={styles.title}><FormattedMessage id="pages.market.index.info.value" /></div>
               </Card>
             </Col>
           </Row>

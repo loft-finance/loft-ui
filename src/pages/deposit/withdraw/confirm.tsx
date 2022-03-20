@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useModel, history } from 'umi';
+import { useModel, history, FormattedMessage } from 'umi';
 import { Card, Row, Col, Button, Descriptions, Steps, Divider, Badge, Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons'
 import { calculateHealthFactorFromBalancesBigUnits, valueToBigNumber, BigNumber } from '@aave/protocol-js';
@@ -165,28 +165,28 @@ export default ({ poolReserve, user, userReserve,  maxAmountToDeposit, match: { 
                     setSteps([
                         {
                             key: 'approval',
-                            title: approve.name,
-                            buttonText: approve.name,
-                            stepText: approve.name,
-                            description: 'Please approve before withdrawing',
+                            title: <FormattedMessage id="pages.deposit.detail.confirm.steps.approve.title" />,
+                            buttonText: <FormattedMessage id="pages.deposit.detail.confirm.steps.approve.button" />,
+                            stepText: <FormattedMessage id="pages.deposit.detail.confirm.steps.approve.step" />,
+                            description: <FormattedMessage id="pages.deposit.detail.confirm.steps.approve.desc" />,
                             loading: false,
                             error: '',
                         },
                         {
                             key: 'withdraw',
-                            title: action.name,
-                            buttonText: action.name,
-                            stepText: action.name,
-                            description: 'Please submit a withdraw',
+                            title: <FormattedMessage id="pages.deposit.detail.confirm.steps.withdraw.title" />,
+                            buttonText: <FormattedMessage id="pages.deposit.detail.confirm.steps.withdraw.button" />,
+                            stepText: <FormattedMessage id="pages.deposit.detail.confirm.steps.withdraw.step" />,
+                            description: <FormattedMessage id="pages.deposit.detail.confirm.steps.withdraw.desc" />,
                             loading: withdrawing ? true:false,
                             error: '',
                         },
                         {
                             key: 'completed',
-                            title: 'Completed',
-                            buttonText: 'control panel',
-                            stepText: 'Success ',
-                            description: '',
+                            title: <FormattedMessage id="pages.deposit.detail.confirm.steps.completed.title" />,
+                            buttonText: <FormattedMessage id="pages.deposit.detail.confirm.steps.completed.button" />,
+                            stepText: <FormattedMessage id="pages.deposit.detail.confirm.steps.completed.step" />,
+                            description: <FormattedMessage id="pages.deposit.detail.confirm.steps.completed.desc" />,
                             loading: false,
                             error: '',
                         },
@@ -195,19 +195,19 @@ export default ({ poolReserve, user, userReserve,  maxAmountToDeposit, match: { 
                     setSteps([
                         {
                             key: 'withdraw',
-                            title: action.name,
-                            buttonText: action.name,
-                            stepText: action.name,
-                            description: 'Please submit a withdraw',
+                            title: <FormattedMessage id="pages.deposit.detail.confirm.steps.withdraw.title" />,
+                            buttonText: <FormattedMessage id="pages.deposit.detail.confirm.steps.withdraw.button" />,
+                            stepText: <FormattedMessage id="pages.deposit.detail.confirm.steps.withdraw.step" />,
+                            description: <FormattedMessage id="pages.deposit.detail.confirm.steps.withdraw.desc" />,
                             loading: withdrawing ? true:false,
                             error: '',
                         },
                         {
                             key: 'completed',
-                            title: 'Completed',
-                            buttonText: 'control panel',
-                            stepText: 'Success ',
-                            description: '',
+                            title: <FormattedMessage id="pages.deposit.detail.confirm.steps.completed.title" />,
+                            buttonText: <FormattedMessage id="pages.deposit.detail.confirm.steps.completed.button" />,
+                            stepText: <FormattedMessage id="pages.deposit.detail.confirm.steps.completed.step" />,
+                            description: <FormattedMessage id="pages.deposit.detail.confirm.steps.completed.desc" />,
                             loading: false,
                             error: '',
                         },
@@ -326,10 +326,9 @@ export default ({ poolReserve, user, userReserve,  maxAmountToDeposit, match: { 
                 <Row>
                     <Col span={12} offset={6}>
                         <div className={styles.desc}>
-                            <div className={styles.title}>Withdraw overview</div>
+                            <div className={styles.title}><FormattedMessage id="pages.deposit.withdraw.confirm.title" /></div>
                             <div className={styles.text}>
-                                These are your transaction details. Please be sure to check whether it is
-                                correct before submitting
+                                <FormattedMessage id="pages.deposit.withdraw.confirm.desc" />
                             </div>
                         </div>
                     </Col>
@@ -410,7 +409,9 @@ export default ({ poolReserve, user, userReserve,  maxAmountToDeposit, match: { 
                             <Col span={8}>
                                 {item.status} {item.status == 'wait' ? <LoadingOutlined /> : <Badge status={item.status == 'confirmed' ? "success" : "error"} />}
                             </Col>
-                            <Col span={8}>Explorer</Col>
+                            <Col span={8}>
+                                <FormattedMessage id="pages.deposit.detail.confirm.explorer" />
+                            </Col>
                             </>)}
                         </Row>
                     </Col>

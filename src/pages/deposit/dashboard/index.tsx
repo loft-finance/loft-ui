@@ -1,5 +1,5 @@
 import { Row, Col, Button, Switch, Empty } from 'antd';
-import { history } from 'umi';
+import { history, FormattedMessage } from 'umi';
 import { TokenIcon } from '@aave/aave-ui-kit';
 import styles from './index.less';
 export default ({ depositedPositions }: any) => {
@@ -19,9 +19,9 @@ export default ({ depositedPositions }: any) => {
     }
     return (<div className={styles.table}>
         <Row className={styles.head}>
-          <Col span={7}>current balance</Col>
-          <Col span={7}>Annual rate of return</Col>
-          <Col span={3}>Collateral</Col>
+          <Col span={7}><FormattedMessage id="pages.deposit.dashboard.table.col.balance" /></Col>
+          <Col span={7}><FormattedMessage id="pages.deposit.dashboard.table.col.rate" /></Col>
+          <Col span={3}><FormattedMessage id="pages.deposit.dashboard.table.col.collateral" /></Col>
         </Row>
         {depositedPositions.map((item: any)=>
         <Row className={styles.row}>
@@ -47,10 +47,10 @@ export default ({ depositedPositions }: any) => {
             </Col>
             <Col span={7} className={styles.single}>
               <Button size="small" type="primary" shape={'round'} style={{ marginLeft: 5 }} onClick={()=>handler.deposit(item)}>
-                deposit
+                <FormattedMessage id="pages.deposit.dashboard.button.deposit" />
               </Button>
               <Button size="small" shape={'round'} style={{ marginLeft: 5 }} onClick={()=>handler.withdraw(item)}>
-                withdraw
+                <FormattedMessage id="pages.deposit.dashboard.button.withdraw" />
               </Button>
             </Col>
         </Row>

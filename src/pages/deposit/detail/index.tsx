@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { useModel } from 'umi';
+import { useModel, FormattedMessage } from 'umi';
 import { GridContent } from '@ant-design/pro-layout';
 import Info from '@/components/Info';
 import Overview from './overview';
@@ -56,15 +56,15 @@ export default (props) => {
       <Info
         items={[
           {
-            title: 'Your balance in Aave',
+            title: <FormattedMessage id="pages.deposit.detail.info.balance" />,
             value: <Bignumber value={userReserve?.underlyingBalance || '0'} />,
           },
           {
-            title: 'Your wallet balance',
+            title: <FormattedMessage id="pages.deposit.detail.info.WalletBalance" />,
             value: <><Bignumber value={walletBalance} /> FUSDT</>,
           },
           {
-            title: 'Fitness factor',
+            title: <FormattedMessage id="pages.deposit.detail.info.FitnessFactor" />,
             value: <Bignumber value={user?.healthFactor || '-1'} />,
           },
         ]}

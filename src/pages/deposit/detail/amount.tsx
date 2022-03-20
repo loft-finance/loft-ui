@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Card, Row, Col, Button, Form, Input, message } from 'antd';
-import { history } from 'umi';
+import { history, FormattedMessage } from 'umi';
 import { TokenIcon } from '@aave/aave-ui-kit';
 import Bignumber from '@/components/Bignumber';
 
@@ -39,9 +39,9 @@ export default ({ poolReserve, maxAmountToDeposit }: any) => {
       <Back />
       <Card bordered={false}>
           <div className={styles.desc}>
-            <div className={styles.title}>How much do you want to deposit</div>
+            <div className={styles.title}><FormattedMessage id="pages.deposit.detail.amount.title" /></div>
             <div className={styles.text}>
-              Please enter the amount to be deposited, the maximum amount you can deposit is shown below
+              <FormattedMessage id="pages.deposit.detail.amount.desc" />
             </div>
           </div>
           <div className={styles.form}>
@@ -55,12 +55,12 @@ export default ({ poolReserve, maxAmountToDeposit }: any) => {
                   autoComplete="off"
                 >
                   <div className={styles.able}>
-                    <span>Available for deposit</span>
+                    <span><FormattedMessage id="pages.deposit.detail.amount.available" /></span>
                     <span className={styles.amount}><Bignumber value={maxAmountToDeposit} /> {symbol}</span>
                   </div>
                   <Form.Item
                     name="amount"
-                    rules={[{ required: true, message: 'Please input quantity!' }]}
+                    rules={[{ required: true, message: <FormattedMessage id="pages.deposit.detail.amount.validate" /> }]}
                   >
                     <Input
                       style={{ width: '100%' }}
@@ -73,13 +73,13 @@ export default ({ poolReserve, maxAmountToDeposit }: any) => {
                         tokenFullName={''}
                         className="MarketTableItem__token"
                       />}
-                      suffix={<a onClick={handler.max}>Max</a>}
+                      suffix={<a onClick={handler.max}><FormattedMessage id="pages.deposit.detail.amount.max" /></a>}
                     />
                   </Form.Item>
 
                   <Form.Item wrapperCol={{ offset: 2, span: 20 }}>
                     <Button block type="primary" htmlType="submit">
-                      Continue
+                      <FormattedMessage id="pages.deposit.detail.amount.button" />
                     </Button>
                   </Form.Item>
                 </Form>

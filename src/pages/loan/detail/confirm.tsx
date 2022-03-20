@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useModel, history } from 'umi';
+import { useModel, history, FormattedMessage } from 'umi';
 import { Card, Row, Col, Button, Descriptions, Steps, Divider, Badge, Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons'
 import { calculateHealthFactorFromBalancesBigUnits, InterestRate, valueToBigNumber } from '@aave/protocol-js';
@@ -127,28 +127,28 @@ export default ({ poolReserve, maxAmountToDeposit, location:{ query }, match: { 
                     setSteps([
                         {
                             key: 'approval',
-                            title: approve.name,
-                            buttonText: approve.name,
-                            stepText: approve.name,
-                            description: 'Please approve before loaning',
+                            title: <FormattedMessage id="pages.loan.detail.confirm.steps.approve.title" />,
+                            buttonText: <FormattedMessage id="pages.loan.detail.confirm.steps.approve.button" />,
+                            stepText: <FormattedMessage id="pages.loan.detail.confirm.steps.approve.step" />,
+                            description: <FormattedMessage id="pages.loan.detail.confirm.steps.approve.desc" />,
                             loading: false,
                             error: '',
                         },
                         {
                             key: 'loan',
-                            title: action.name,
-                            buttonText: action.name,
-                            stepText: action.name,
-                            description: 'Please submit a loan',
+                            title: <FormattedMessage id="pages.loan.detail.confirm.steps.loan.title" />,
+                            buttonText: <FormattedMessage id="pages.loan.detail.confirm.steps.loan.button" />,
+                            stepText: <FormattedMessage id="pages.loan.detail.confirm.steps.loan.step" />,
+                            description: <FormattedMessage id="pages.loan.detail.confirm.steps.loan.desc" />,
                             loading: loaning ? true:false,
                             error: '',
                         },
                         {
                             key: 'completed',
-                            title: 'Completed',
-                            buttonText: 'control panel',
-                            stepText: 'Success ',
-                            description: '',
+                            title: <FormattedMessage id="pages.loan.detail.confirm.steps.completed.title" />,
+                            buttonText: <FormattedMessage id="pages.loan.detail.confirm.steps.completed.button" />,
+                            stepText: <FormattedMessage id="pages.loan.detail.confirm.steps.completed.step" />,
+                            description: <FormattedMessage id="pages.loan.detail.confirm.steps.completed.desc" />,
                             loading: false,
                             error: '',
                         },
@@ -157,19 +157,19 @@ export default ({ poolReserve, maxAmountToDeposit, location:{ query }, match: { 
                     setSteps([
                         {
                             key: 'loan',
-                            title: action.name,
-                            buttonText: action.name,
-                            stepText: action.name,
-                            description: 'Please submit a loan',
+                            title: <FormattedMessage id="pages.loan.detail.confirm.steps.loan.title" />,
+                            buttonText: <FormattedMessage id="pages.loan.detail.confirm.steps.loan.button" />,
+                            stepText: <FormattedMessage id="pages.loan.detail.confirm.steps.loan.step" />,
+                            description: <FormattedMessage id="pages.loan.detail.confirm.steps.loan.desc" />,
                             loading: loaning ? true:false,
                             error: '',
                         },
                         {
                             key: 'completed',
-                            title: 'Completed',
-                            buttonText: 'control panel',
-                            stepText: 'Success ',
-                            description: '',
+                            title: <FormattedMessage id="pages.loan.detail.confirm.steps.completed.title" />,
+                            buttonText: <FormattedMessage id="pages.loan.detail.confirm.steps.completed.button" />,
+                            stepText: <FormattedMessage id="pages.loan.detail.confirm.steps.completed.step" />,
+                            description: <FormattedMessage id="pages.loan.detail.confirm.steps.completed.desc" />,
                             loading: false,
                             error: '',
                         },
@@ -372,7 +372,7 @@ export default ({ poolReserve, maxAmountToDeposit, location:{ query }, match: { 
                             <Col span={8}>
                             {item.status} {item.status == 'wait' ? <LoadingOutlined /> : <Badge status={item.status == 'confirmed' ? "success" : "error"} />}
                             </Col>
-                            <Col span={8}>Explorer</Col>
+                            <Col span={8}><FormattedMessage id="pages.loan.detail.confirm.explorer" /></Col>
                             </>)}
                         </Row>
                     </Col>

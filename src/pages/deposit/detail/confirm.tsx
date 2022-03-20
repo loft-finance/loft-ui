@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useModel, history } from 'umi';
+import { useModel, history, FormattedMessage } from 'umi';
 import { Card, Row, Col, Button, Descriptions, Steps, Divider, Badge, Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons'
 import { calculateHealthFactorFromBalancesBigUnits, valueToBigNumber } from '@aave/protocol-js';
@@ -108,28 +108,28 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, match: { params:
                     setSteps([
                         {
                             key: 'approval',
-                            title: approve.name,
-                            buttonText: approve.name,
-                            stepText: approve.name,
-                            description: 'Please approve before depositing',
+                            title: <FormattedMessage id="pages.deposit.detail.confirm.steps.approve.title" />,
+                            buttonText: <FormattedMessage id="pages.deposit.detail.confirm.steps.approve.button" />,
+                            stepText: <FormattedMessage id="pages.deposit.detail.confirm.steps.approve.step" />,
+                            description: <FormattedMessage id="pages.deposit.detail.confirm.steps.approve.desc" />,
                             loading: false,
                             error: '',
                         },
                         {
                             key: 'deposit',
-                            title: action.name,
-                            buttonText: action.name,
-                            stepText: action.name,
-                            description: 'Please submit a deposit',
+                            title: <FormattedMessage id="pages.deposit.detail.confirm.steps.deposit.title" />,
+                            buttonText: <FormattedMessage id="pages.deposit.detail.confirm.steps.deposit.button" />,
+                            stepText: <FormattedMessage id="pages.deposit.detail.confirm.steps.deposit.step" />,
+                            description: <FormattedMessage id="pages.deposit.detail.confirm.steps.deposit.desc" />,
                             loading: depositing ? true:false,
                             error: '',
                         },
                         {
                             key: 'completed',
-                            title: 'Completed',
-                            buttonText: 'control panel',
-                            stepText: 'Success ',
-                            description: '',
+                            title: <FormattedMessage id="pages.deposit.detail.confirm.steps.completed.title" />,
+                            buttonText: <FormattedMessage id="pages.deposit.detail.confirm.steps.completed.button" />,
+                            stepText: <FormattedMessage id="pages.deposit.detail.confirm.steps.completed.step" />,
+                            description: <FormattedMessage id="pages.deposit.detail.confirm.steps.completed.desc" />,
                             loading: false,
                             error: '',
                         },
@@ -138,19 +138,19 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, match: { params:
                     setSteps([
                         {
                             key: 'deposit',
-                            title: action.name,
-                            buttonText: action.name,
-                            stepText: action.name,
-                            description: 'Please submit a deposit',
+                            title: <FormattedMessage id="pages.deposit.detail.confirm.steps.deposit.title" />,
+                            buttonText: <FormattedMessage id="pages.deposit.detail.confirm.steps.deposit.button" />,
+                            stepText: <FormattedMessage id="pages.deposit.detail.confirm.steps.deposit.step" />,
+                            description: <FormattedMessage id="pages.deposit.detail.confirm.steps.deposit.desc" />,
                             loading: depositing ? true:false,
                             error: '',
                         },
                         {
                             key: 'completed',
-                            title: 'Completed',
-                            buttonText: 'control panel',
-                            stepText: 'Success ',
-                            description: '',
+                            title: <FormattedMessage id="pages.deposit.detail.confirm.steps.completed.title" />,
+                            buttonText: <FormattedMessage id="pages.deposit.detail.confirm.steps.completed.button" />,
+                            stepText: <FormattedMessage id="pages.deposit.detail.confirm.steps.completed.step" />,
+                            description: <FormattedMessage id="pages.deposit.detail.confirm.steps.completed.desc" />,
                             loading: false,
                             error: '',
                         },
@@ -269,10 +269,9 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, match: { params:
                 <Row>
                     <Col span={12} offset={6}>
                         <div className={styles.desc}>
-                            <div className={styles.title}>Deposit overview</div>
+                            <div className={styles.title}><FormattedMessage id="pages.deposit.detail.confirm.title" /></div>
                             <div className={styles.text}>
-                                These are your transaction details. Please be sure to check whether it is
-                                correct before submitting
+                                <FormattedMessage id="pages.deposit.detail.confirm.desc" />
                             </div>
                         </div>
                     </Col>
@@ -284,7 +283,7 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, match: { params:
                                 labelStyle={{ color: '#696D85' }}
                                 contentStyle={{ justifyContent: 'end', color: '#29292D', fontWeight: 'bold' }}
                             >
-                                <Descriptions.Item label="Quantity" span={3}>
+                                <Descriptions.Item label={<FormattedMessage id="pages.deposit.detail.confirm.quantity" />} span={3}>
                                     <Bignumber value={amount} />
                                 </Descriptions.Item>
                                 <Descriptions.Item
@@ -299,14 +298,14 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, match: { params:
                                     $ <Bignumber value={amountInUsd} maximumFractionDigits={4} />
                                 </Descriptions.Item>
                                 <Descriptions.Item
-                                    label="Collateral Usage"
+                                    label={<FormattedMessage id="pages.deposit.detail.confirm.collateral" />}
                                     span={3}
                                     contentStyle={{ color: '#3163E2' }}
                                 >
                                     {usageAsCollateralEnabledOnDeposit ? 'yes' : 'no'}
                                 </Descriptions.Item>
                                 <Descriptions.Item
-                                    label="New health factors"
+                                    label={<FormattedMessage id="pages.deposit.detail.confirm.HealthFactors" />}
                                     span={3}
                                     contentStyle={{ color: '#3163E2' }}
                                 >
@@ -353,7 +352,7 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, match: { params:
                             <Col span={8}>
                                 {item.status} {item.status == 'wait' ? <LoadingOutlined /> : <Badge status={item.status == 'confirmed' ? "success" : "error"} />}
                             </Col>
-                            <Col span={8}>Explorer</Col>
+                            <Col span={8}><FormattedMessage id="pages.deposit.detail.confirm.explorer" /></Col>
                             </>)}
                         </Row>
                     </Col>

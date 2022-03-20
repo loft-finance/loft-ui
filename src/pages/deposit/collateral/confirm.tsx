@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useModel, history } from 'umi';
+import { useModel, history, FormattedMessage } from 'umi';
 import { Card, Row, Col, Button, Descriptions, Steps, Divider, Badge, Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons'
 import { calculateHealthFactorFromBalancesBigUnits, valueToBigNumber } from '@aave/protocol-js';
@@ -101,28 +101,28 @@ export default ({ match: { params: { underlyingAsset, id,  status } }, }: any,) 
                     setSteps([
                         {
                             key: 'approval',
-                            title: approve.name,
-                            buttonText: approve.name,
-                            stepText: approve.name,
-                            description: 'Please approve before depositing',
+                            title: <FormattedMessage id="pages.deposit.collateral.confirm.steps.approve.title" />,
+                            buttonText: <FormattedMessage id="pages.deposit.collateral.confirm.steps.approve.button" />,
+                            stepText: <FormattedMessage id="pages.deposit.collateral.confirm.steps.approve.step" />,
+                            description: <FormattedMessage id="pages.deposit.collateral.confirm.steps.approve.desc" />,
                             loading: false,
                             error: '',
                         },
                         {
                             key: 'deposit',
-                            title: 'Usage as collateral',
-                            buttonText: action.name,
-                            stepText: action.name,
-                            description: 'Usage as collateral',
+                            title: <FormattedMessage id="pages.deposit.collateral.confirm.steps.collateral.title" />,
+                            buttonText: <FormattedMessage id="pages.deposit.collateral.confirm.steps.collateral.button" />,
+                            stepText: <FormattedMessage id="pages.deposit.collateral.confirm.steps.collateral.step" />,
+                            description: <FormattedMessage id="pages.deposit.collateral.confirm.steps.collateral.desc" />,
                             loading: depositing ? true:false,
                             error: '',
                         },
                         {
                             key: 'completed',
-                            title: 'Completed',
-                            buttonText: 'control panel',
-                            stepText: 'Success ',
-                            description: '',
+                            title: <FormattedMessage id="pages.deposit.collateral.confirm.steps.completed.title" />,
+                            buttonText: <FormattedMessage id="pages.deposit.collateral.confirm.steps.completed.button" />,
+                            stepText: <FormattedMessage id="pages.deposit.collateral.confirm.steps.completed.step" />,
+                            description: <FormattedMessage id="pages.deposit.collateral.confirm.steps.completed.desc" />,
                             loading: false,
                             error: '',
                         },
@@ -131,19 +131,19 @@ export default ({ match: { params: { underlyingAsset, id,  status } }, }: any,) 
                     setSteps([
                         {
                             key: 'deposit',
-                            title: 'Usage as collateral',
-                            buttonText: action.name,
-                            stepText: action.name,
-                            description: 'Usage as collateral',
+                            title: <FormattedMessage id="pages.deposit.collateral.confirm.steps.collateral.title" />,
+                            buttonText: <FormattedMessage id="pages.deposit.collateral.confirm.steps.collateral.button" />,
+                            stepText: <FormattedMessage id="pages.deposit.collateral.confirm.steps.collateral.step" />,
+                            description: <FormattedMessage id="pages.deposit.collateral.confirm.steps.collateral.desc" />,
                             loading: depositing ? true:false,
                             error: '',
                         },
                         {
                             key: 'completed',
-                            title: 'Completed',
-                            buttonText: 'control panel',
-                            stepText: 'Success ',
-                            description: '',
+                            title: <FormattedMessage id="pages.deposit.collateral.confirm.steps.completed.title" />,
+                            buttonText: <FormattedMessage id="pages.deposit.collateral.confirm.steps.completed.button" />,
+                            stepText: <FormattedMessage id="pages.deposit.collateral.confirm.steps.completed.step" />,
+                            description: <FormattedMessage id="pages.deposit.collateral.confirm.steps.completed.desc" />,
                             loading: false,
                             error: '',
                         },
@@ -333,7 +333,7 @@ export default ({ match: { params: { underlyingAsset, id,  status } }, }: any,) 
                             <Col span={8}>
                                 {item.status} {item.status == 'wait' ? <LoadingOutlined /> : <Badge status={item.status == 'confirmed' ? "success" : "error"} />}
                             </Col>
-                            <Col span={8}>Explorer</Col>
+                            <Col span={8}><FormattedMessage id="pages.deposit.collateral.confirm.explorer" /></Col>
                             </>)}
                         </Row>
                     </Col>

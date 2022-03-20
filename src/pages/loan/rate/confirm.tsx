@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useModel, history } from 'umi';
+import { useModel, history, FormattedMessage } from 'umi';
 import { Card, Row, Col, Button, Descriptions, Steps, Divider, Badge, Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons'
 import { calculateHealthFactorFromBalancesBigUnits, valueToBigNumber, InterestRate } from '@aave/protocol-js';
@@ -119,28 +119,28 @@ export default ({ match: { params: { underlyingAsset, id, rateMode } }, }: any,)
                     setSteps([
                         {
                             key: 'approval',
-                            title: approve.name,
-                            buttonText: approve.name,
-                            stepText: approve.name,
-                            description: 'Please approve before depositing',
+                            title: <FormattedMessage id="pages.loan.rate.confirm.steps.approve.title" />,
+                            buttonText: <FormattedMessage id="pages.loan.rate.confirm.steps.approve.button" />,
+                            stepText: <FormattedMessage id="pages.loan.rate.confirm.steps.approve.step" />,
+                            description: <FormattedMessage id="pages.loan.rate.confirm.steps.approve.desc" />,
                             loading: false,
                             error: '',
                         },
                         {
                             key: 'deposit',
-                            title: 'Switch interest Type',
-                            buttonText: action.name,
-                            stepText: action.name,
-                            description: 'Switch interest Type',
+                            title: <FormattedMessage id="pages.loan.rate.confirm.steps.withdraw.title" />,
+                            buttonText: <FormattedMessage id="pages.loan.rate.confirm.steps.withdraw.button" />,
+                            stepText: <FormattedMessage id="pages.loan.rate.confirm.steps.withdraw.step" />,
+                            description: <FormattedMessage id="pages.loan.rate.confirm.steps.withdraw.desc" />,
                             loading: depositing ? true : false,
                             error: '',
                         },
                         {
                             key: 'completed',
-                            title: 'Completed',
-                            buttonText: 'control panel',
-                            stepText: 'Success ',
-                            description: '',
+                            title: <FormattedMessage id="pages.loan.rate.confirm.steps.completed.title" />,
+                            buttonText: <FormattedMessage id="pages.loan.rate.confirm.steps.completed.button" />,
+                            stepText: <FormattedMessage id="pages.loan.rate.confirm.steps.completed.step" />,
+                            description: <FormattedMessage id="pages.loan.rate.confirm.steps.completed.desc" />,
                             loading: false,
                             error: '',
                         },
@@ -149,19 +149,19 @@ export default ({ match: { params: { underlyingAsset, id, rateMode } }, }: any,)
                     setSteps([
                         {
                             key: 'deposit',
-                            title: 'Switch interest Type',
-                            buttonText: action.name,
-                            stepText: action.name,
-                            description: 'Switch interest Type',
+                            title: <FormattedMessage id="pages.loan.rate.confirm.steps.withdraw.title" />,
+                            buttonText: <FormattedMessage id="pages.loan.rate.confirm.steps.withdraw.button" />,
+                            stepText: <FormattedMessage id="pages.loan.rate.confirm.steps.withdraw.step" />,
+                            description: <FormattedMessage id="pages.loan.rate.confirm.steps.withdraw.desc" />,
                             loading: depositing ? true : false,
                             error: '',
                         },
                         {
                             key: 'completed',
-                            title: 'Completed',
-                            buttonText: 'control panel',
-                            stepText: 'Success ',
-                            description: '',
+                            title: <FormattedMessage id="pages.loan.rate.confirm.steps.completed.title" />,
+                            buttonText: <FormattedMessage id="pages.loan.rate.confirm.steps.completed.button" />,
+                            stepText: <FormattedMessage id="pages.loan.rate.confirm.steps.completed.step" />,
+                            description: <FormattedMessage id="pages.loan.rate.confirm.steps.completed.desc" />,
                             loading: false,
                             error: '',
                         },
@@ -280,10 +280,9 @@ export default ({ match: { params: { underlyingAsset, id, rateMode } }, }: any,)
                 <Row>
                     <Col span={12} offset={6}>
                         <div className={styles.desc}>
-                            <div className={styles.title}>Switch interest Type to  {currentRateMode} </div>
+                            <div className={styles.title}><FormattedMessage id="pages.loan.rate.confirm.title" /> {currentRateMode} </div>
                             <div className={styles.text}>
-                                These are your transaction details. Please be sure to check whether it is
-                                correct before submitting
+                                <FormattedMessage id="pages.loan.rate.confirm.desc" />
                             </div>
                         </div>
                     </Col>
@@ -295,7 +294,7 @@ export default ({ match: { params: { underlyingAsset, id, rateMode } }, }: any,)
                                 labelStyle={{ color: '#696D85' }}
                                 contentStyle={{ justifyContent: 'end', color: '#29292D', fontWeight: 'bold' }}
                             >
-                                <Descriptions.Item label="Currency" span={3}>
+                                <Descriptions.Item label={<FormattedMessage id="pages.loan.rate.confirm.currency" />} span={3}>
                                     <TokenIcon
                                         tokenSymbol={poolReserve.symbol}
                                         height={25}
@@ -358,7 +357,7 @@ export default ({ match: { params: { underlyingAsset, id, rateMode } }, }: any,)
                                     <Col span={8}>
                                         {item.status} {item.status == 'wait' ? <LoadingOutlined /> : <Badge status={item.status == 'confirmed' ? "success" : "error"} />}
                                     </Col>
-                                    <Col span={8}>Explorer</Col>
+                                    <Col span={8}><FormattedMessage id="pages.loan.rate.confirm.explorer" /></Col>
                                 </>)}
                             </Row>
                         </Col>

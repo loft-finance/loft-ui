@@ -1,5 +1,5 @@
 import React from 'react';
-import { useModel } from 'umi';
+import { useModel, FormattedMessage } from 'umi';
 import { GridContent } from '@ant-design/pro-layout';
 import Info from '@/components/Info';
 import WalletDisconnected from '@/components/Wallet/Disconnected';
@@ -57,35 +57,35 @@ export default (props) => {
             <Info
                 items={[
                     {
-                        title: 'Your balance in the platform',
+                        title: <FormattedMessage id="pages.loan.repay.info.balance" />,
                         value: <Bignumber value={userReserve?.totalBorrows || '0'} />,
                         tag: <>(<Bignumber value={userReserve?.totalBorrowsUSD || '0'} />)</>,
                         span:8,
                     },
                     {
-                        title: 'Your collateral',
+                        title: <FormattedMessage id="pages.loan.repay.info.collateral" />,
                         value: <Bignumber value={user?.totalCollateralUSD || '0'} />,
                         tag: <>(<Bignumber value={user?.totalCollateralMarketReferenceCurrency || '0'} />)</>,
                         span:8,
                     },
                     {
-                        title: 'Fitness factor',
+                        title: <FormattedMessage id="pages.loan.repay.info.FitnessFactor" />,
                         value: <Bignumber value={userReserve?.healthFactor || '0'} />,
                         span:8,
                     },
                     {
-                        title: 'Wallet balance',
+                        title: <FormattedMessage id="pages.loan.repay.info.WalletBalance" />,
                         value: <Bignumber value={walletBalance || '0'} />,
                         tag: <>(<Bignumber value={walletBalanceUSD || '0'} />)</>,
                         span:8,
                     },
                     {
-                        title: 'Collateral composition',
+                        title: <FormattedMessage id="pages.loan.repay.info.CollateralComposition" />,
                         value: <>3.5%</>,
                         span:8,
                     },
                     {
-                        title: 'Loan-to-value ratio',
+                        title: <FormattedMessage id="pages.loan.repay.info.ratio" />,
                         value: <><Bignumber value={user?.currentLoanToValue || '0'} />%</>,
                         span:8,
                     },

@@ -4,7 +4,7 @@ import { Card, Row, Col, Button, Typography, Divider, Spin } from 'antd';
 import WalletDisconnected from '@/components/Wallet/Disconnected';
 import { valueToBigNumber, InterestRate } from '@aave/protocol-js';
 import { Pie } from '@ant-design/plots';
-import { useModel, history } from 'umi';
+import { useModel, FormattedMessage } from 'umi';
 const { Title } = Typography;
 import styles from './index.less';
 import DepositDashbord from '@/pages/deposit/dashboard'
@@ -255,12 +255,12 @@ export default () => {
               <Card bordered={false} style={{ height: '100%' }}>
                 <Row>
                   <Col span={18}>
-                    <Title level={3}>Deposit information</Title>
+                    <Title level={3}><FormattedMessage id="pages.info.deposit.title" /></Title>
                   </Col>
                 </Row>
                 <Row style={{marginTop:35}}>
                   <Col span={12} style={{ marginTop: 20 }}>
-                    <div className={styles.label}>Approximate balance</div>
+                    <div className={styles.label}><FormattedMessage id="pages.info.deposit.balance" /></div>
                     <div className={styles.value}>
                       ${Number(user?.totalLiquidityUSD || 0).toFixed(2)}
                       <span className={styles.dollar}>{Number(user?.totalLiquidityMarketReferenceCurrency || 0).toFixed(2)} USD</span>
@@ -269,7 +269,7 @@ export default () => {
                   <Col span={12}>
                     <Pie {...config} />
                     <div className={styles.tip} style={{ textAlign: 'center', fontSize: 10 }}>
-                      Deposit composition
+                      <FormattedMessage id="pages.info.deposit.composition" />
                     </div>
                   </Col>
                 </Row>
@@ -279,18 +279,18 @@ export default () => {
               <Card bordered={false}>
                 <Row>
                   <Col span={12}>
-                    <Title level={3}>Loan information</Title>
+                    <Title level={3}><FormattedMessage id="pages.info.loan.title" /></Title>
                     <Row>
                       <Col span={24}>
-                        <div className={styles.label}>Borrowed</div>
+                        <div className={styles.label}><FormattedMessage id="pages.info.loan.borrowed" /></div>
                         <div className={styles.value}>${Number(user?.totalBorrowsUSD || 0).toFixed(2)} USD</div>
                       </Col>
                       <Col span={24} style={{ marginTop: 15 }}>
-                        <div className={styles.label}>Your collateral</div>
+                        <div className={styles.label}><FormattedMessage id="pages.info.loan.collateral" /></div>
                         <div className={styles.value}>${Number(user?.totalCollateralUSD || 0).toFixed(2)} USD</div>
                       </Col>
                       <Col span={24} style={{ marginTop: 15 }}>
-                        <div className={styles.label}>Current LTV</div>
+                        <div className={styles.label}><FormattedMessage id="pages.info.loan.ltv" /></div>
                         <div className={styles.value}>5.41%</div>
                       </Col>
                     </Row>
@@ -300,25 +300,25 @@ export default () => {
                       <Col span={12}>
                         <Pie {...config} />
                         <div className={styles.tip} style={{ textAlign: 'center', fontSize: 10 }}>
-                          Loan composition
+                          <FormattedMessage id="pages.info.loan.composition" />
                         </div>
                       </Col>
                       <Col span={12}>
                         <Pie {...config3} />
                         <div className={styles.tip} style={{ textAlign: 'center', fontSize: 10 }}>
-                          Collateral composition
+                          <FormattedMessage id="pages.info.loan.CollateralComposition" />
                         </div>
                       </Col>
                     </Row>
                     <Row style={{ paddingLeft: 15 }}>
                       <Col span={24} style={{ marginTop: 15 }}>
-                        <div className={styles.label}>Fitness factor</div>
+                        <div className={styles.label}><FormattedMessage id="pages.info.loan.FitnessFactor" /></div>
                         <div className={styles.value} style={{ color: '#37A967' }}>
                           {user?.healthFactor ? Number(user?.healthFactor).toFixed(2) : '-1'}
                         </div>
                       </Col>
                       <Col span={24} style={{ marginTop: 15 }}>
-                        <div className={styles.label}>Used borrowing capacity</div>
+                        <div className={styles.label}><FormattedMessage id="pages.info.loan.capacity" /></div>
                         <div className={styles.value}>10.23%</div>
                       </Col>
                     </Row>
@@ -404,7 +404,7 @@ export default () => {
               <Card bordered={false}>
                 <Row>
                   <Col span={18}>
-                    <Title level={3}>Your deposit</Title>
+                    <Title level={3}><FormattedMessage id="pages.dashboard.deposit.title" /></Title>
                   </Col>
                   <Col span={6}></Col>
                 </Row>
@@ -415,7 +415,7 @@ export default () => {
               <Card bordered={false}>
                 <Row>
                   <Col span={18}>
-                    <Title level={3}>Your loan</Title>
+                    <Title level={3}><FormattedMessage id="pages.dashboard.loan.title" /></Title>
                   </Col>
                   <Col span={6}></Col>
                 </Row>
