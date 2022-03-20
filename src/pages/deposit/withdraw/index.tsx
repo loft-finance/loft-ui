@@ -1,5 +1,5 @@
 import React from 'react';
-import { useModel } from 'umi';
+import { useModel, FormattedMessage } from 'umi';
 import { GridContent } from '@ant-design/pro-layout';
 import Info from '@/components/Info';
 import Bignumber from '@/components/Bignumber';
@@ -67,19 +67,19 @@ export default (props) => {
             <Info
                 items={[
                     {
-                        title: 'Your balance in the platform',
+                        title: <FormattedMessage id="pages.deposit.withdraw.info.balance" />,
                         value: <Bignumber value={userReserve?.underlyingBalance || '0'} />,
                     },
                     {
-                        title: 'Fitness factor',
+                        title: <FormattedMessage id="pages.deposit.withdraw.info.FitnessFactor" />,
                         value: <Bignumber value={user?.healthFactor || '-1'} />,
                     },
                     {
-                        title: 'Loan appreciation',
+                        title: <FormattedMessage id="pages.deposit.withdraw.info.LoanAppreciation" />,
                         value: <><Bignumber value={user?.currentLoanToValue || '0'} /> %</>,
                     },
                     {
-                        title: 'Collateral composition',
+                        title: <FormattedMessage id="pages.deposit.withdraw.info.collateral" />,
                         value: '14.95%',
                     },
                 ]}

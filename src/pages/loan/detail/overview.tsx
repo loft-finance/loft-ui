@@ -1,4 +1,5 @@
 import { Row, Col, Card, Descriptions } from 'antd';
+import { FormattedMessage } from 'umi';
 import { valueToBigNumber } from '@aave/protocol-js';
 import Bignumber from '@/components/Bignumber';
 import styles from './overview.less';
@@ -41,10 +42,10 @@ export default ({ title = '', items = [], poolReserve = {}, marketRefPriceInUsd 
               labelStyle={{ color: '#696D85' }}
               contentStyle={{ justifyContent: 'end', color: '#29292D', fontWeight: 'bold' }}
             >
-              <Descriptions.Item label="Utilization rate" span={3}>
+              <Descriptions.Item label={<FormattedMessage id="pages.loan.detail.overview.UtilizationRate" />} span={3}>
                 {data.utilizationRate.toFixed(4)} %
               </Descriptions.Item>
-              <Descriptions.Item label="Available liquidity" span={3}>
+              <Descriptions.Item label={<FormattedMessage id="pages.loan.detail.overview.AvailableLiquidity" />} span={3}>
                 <Bignumber value={data.availableLiquidity} /> FTM
               </Descriptions.Item>
             </Descriptions>
@@ -54,10 +55,10 @@ export default ({ title = '', items = [], poolReserve = {}, marketRefPriceInUsd 
               labelStyle={{ color: '#696D85' }}
               contentStyle={{ justifyContent: 'end', color: '#29292D', fontWeight: 'bold' }}
             >
-              <Descriptions.Item label="Asset price" span={3}>
+              <Descriptions.Item label={<FormattedMessage id="pages.loan.detail.overview.AssetPrice" />} span={3}>
                 <Bignumber value={data.priceInUsd} /> USD
               </Descriptions.Item>
-              <Descriptions.Item label="Variable loan APY (annual interest rate)" span={3}>
+              <Descriptions.Item label={<FormattedMessage id="pages.loan.detail.overview.LoanAPY" />} span={3}>
                 {data.baseLTVasCollateral.toFixed(4)} %
               </Descriptions.Item>
             </Descriptions>

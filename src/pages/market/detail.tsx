@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
-import { useModel, history } from 'umi';
+import { useEffect, useState } from 'react';
+import { useModel, history, FormattedMessage } from 'umi';
 import { Card, Row, Col, Button, Switch, Spin } from 'antd';
 import { GridContent } from '@ant-design/pro-layout';
 import WalletDisconnected from '@/components/Wallet/Disconnected';
@@ -7,6 +7,7 @@ import { Pie } from '@ant-design/plots';
 import { valueToBigNumber, BigNumber } from '@aave/protocol-js';
 import Bignumber from '@/components/Bignumber';
 import styles from './detail.less';
+import { TokenIcon } from '@aave/aave-ui-kit';
 
 export enum BorrowRateMode {
   None = 'None',
@@ -216,13 +217,13 @@ export default (props: any) => {
   return (
     <GridContent>
       <div className={styles.alert}>
-        Please confirm you installed Metamask and selected Binance Smart Chain Network.
+        <FormattedMessage id="pages.market.detail.alert" />
       </div>
 
       <Row>
         {!!poolReserve &&
           <Col span={16} style={{ paddingRight: 10 }}>
-            <div className={styles.title}>Reserve status & configuration</div>
+            <div className={styles.title}><FormattedMessage id="pages.market.detail.config" /></div>
             <Row>
               <Col span={24}>
                 <Card bordered={false}>
@@ -239,12 +240,12 @@ export default (props: any) => {
                                 className={styles.dot}
                                 style={{ backgroundColor: '#26A984' }}
                               ></span>
-                              Total borrowings
+                              <FormattedMessage id="pages.market.detail.config.TotalBorrowings" />
                             </div>
                             <div className={styles.amount}><Bignumber value={data.totalBorrows} /></div>
                             <div className={styles.value}>$<Bignumber value={data.totalBorrowsInUsd} /></div>
                             <div className={styles.card}>
-                              <div className={styles.name}>Reserve scale</div>
+                              <div className={styles.name}><FormattedMessage id="pages.market.detail.config.ReserveScale" /></div>
                               <div className={styles.value}>$ <Bignumber value={data.totalLiquidityInUsd} /></div>
                             </div>
                           </div>
@@ -256,12 +257,12 @@ export default (props: any) => {
                                 className={styles.dot}
                                 style={{ backgroundColor: '#7BDBBF' }}
                               ></span>
-                              Available Liquidity
+                              <FormattedMessage id="pages.market.detail.config.AvailableLiquidity" />
                             </div>
                             <div className={styles.amount}><Bignumber value={data.availableLiquidity} /></div>
                             <div className={styles.value}>$<Bignumber value={data.availableLiquidityInUsd} /></div>
                             <div className={styles.card}>
-                              <div className={styles.name}>Reserve scale</div>
+                              <div className={styles.name}><FormattedMessage id="pages.market.detail.config.ReserveScale" /></div>
                               <div className={styles.value}>$<Bignumber value={data.availableLiquidityInUsd} /></div>
                             </div>
                           </div>
@@ -272,20 +273,20 @@ export default (props: any) => {
                   <Row style={{ marginTop: 15 }}>
                     <Col span={12} style={{ paddingRight: 5 }}>
                       <Card
-                        title="Deposit"
+                        title={<FormattedMessage id="pages.market.detail.config.deposit" />}
                         className="CardInfo"
                         headStyle={{ textAlign: 'center', backgroundColor: '#ECF3FF', height: 38 }}
                         bodyStyle={{ padding: '15px 15px 5px' }}
                       >
                         <Row className={styles.CardInfo}>
                           <Col span={12} className={styles.label}>
-                            Deposit APY (Annual Yield)
+                            <FormattedMessage id="pages.market.detail.config.DepositAPY" />
                           </Col>
                           <Col span={12} className={styles.value}>
                             {Number(data.supplyAPY).toFixed(4)}%
                           </Col>
                           <Col span={12} className={styles.label}>
-                            Average of the past 30 days
+                            <FormattedMessage id="pages.market.detail.config.DepositAverage" />
                           </Col>
                           <Col span={12} className={styles.value}>
                             {Number(data.supplyAPR).toFixed(4)}
@@ -295,26 +296,26 @@ export default (props: any) => {
                     </Col>
                     <Col span={12} style={{ paddingLeft: 5 }}>
                       <Card
-                        title="Variable borrowing"
+                        title={<FormattedMessage id="pages.market.detail.config.Borrow" />}
                         className="CardInfo"
                         headStyle={{ textAlign: 'center', backgroundColor: '#ECF3FF', height: 38 }}
                         bodyStyle={{ padding: '15px 15px 5px' }}
                       >
                         <Row className={styles.CardInfo}>
                           <Col span={12} className={styles.label}>
-                            Borrow APY
+                          <FormattedMessage id="pages.market.detail.config.BorrowApy" />
                           </Col>
                           <Col span={12} className={styles.value}>
                             {Number(data.variableAPY).toFixed(4)}%
                           </Col>
                           <Col span={12} className={styles.label}>
-                            Average of the past 30 days
+                            <FormattedMessage id="pages.market.detail.config.BorrowAverage" />
                           </Col>
                           <Col span={12} className={styles.value}>
                             {Number(data.variableAPR).toFixed(4)}
                           </Col>
                           <Col span={12} className={styles.label}>
-                            Percentage of total
+                            <FormattedMessage id="pages.market.detail.config.BorrowPercentage" />
                           </Col>
                           <Col span={12} className={styles.value}>
                             {Number(data.variableOverTotal).toFixed(4)}%
@@ -325,21 +326,21 @@ export default (props: any) => {
                   </Row>
                   <Row style={{ marginTop: 15 }} className={styles.info}>
                     <Col span={6}>
-                      <div className={styles.label}>Max LTV</div>
+                      <div className={styles.label}><FormattedMessage id="pages.market.detail.config.MaxLtv" /></div>
                       <div className={styles.value}>{data.baseLTVasCollateral}%</div>
                     </Col>
                     <Col span={6}>
-                      <div className={styles.label}>Liquidation threshold</div>
+                      <div className={styles.label}><FormattedMessage id="pages.market.detail.config.LiquidationThreshold" /></div>
                       <div className={styles.value}>{data.liquidationBonus <= 0
                         ? 0
                         : data.liquidationThreshold}%</div>
                     </Col>
                     <Col span={6}>
-                      <div className={styles.label}>Liquidation penalty</div>
+                      <div className={styles.label}><FormattedMessage id="pages.market.detail.config.LiquidationPenalty" /></div>
                       <div className={styles.value}>{data.liquidationBonus}%</div>
                     </Col>
                     <Col span={6}>
-                      <div className={styles.label}>Used as collatera</div>
+                      <div className={styles.label}><FormattedMessage id="pages.market.detail.config.Collatera" /></div>
                       <div className={styles.bool}>{data.usageAsCollateralEnabled ? 'yes' : 'no'}</div>
                     </Col>
                   </Row>
@@ -354,7 +355,7 @@ export default (props: any) => {
           </Col>
         }
         <Col span={8}>
-          <div className={styles.title}>Your message</div>
+          <div className={styles.title}><FormattedMessage id="pages.market.detail.your" /></div>
           {!wallet && <WalletDisconnected showBack={false} />}
 
           {wallet && (
@@ -365,31 +366,31 @@ export default (props: any) => {
                     <Row>
                       <Col span={24}>
                         <Row>
-                          <Col span={6}>deposit</Col>
+                          <Col span={6}><FormattedMessage id="pages.market.detail.your.deposit" /></Col>
                           <Col span={18} style={{ textAlign: 'right' }} >
                             <Button size="small" type="primary" shape="round" onClick={handler.deposit}>
-                              deposit
+                              <FormattedMessage id="pages.market.detail.your.deposit.button.deposit" />
                             </Button>
                             <Button onClick={handler.withdraw} size="small" shape="round" style={{ marginLeft: 8 }}>
-                              withdraw
+                              <FormattedMessage id="pages.market.detail.your.deposit.button.withdraw" />
                             </Button>
                           </Col>
                         </Row>
                         <Row className={styles.msg}>
                           <Col span={12} className={styles.label}>
-                            Your wallet balance
+                            <FormattedMessage id="pages.market.detail.your.deposit.balance" />
                           </Col>
                           <Col span={12} className={styles.value}>
                             <Bignumber value={walletBalance} /> USDT
                           </Col>
                           <Col span={12} className={styles.label}>
-                            You have deposited
+                            <FormattedMessage id="pages.market.detail.your.deposit.deposited" />
                           </Col>
                           <Col span={12} className={styles.value}>
                             {Number(underlyingBalance).toFixed(2)} USDT
                           </Col>
                           <Col span={12} className={styles.label}>
-                            Used as collateral
+                            <FormattedMessage id="pages.market.detail.your.deposit.collateral" />
                           </Col>
                           <Col span={12} className={styles.value}>
                             No <Switch onClick={handler.collateral} checked={userReserve?.usageAsCollateralEnabledOnUser &&
@@ -405,27 +406,27 @@ export default (props: any) => {
                     <Row>
                       <Col span={24}>
                         <Row>
-                          <Col span={6}>loan</Col>
+                          <Col span={6}><FormattedMessage id="pages.market.detail.your.loan" /></Col>
                           <Col span={18} style={{ textAlign: 'right' }}>
                             <Button size="small" type="primary" shape="round">
-                              loan
+                              <FormattedMessage id="pages.market.detail.your.loan.button.loan" />
                             </Button>
                           </Col>
                         </Row>
                         <Row className={styles.msg}>
-                          <Col span={12} className={styles.label}>Borrowed</Col>
+                          <Col span={12} className={styles.label}><FormattedMessage id="pages.market.detail.your.loan.borrowed" /></Col>
                           <Col span={12} className={styles.value}>
                             {Number(totalBorrows || 0).toFixed(2)} USDT
                           </Col>
-                          <Col span={12} className={styles.label}>Fitness factor</Col>
+                          <Col span={12} className={styles.label}><FormattedMessage id="pages.market.detail.your.loan.FitnessFactor" /></Col>
                           <Col span={12} className={styles.value}>
                             {Number(user?.healthFactor || '-1').toFixed(2)}
                           </Col>
-                          <Col span={12} className={styles.label}>Loan appreciation</Col>
+                          <Col span={12} className={styles.label}><FormattedMessage id="pages.market.detail.your.loan.LoanAppreciation" />Loan appreciation</Col>
                           <Col span={12} className={styles.value}>
                             {user?.currentLoanToValue || 0}%
                           </Col>
-                          <Col span={12} className={styles.label}>Available</Col>
+                          <Col span={12} className={styles.label}><FormattedMessage id="pages.market.detail.your.loan.available" /></Col>
                           <Col span={12} className={styles.value}>
                             {Number(availableBorrows).toFixed(2)} USDT
                           </Col>
@@ -436,8 +437,8 @@ export default (props: any) => {
                 </Col>
                 <Col span={24}>
                   <Row style={{ marginTop: 15, padding: '0 24px' }}>
-                    <Col span={8}>Your loan</Col>
-                    <Col span={8}>Borrowed</Col>
+                    <Col span={8}><FormattedMessage id="pages.market.detail.your.loan.record.loan" /></Col>
+                    <Col span={8}><FormattedMessage id="pages.market.detail.your.loan.record.borrowed" /></Col>
                   </Row>
                   <Card
                     bordered={false}
@@ -445,17 +446,25 @@ export default (props: any) => {
                     style={{ marginTop: 10 }}
                   >
                     <Row className={styles.loan}>
-                      <Col span={8} className={styles.label}>FUSDT</Col>
+                      <Col span={8} className={styles.label}>
+                        <TokenIcon 
+                          tokenSymbol={poolReserve.symbol}
+                          height={35}
+                          width={35}
+                          tokenFullName={poolReserve.symbol}
+                          className="MarketTableItem__token"
+                        />
+                      </Col>
                       <Col span={6} className={styles.value}>
                         <div>{Number(availableBorrows).toFixed(2)}</div>
                         <div className={styles.tag}>${Number(availableBorrows).toFixed(2)}</div>
                       </Col>
                       <Col span={9} offset={1} className={styles.label}>
                         <Button size="small" type="primary" shape="round" onClick={handler.loan}>
-                          loan
+                          <FormattedMessage id="pages.market.detail.your.loan.record.button.loan" />
                         </Button>
                         <Button size="small" shape="round" style={{ marginLeft: 8 }} onClick={handler.repay}>
-                          repay
+                          <FormattedMessage id="pages.market.detail.your.loan.record.button.repay" />
                         </Button>
                       </Col>
                     </Row>

@@ -1,17 +1,26 @@
+import market from '@/pages/market/locales';
+import DepositIndex from '@/pages/deposit/locales'
+import DepositDetail from '@/pages/deposit/detail/locales'
+import DepositWithdraw from '@/pages/deposit/withdraw/locales'
+import DepositCollateral from '@/pages/deposit/collateral/locales'
+import DepositDashboard from '@/pages/deposit/dashboard/locales'
+import LoanIndex from '@/pages/loan/locales'
+import LoanDetail from '@/pages/loan/detail/locales'
+import LoanRepay from '@/pages/loan/repay/locales'
+import LoanRate from '@/pages/loan/rate/locales'
+import LoanDashboard from '@/pages/loan/dashboard/locales'
+import control from '@/pages/control/locales'
 export default {
-    'pages.market.index.describe':'Is an open source and non-custodial liquidity agreement used to earn interest on deposits and borrowed assets',
-    'pages.market.index.button':'To trade coins',
-    'pages.market.index.info.pledge':'Pledge coin',
-    'pages.market.index.info.price':'Coin price',
-    'pages.market.index.info.fluidity':'Fluidity',
-    'pages.market.index.info.value':'Market value',
-    'pages.market.index.table.collumn.assets':'Assets',
-    'pages.market.index.table.collumn.MarketSize':'Market Size',
-    'pages.market.index.table.collumn.TotalBorrowings':'total borrowings',
-    'pages.market.index.table.collumn.DepositApy':'deposit APY (annual rate of return)',
-    'pages.market.index.table.collumn.BorrowingRate':'annual interest rate of borrowing',
-    'pages.market.detail.alert':'Please confirm you installed Metamask and selected Binance Smart Chain Network.',
-    'pages.market.detail.config':'Reserve status & configuration',
-    'pages.market.detail.config.total':'Total borrowings',
-    'pages.market.detail.config.TotalBorrowings':'Total borrowings',
+    ...market,
+    ...DepositIndex,
+    ...DepositDetail,
+    ...DepositWithdraw,
+    ...DepositCollateral,
+    ...DepositDashboard,
+    ...LoanIndex,
+    ...LoanDetail,
+    ...LoanRepay,
+    ...LoanRate,
+    ...LoanDashboard,
+    ...control
 };

@@ -1,5 +1,5 @@
 import { Row, Col, Button, Switch, Empty } from 'antd';
-import { history } from 'umi';
+import { history, FormattedMessage } from 'umi';
 import { TokenIcon } from '@aave/aave-ui-kit';
 import styles from './index.less';
 export enum BorrowRateMode {
@@ -24,9 +24,9 @@ export default ({borrowedPositions}: any) => {
     }
     return (<div className={styles.table}>
       <Row className={styles.head}>
-        <Col span={7}>current balance</Col>
-        <Col span={7}>Annual rate of return</Col>
-        <Col span={3}>Collateral</Col>
+        <Col span={7}><FormattedMessage id="pages.loan.dashboard.table.col.balance" /></Col>
+        <Col span={7}><FormattedMessage id="pages.loan.dashboard.table.col.rate" /></Col>
+        <Col span={3}><FormattedMessage id="pages.loan.dashboard.table.col.collateral" /></Col>
       </Row>
       {borrowedPositions.map((item: any)=>
       <Row className={styles.row}>
@@ -52,10 +52,10 @@ export default ({borrowedPositions}: any) => {
         </Col>
         <Col span={7} className={styles.single}>
           <Button size="small" type="primary" shape={'round'} style={{ marginLeft: 5 }} onClick={()=>handler.loan(item)}>
-            loan
+            <FormattedMessage id="pages.loan.dashboard.button.loan" />
           </Button>
           <Button size="small" shape={'round'} style={{ marginLeft: 5 }} onClick={()=>handler.repay(item)}>
-            repay
+            <FormattedMessage id="pages.loan.dashboard.button.repay" />
           </Button>
         </Col>
       </Row>
