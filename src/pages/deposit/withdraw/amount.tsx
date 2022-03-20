@@ -1,22 +1,33 @@
 import { useEffect, useState } from 'react';
-import { Card, Row, Col, Button, Form, InputNumber } from 'antd';
+import { Card, Row, Col, Button, Form, Input, message } from 'antd';
 import { history } from 'umi';
 import { TokenIcon } from '@aave/aave-ui-kit';
 import Bignumber from '@/components/Bignumber';
 import Back from '@/components/Back';
 import styles from './amount.less';
+import { valueToBigNumber } from '@aave/protocol-js';
 
 export default ({ poolReserve, maxUserAmountToWithdraw }: any) => {
   const symbol = poolReserve?poolReserve.symbol:''
-  
+  const [form] = Form.useForm();
   useEffect(() => {
     
   }, []);
 
   const handler = {
     submit(values: any) {
-        history.push(`/deposit/withdraw/${poolReserve.underlyingAsset}/${poolReserve.id}/confirm/${values.amount}`);
+      const amount = valueToBigNumber(values.amount)
+      if(amount.gt(maxUserAmountToWithdraw)){
+        message.error('The quality must be less than max amount to withdraw')
+        return;
+      }
+      history.push(`/deposit/withdraw/${poolReserve.underlyingAsset}/${poolReserve.id}/confirm/${values.amount}`);
     },
+    max(){
+      form.setFieldsValue({
+        amount: maxUserAmountToWithdraw.toString()
+      })
+    }
   };
 
   return (
@@ -32,6 +43,7 @@ export default ({ poolReserve, maxUserAmountToWithdraw }: any) => {
               <Col span={8} offset={8}>
                 <Form
                   name="basic"
+                  form={form}
                   layout={'vertical'}
                   onFinish={handler.submit}
                   autoComplete="off"
@@ -44,7 +56,7 @@ export default ({ poolReserve, maxUserAmountToWithdraw }: any) => {
                     name="amount"
                     rules={[{ required: true, message: 'Please input quantity!' }]}
                   >
-                    <InputNumber
+                    <Input
                       style={{ width: '100%' }}
                       placeholder="Quantity"
                       prefix={<TokenIcon 
@@ -54,7 +66,7 @@ export default ({ poolReserve, maxUserAmountToWithdraw }: any) => {
                         tokenFullName={''}
                         className="MarketTableItem__token"
                       />}
-                      suffix={<a>Max</a>}
+                      suffix={<a onClick={handler.max}>Max</a>}
                     />
                   </Form.Item>
 

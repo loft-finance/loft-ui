@@ -41,7 +41,6 @@ export default () => {
         .multipliedBy(marketRefPriceInUsd)
         .toNumber();
       const reserveIncentiveData = reserveIncentives[reserve.underlyingAsset.toLowerCase()] || false;
-      // const reserveIncentiveData = false
       return {
         totalLiquidity,
         totalLiquidityInUSD,

@@ -6,12 +6,13 @@ import WalletDisconnected from '@/components/Wallet/Disconnected';
 import WalletEmpty from '@/components/Wallet/Empty';
 import { BigNumber, valueToBigNumber, InterestRate } from '@aave/protocol-js';
 import { getNetwork } from '@/lib/helpers/provider';
+import Bignumber from '@/components/Bignumber';
 
 export default (props) => {
     const { match: { params: { underlyingAsset, id } } } = props
 
     const { wallet, balances } = useModel('wallet');
-    const { reserves, user } = useModel('pool')
+    const { reserves, user, baseCurrency } = useModel('pool')
     const { current: currentMarket } = useModel('market');
 
     const chainId = currentMarket.chainId
@@ -27,6 +28,12 @@ export default (props) => {
     if (balance && poolReserve) {
         walletBalance = valueToBigNumber(balance).dividedBy(valueToBigNumber(10).pow(poolReserve?.decimals))
     }
+
+    const marketRefPriceInUsd = baseCurrency.marketReferenceCurrencyPriceInUsd
+    const walletBalanceUSD = valueToBigNumber(walletBalance)
+        .multipliedBy(poolReserve?.priceInMarketReferenceCurrency)
+        .multipliedBy(marketRefPriceInUsd);
+
 
     const userReserve = user
         ? user.userReservesData.find((userReserve) =>
@@ -51,19 +58,36 @@ export default (props) => {
                 items={[
                     {
                         title: 'Your balance in the platform',
-                        value: walletBalance.toString(),
+                        value: <Bignumber value={userReserve?.totalBorrows || '0'} />,
+                        tag: <>(<Bignumber value={userReserve?.totalBorrowsUSD || '0'} />)</>,
+                        span:8,
+                    },
+                    {
+                        title: 'Your collateral',
+                        value: <Bignumber value={user?.totalCollateralUSD || '0'} />,
+                        tag: <>(<Bignumber value={user?.totalCollateralMarketReferenceCurrency || '0'} />)</>,
+                        span:8,
                     },
                     {
                         title: 'Fitness factor',
-                        value: '14.95',
+                        value: <Bignumber value={userReserve?.healthFactor || '0'} />,
+                        span:8,
                     },
                     {
-                        title: 'Loan appreciation',
-                        value: '52.15%',
+                        title: 'Wallet balance',
+                        value: <Bignumber value={walletBalance || '0'} />,
+                        tag: <>(<Bignumber value={walletBalanceUSD || '0'} />)</>,
+                        span:8,
                     },
                     {
                         title: 'Collateral composition',
-                        value: '14.95',
+                        value: <>3.5%</>,
+                        span:8,
+                    },
+                    {
+                        title: 'Loan-to-value ratio',
+                        value: <><Bignumber value={user?.currentLoanToValue || '0'} />%</>,
+                        span:8,
                     },
                 ]}
             />

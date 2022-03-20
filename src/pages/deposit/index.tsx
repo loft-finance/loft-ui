@@ -18,7 +18,8 @@ export default () => {
   const { reserves, baseCurrency, user } = useModel('pool')
   const marketRefPriceInUsd = baseCurrency.marketReferenceCurrencyPriceInUsd
 
-  const { wallet } = useModel('wallet')
+  const { wallet, balances } = useModel('wallet')
+
 
   const { reserveIncentives } = useModel('incentives')
 
@@ -39,9 +40,12 @@ export default () => {
         const userReserve = user?.userReservesData.find(
           (userRes) => userRes.reserve.symbol === reserve.symbol
         );
-        const walletBalance = wallet?.balance ? valueToBigNumber(wallet?.balance || '0').dividedBy(
-          valueToBigNumber('10').pow(reserve.decimals)
-        ) : valueToBigNumber('0');
+        const walletBalance =
+          balances[reserve.underlyingAsset] === '0'
+            ? valueToBigNumber('0')
+            : valueToBigNumber(balances[reserve.underlyingAsset] || '0').dividedBy(
+              valueToBigNumber('10').pow(reserve.decimals)
+            );
         const walletBalanceInUSD = walletBalance
           .multipliedBy(reserve.priceInMarketReferenceCurrency)
           .multipliedBy(marketRefPriceInUsd)
@@ -93,44 +97,6 @@ export default () => {
   const handler = {
     detail(record: any) {
       history.push(`/deposit/detail/${record.underlyingAsset}/${record.id}`);
-    },
-    data() {
-      reserves.map((reserve) => {
-        const userReserve = user?.userReservesData.find(
-          (userRes) => userRes.reserve.symbol === reserve.symbol
-        );
-        const walletBalance =
-          walletData[reserve.underlyingAsset] === '0'
-            ? valueToBigNumber('0')
-            : valueToBigNumber(walletData[reserve.underlyingAsset] || '0').dividedBy(
-              valueToBigNumber('10').pow(reserve.decimals)
-            );
-        const walletBalanceInUSD = walletBalance
-          .multipliedBy(reserve.priceInMarketReferenceCurrency)
-          .multipliedBy(marketRefPriceInUsd)
-          .toString();
-        const reserveIncentiveData = reserveIncentives[reserve.underlyingAsset.toLowerCase()];
-        return {
-          ...reserve,
-          walletBalance,
-          walletBalanceInUSD,
-          underlyingBalance: userReserve ? userReserve.underlyingBalance : '0',
-          underlyingBalanceInUSD: userReserve ? userReserve.underlyingBalanceUSD : '0',
-          liquidityRate: reserve.supplyAPY,
-          avg30DaysLiquidityRate: Number(reserve.avg30DaysLiquidityRate),
-          borrowingEnabled: reserve.borrowingEnabled,
-          interestHistory: [],
-          aincentivesAPR: reserveIncentiveData
-            ? reserveIncentiveData.aIncentives.incentiveAPR
-            : '0',
-          vincentivesAPR: reserveIncentiveData
-            ? reserveIncentiveData.vIncentives.incentiveAPR
-            : '0',
-          sincentivesAPR: reserveIncentiveData
-            ? reserveIncentiveData.sIncentives.incentiveAPR
-            : '0',
-        };
-      });
     },
     search(value: string) {
       setSearchValue(value)

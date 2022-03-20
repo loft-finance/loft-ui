@@ -1,24 +1,38 @@
 import { useEffect, useState } from 'react';
-import { Card, Row, Col, Button, Form, InputNumber } from 'antd';
+import { Card, Row, Col, Button, Form, Input, message } from 'antd';
 import { history } from 'umi';
 import { TokenIcon } from '@aave/aave-ui-kit';
 import Bignumber from '@/components/Bignumber';
 
 import Back from '@/components/Back';
 import styles from './amount.less';
+import { valueToBigNumber } from '@aave/protocol-js';
 
 export default ({ poolReserve, maxAmountToDeposit }: any) => {
   const symbol = poolReserve?poolReserve.symbol:''
   
+  const [form] = Form.useForm();
   useEffect(() => {
     
   }, []);
 
   const handler = {
     submit(values: any) {
-        history.push(`/deposit/detail/${poolReserve.underlyingAsset}/${poolReserve.id}/confirm/${values.amount}`);
+      const amount = valueToBigNumber(values.amount)
+      if(amount.gt(maxAmountToDeposit)){
+        message.error('The quality must be less than max amount to deposit')
+        return;
+      }
+      history.push(`/deposit/detail/${poolReserve.underlyingAsset}/${poolReserve.id}/confirm/${values.amount}`);
     },
+    max(){
+      form.setFieldsValue({
+        amount: maxAmountToDeposit.toString()
+      })
+    }
   };
+
+  
 
   return (
     <Card bordered={false}>
@@ -35,6 +49,7 @@ export default ({ poolReserve, maxAmountToDeposit }: any) => {
               <Col span={8} offset={8}>
                 <Form
                   name="basic"
+                  form={form}
                   layout={'vertical'}
                   onFinish={handler.submit}
                   autoComplete="off"
@@ -47,9 +62,10 @@ export default ({ poolReserve, maxAmountToDeposit }: any) => {
                     name="amount"
                     rules={[{ required: true, message: 'Please input quantity!' }]}
                   >
-                    <InputNumber
+                    <Input
                       style={{ width: '100%' }}
                       placeholder="Quantity"
+                      type={'number'}
                       prefix={<TokenIcon 
                         tokenSymbol={symbol}
                         height={20}
@@ -57,7 +73,7 @@ export default ({ poolReserve, maxAmountToDeposit }: any) => {
                         tokenFullName={''}
                         className="MarketTableItem__token"
                       />}
-                      suffix={<a>Max</a>}
+                      suffix={<a onClick={handler.max}>Max</a>}
                     />
                   </Form.Item>
 

@@ -258,7 +258,7 @@ export default () => {
                     <Title level={3}>Deposit information</Title>
                   </Col>
                 </Row>
-                <Row>
+                <Row style={{marginTop:35}}>
                   <Col span={12} style={{ marginTop: 20 }}>
                     <div className={styles.label}>Approximate balance</div>
                     <div className={styles.value}>

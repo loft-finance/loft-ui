@@ -10,7 +10,7 @@ import Back from '@/components/Back';
 import styles from './confirm.less';
 const { Step } = Steps;
 
-export default ({ poolReserve, maxAmountToDeposit, match: { params: { amount: amount0 } }, }: any,) => {
+export default ({ poolReserve, userReserve, maxAmountToDeposit, match: { params: { amount: amount0 } }, }: any,) => {
     const amount = valueToBigNumber(amount0);
 
     const [steps, setSteps] = useState<any>([]);
@@ -20,14 +20,15 @@ export default ({ poolReserve, maxAmountToDeposit, match: { params: { amount: am
     const [customGasPrice, setCustomGasPrice] = useState<string | null>(null);
     const [records, setRecords] = useState<any>([]);
     
-    const { user, userReserve, baseCurrency } = useModel('pool')
+    const { user, baseCurrency } = useModel('pool')
     const { wallet } = useModel('wallet');
     const provider = wallet?.provider
     const { lendingPool } = useModel('lendingPool');
 
 
+    const marketRefPriceInUsd = baseCurrency.marketReferenceCurrencyPriceInUsd
     const amountIntEth = amount.multipliedBy(poolReserve.priceInMarketReferenceCurrency);
-    const amountInUsd = amountIntEth.multipliedBy(baseCurrency.marketReferenceCurrencyPriceInUsd);
+    const amountInUsd = amountIntEth.multipliedBy(marketRefPriceInUsd);
     const totalCollateralMarketReferenceCurrencyAfter = valueToBigNumber(
         user.totalCollateralMarketReferenceCurrency
     ).plus(amountIntEth);

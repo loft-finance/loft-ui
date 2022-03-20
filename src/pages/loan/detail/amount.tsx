@@ -1,23 +1,33 @@
 import { useEffect, useState } from 'react';
-import { Card, Row, Col, Button, Form, InputNumber } from 'antd';
+import { Card, Row, Col, Button, Form, Input, message } from 'antd';
 import { history } from 'umi';
 import { TokenIcon } from '@aave/aave-ui-kit';
 import Bignumber from '@/components/Bignumber';
-
+import { valueToBigNumber } from '@aave/protocol-js';
 import Back from '@/components/Back';
 import styles from './amount.less';
 
 export default ({ poolReserve, maxAmountToBorrow }: any) => {
   const symbol = poolReserve?poolReserve.symbol:''
-  
+  const [form] = Form.useForm()
   useEffect(() => {
     
   }, []);
 
   const handler = {
     submit(values: any) {
-        history.push(`/loan/detail/${poolReserve.underlyingAsset}/${poolReserve.id}/confirm/${values.amount}`);
+      const amount = valueToBigNumber(values.amount)
+      if(amount.gt(maxAmountToBorrow)){
+        message.error('The quality must be less than max amount to loan')
+        return;
+      }
+      history.push(`/loan/detail/${poolReserve.underlyingAsset}/${poolReserve.id}/confirm/${values.amount}`);
     },
+    max(){
+      form.setFieldsValue({
+        amount: maxAmountToBorrow.toString()
+      })
+    }
   };
 
   return (
@@ -35,6 +45,7 @@ export default ({ poolReserve, maxAmountToBorrow }: any) => {
               <Col span={8} offset={8}>
                 <Form
                   name="basic"
+                  form={form}
                   layout={'vertical'}
                   onFinish={handler.submit}
                   autoComplete="off"
@@ -47,7 +58,7 @@ export default ({ poolReserve, maxAmountToBorrow }: any) => {
                     name="amount"
                     rules={[{ required: true, message: 'Please input quantity!' }]}
                   >
-                    <InputNumber
+                    <Input
                       style={{ width: '100%' }}
                       placeholder="Quantity"
                       prefix={<TokenIcon 
@@ -57,7 +68,7 @@ export default ({ poolReserve, maxAmountToBorrow }: any) => {
                         tokenFullName={''}
                         className="MarketTableItem__token"
                       />}
-                      suffix={<a>Max</a>}
+                      suffix={<a onClick={handler.max}>Max</a>}
                     />
                   </Form.Item>
 

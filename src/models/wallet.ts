@@ -69,6 +69,7 @@ export default () => {
     const disconnect = () => {
         walletRef.current.deactivate()
         setCurrent('')
+        localStorage.removeItem('wallet')
     }
 
     const getBalance = async () => {
