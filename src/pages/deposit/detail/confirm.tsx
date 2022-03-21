@@ -3,6 +3,7 @@ import { useModel, history, FormattedMessage } from 'umi';
 import { Card, Row, Col, Button, Descriptions, Steps, Divider, Badge, Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons'
 import { calculateHealthFactorFromBalancesBigUnits, valueToBigNumber } from '@aave/protocol-js';
+import { normalize } from '@aave/math-utils';
 import { sendEthTransaction, TxStatusType } from '@/lib/helpers/send-ethereum-tx';
 import Bignumber from '@/components/Bignumber';
 
@@ -26,7 +27,7 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, match: { params:
     const { lendingPool } = useModel('lendingPool');
 
 
-    const marketRefPriceInUsd = baseCurrency.marketReferenceCurrencyPriceInUsd
+    const marketRefPriceInUsd = normalize(baseCurrency?.marketReferenceCurrencyPriceInUsd || '0', 8)
     const amountIntEth = amount.multipliedBy(poolReserve.priceInMarketReferenceCurrency);
     const amountInUsd = amountIntEth.multipliedBy(marketRefPriceInUsd);
     const totalCollateralMarketReferenceCurrencyAfter = valueToBigNumber(
@@ -295,7 +296,7 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, match: { params:
                                         marginTop: -20,
                                     }}
                                 >
-                                    $ <Bignumber value={amountInUsd} maximumFractionDigits={4} />
+                                    $ <Bignumber value={amountInUsd} />
                                 </Descriptions.Item>
                                 <Descriptions.Item
                                     label={<FormattedMessage id="pages.deposit.detail.confirm.collateral" />}

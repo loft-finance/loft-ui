@@ -5,6 +5,7 @@ import Info from '@/components/Info';
 import WalletDisconnected from '@/components/Wallet/Disconnected';
 import WalletEmpty from '@/components/Wallet/Empty';
 import { BigNumber, valueToBigNumber, InterestRate } from '@aave/protocol-js';
+import { normalize } from '@aave/math-utils';
 import { getNetwork } from '@/lib/helpers/provider';
 import Bignumber from '@/components/Bignumber';
 
@@ -29,7 +30,9 @@ export default (props) => {
         walletBalance = valueToBigNumber(balance).dividedBy(valueToBigNumber(10).pow(poolReserve?.decimals))
     }
 
-    const marketRefPriceInUsd = baseCurrency.marketReferenceCurrencyPriceInUsd
+
+    const marketRefPriceInUsd = normalize(baseCurrency?.marketReferenceCurrencyPriceInUsd || '0', 8)
+
     const walletBalanceUSD = valueToBigNumber(walletBalance)
         .multipliedBy(poolReserve?.priceInMarketReferenceCurrency)
         .multipliedBy(marketRefPriceInUsd);

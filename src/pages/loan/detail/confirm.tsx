@@ -4,6 +4,7 @@ import { Card, Row, Col, Button, Descriptions, Steps, Divider, Badge, Spin } fro
 import { LoadingOutlined } from '@ant-design/icons'
 import { calculateHealthFactorFromBalancesBigUnits, InterestRate, valueToBigNumber } from '@aave/protocol-js';
 import { sendEthTransaction, TxStatusType } from '@/lib/helpers/send-ethereum-tx';
+import { normalize } from '@aave/math-utils';
 import Bignumber from '@/components/Bignumber';
 
 import Back from '@/components/Back';
@@ -30,10 +31,11 @@ export default ({ poolReserve, maxAmountToDeposit, location:{ query }, match: { 
     typeof query.rateMode === 'string'
       ? InterestRate[query.rateMode as InterestRate]
       : InterestRate.Variable;
-
+    
+    const marketRefPriceInUsd = normalize(baseCurrency?.marketReferenceCurrencyPriceInUsd || '0', 8)
 
     const amountIntEth = amount.multipliedBy(poolReserve.priceInMarketReferenceCurrency);
-    const amountInUsd = amountIntEth.multipliedBy(baseCurrency.marketReferenceCurrencyPriceInUsd);
+    const amountInUsd = amountIntEth.multipliedBy(marketRefPriceInUsd);
     const totalCollateralMarketReferenceCurrencyAfter = valueToBigNumber(
         user.totalCollateralMarketReferenceCurrency
     ).plus(amountIntEth);
@@ -315,7 +317,7 @@ export default ({ poolReserve, maxAmountToDeposit, location:{ query }, match: { 
                                         marginTop: -20,
                                     }}
                                 >
-                                    $ <Bignumber value={amountInUsd} maximumFractionDigits={4} />
+                                    $ <Bignumber value={amountInUsd} />
                                 </Descriptions.Item>
                                 <Descriptions.Item
                                     label="Collateral Usage"

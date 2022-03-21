@@ -5,6 +5,7 @@ import { LoadingOutlined } from '@ant-design/icons'
 import { calculateHealthFactorFromBalancesBigUnits, valueToBigNumber, BigNumber, InterestRate } from '@aave/protocol-js';
 import { sendEthTransaction, TxStatusType } from '@/lib/helpers/send-ethereum-tx';
 import Bignumber from '@/components/Bignumber';
+import { normalize } from '@aave/math-utils';
 
 import Back from '@/components/Back';
 import styles from './confirm.less';
@@ -25,8 +26,7 @@ export default ({ poolReserve, user, userReserve, maxAmountToRepay, debtType, wa
     const provider = wallet?.provider
     const { lendingPool } = useModel('lendingPool');
 
-    const marketRefPriceInUsd = baseCurrency.marketReferenceCurrencyPriceInUsd
-
+    const marketRefPriceInUsd = normalize(baseCurrency?.marketReferenceCurrencyPriceInUsd || '0', 8)
 
     const safeAmountToRepayAll = valueToBigNumber(maxAmountToRepay).multipliedBy('1.0025');
 

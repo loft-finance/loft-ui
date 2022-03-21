@@ -14,11 +14,11 @@ import styles from './style.less';
 export default () => {
   const { reserves, baseCurrency } = useModel('pool')
   const { reserveIncentives } = useModel('incentives')
-  
+
   let list: any = []
 
   let totalLockedInUsd = valueToBigNumber('0');
-  const marketRefPriceInUsd = normalize(baseCurrency?.marketReferenceCurrencyPriceInUsd?baseCurrency?.marketReferenceCurrencyPriceInUsd:'0', 8)
+  const marketRefPriceInUsd = normalize(baseCurrency?.marketReferenceCurrencyPriceInUsd || '0', 8)
   if(reserves){
     list = reserves
     .filter((res: any) => res.isActive && !res.isFrozen)
