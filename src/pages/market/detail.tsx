@@ -285,7 +285,7 @@ export default (props: any) => {
                       >
                         <Row className={styles.CardInfo}>
                           <Col span={12} className={styles.label}>
-                            <FormattedMessage id="pages.market.detail.config.DepositAPY" />
+                            <FormattedMessage id="pages.market.detail.config.DepositApy" />
                           </Col>
                           <Col span={12} className={styles.value}>
                             {Number(data.supplyAPY).toFixed(4)}%

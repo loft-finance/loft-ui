@@ -23,7 +23,7 @@ export default {
     'pages.market.detail.config.Borrow':'Variable borrowing',
     'pages.market.detail.config.BorrowApy':'Borrow APY',
     'pages.market.detail.config.BorrowAverage':'Average of the past 30 days',
-    'pages.market.detail.config.Percentage':'Percentage of total',
+    'pages.market.detail.config.BorrowPercentage':'Percentage of total',
     'pages.market.detail.config.MaxLtv':'Max LTV',
     'pages.market.detail.config.LiquidationThreshold':'Liquidation threshold',
     'pages.market.detail.config.LiquidationPenalty':'Liquidation penalty',
