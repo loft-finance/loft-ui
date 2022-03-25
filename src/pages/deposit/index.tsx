@@ -5,6 +5,7 @@ import { GridContent } from '@ant-design/pro-layout';
 import { valueToBigNumber } from '@aave/protocol-js';
 import { isAssetStable } from '@/lib/config/assets'
 import { TokenIcon } from '@aave/aave-ui-kit';
+import { normalize } from '@aave/math-utils';
 
 import styles from './style.less';
 
@@ -16,9 +17,9 @@ export default () => {
   const [showOnlyStableCoins, setShowOnlyStableCoins] = useState(false);
 
   const { reserves, baseCurrency, user } = useModel('pool')
-  const marketRefPriceInUsd = baseCurrency.marketReferenceCurrencyPriceInUsd
+  const marketRefPriceInUsd = normalize(baseCurrency?.marketReferenceCurrencyPriceInUsd || '0', 8)
 
-  const { wallet, balances } = useModel('wallet')
+  const { balances } = useModel('wallet')
 
 
   const { reserveIncentives } = useModel('incentives')

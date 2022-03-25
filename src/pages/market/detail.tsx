@@ -8,6 +8,7 @@ import { valueToBigNumber, BigNumber } from '@aave/protocol-js';
 import Bignumber from '@/components/Bignumber';
 import styles from './detail.less';
 import { TokenIcon } from '@aave/aave-ui-kit';
+import { normalize } from '@aave/math-utils';
 
 export enum BorrowRateMode {
   None = 'None',
@@ -30,7 +31,9 @@ export default (props: any) => {
   const poolReserve: any = reserves.find((res) =>
     id ? res.id === id : res.underlyingAsset.toLowerCase() === underlyingAsset.toLowerCase()
   );
-  const marketRefPriceInUsd = baseCurrency?.marketRefPriceInUsd;
+
+  const marketRefPriceInUsd = normalize(baseCurrency?.marketReferenceCurrencyPriceInUsd || '0', 8)
+  
   const totalLiquidityInUsd = valueToBigNumber(poolReserve?.totalLiquidity)
     .multipliedBy(poolReserve?.priceInMarketReferenceCurrency)
     .multipliedBy(marketRefPriceInUsd)
@@ -76,7 +79,9 @@ export default (props: any) => {
 
   useEffect(() => {
     if (id) {
-      const { marketReferenceCurrencyPriceInUsd: marketRefPriceInUsd } = baseCurrency
+
+      const marketRefPriceInUsd = normalize(baseCurrency?.marketReferenceCurrencyPriceInUsd || '0', 8)
+
       const poolReserve = reserves.find((res: any) => res.id === id)
 
       if (poolReserve) {
@@ -280,7 +285,7 @@ export default (props: any) => {
                       >
                         <Row className={styles.CardInfo}>
                           <Col span={12} className={styles.label}>
-                            <FormattedMessage id="pages.market.detail.config.DepositAPY" />
+                            <FormattedMessage id="pages.market.detail.config.DepositApy" />
                           </Col>
                           <Col span={12} className={styles.value}>
                             {Number(data.supplyAPY).toFixed(4)}%

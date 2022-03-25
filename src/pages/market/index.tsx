@@ -14,11 +14,12 @@ import styles from './style.less';
 export default () => {
   const { reserves, baseCurrency } = useModel('pool')
   const { reserveIncentives } = useModel('incentives')
-  
+
   let list: any = []
 
   let totalLockedInUsd = valueToBigNumber('0');
-  const marketRefPriceInUsd = normalize(baseCurrency?.marketReferenceCurrencyPriceInUsd?baseCurrency?.marketReferenceCurrencyPriceInUsd:'0', 8)
+  let totalLockedLiquidity = valueToBigNumber('0');
+  const marketRefPriceInUsd = normalize(baseCurrency?.marketReferenceCurrencyPriceInUsd || '0', 8)
   if(reserves){
     list = reserves
     .filter((res: any) => res.isActive && !res.isFrozen)
@@ -28,12 +29,15 @@ export default () => {
           .multipliedBy(reserve.priceInMarketReferenceCurrency)
           .multipliedBy(marketRefPriceInUsd)
       );
-
+      
       const totalLiquidity = Number(reserve.totalLiquidity);
       const totalLiquidityInUSD = valueToBigNumber(reserve.totalLiquidity)
         .multipliedBy(reserve.priceInMarketReferenceCurrency)
         .multipliedBy(marketRefPriceInUsd)
         .toNumber();
+
+      totalLockedLiquidity = totalLockedLiquidity.plus(valueToBigNumber(reserve.totalLiquidity))
+
 
       const totalBorrows = Number(reserve.totalDebt);
       const totalBorrowsInUSD = valueToBigNumber(reserve.totalDebt)
@@ -155,14 +159,16 @@ export default () => {
           <Row gutter={16}>
             <Col span={6}>
               <Card className={styles.card} bordered={false}>
-                <div className={styles.value}>113M</div>
+                <div className={styles.value}>
+                  <Bignumber value={totalLockedLiquidity} />
+                </div>
                 <div className={styles.title}><FormattedMessage id="pages.market.index.info.pledge" /></div>
               </Card>
             </Col>
             <Col span={6}>
               <Card className={styles.card} bordered={false}>
                 <div style={{ color: '#FF5E2C' }} className={styles.value}>
-                  $9.54
+                  $<Bignumber value={marketRefPriceInUsd} />
                 </div>
                 <div className={styles.title}><FormattedMessage id="pages.market.index.info.price" /></div>
               </Card>
@@ -178,7 +184,7 @@ export default () => {
             <Col span={6}>
               <Card className={styles.card} bordered={false}>
                 <div style={{ color: '#FF5E2C' }} className={styles.value}>
-                  $49.5M
+                  $ <Bignumber value={totalLockedInUsd.toNumber()} />
                 </div>
                 <div className={styles.title}><FormattedMessage id="pages.market.index.info.value" /></div>
               </Card>
