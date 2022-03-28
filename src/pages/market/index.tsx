@@ -160,7 +160,7 @@ export default () => {
             <Col span={6}>
               <Card className={styles.card} bordered={false}>
                 <div className={styles.value}>
-                  <Bignumber value={totalLockedLiquidity} />
+                  <Bignumber value={2200000 || totalLockedLiquidity} />
                 </div>
                 <div className={styles.title}><FormattedMessage id="pages.market.index.info.pledge" /></div>
               </Card>
@@ -168,7 +168,7 @@ export default () => {
             <Col span={6}>
               <Card className={styles.card} bordered={false}>
                 <div style={{ color: '#FF5E2C' }} className={styles.value}>
-                  $<Bignumber value={marketRefPriceInUsd} />
+                  $<Bignumber value={9.54 || marketRefPriceInUsd} />
                 </div>
                 <div className={styles.title}><FormattedMessage id="pages.market.index.info.price" /></div>
               </Card>
@@ -184,7 +184,7 @@ export default () => {
             <Col span={6}>
               <Card className={styles.card} bordered={false}>
                 <div style={{ color: '#FF5E2C' }} className={styles.value}>
-                  $ <Bignumber value={totalLockedInUsd.toNumber()} />
+                  $ <Bignumber value={49500000 || totalLockedInUsd.toNumber()} />
                 </div>
                 <div className={styles.title}><FormattedMessage id="pages.market.index.info.value" /></div>
               </Card>
