@@ -35,8 +35,8 @@ export default ({ poolReserve, maxAmountToRepay }: any) => {
       <Back />
       <Card bordered={false}>
           <div className={styles.desc}>
-            <div className={styles.title}><FormattedMessage id="pages.deposit.withdraw.amount.title" /></div>
-            <div className={styles.text}><FormattedMessage id="pages.deposit.withdraw.amount.desc" /></div>
+            <div className={styles.title}><FormattedMessage id="pages.loan.repay.amount.title" /></div>
+            <div className={styles.text}><FormattedMessage id="pages.loan.repay.amount.desc" /></div>
           </div>
           <div className={styles.form}>
             <Row>
@@ -49,12 +49,12 @@ export default ({ poolReserve, maxAmountToRepay }: any) => {
                   autoComplete="off"
                 >
                   <div className={styles.able}>
-                    <span><FormattedMessage id="pages.deposit.withdraw.amount.available" /></span>
+                    <span><FormattedMessage id="pages.loan.repay.amount.available" /></span>
                     <span className={styles.amount}><Bignumber value={maxAmountToRepay} /> {symbol}</span>
                   </div>
                   <Form.Item
                     name="amount"
-                    rules={[{ required: true, message: <FormattedMessage id="pages.deposit.withdraw.amount.validate" /> }]}
+                    rules={[{ required: true, message: <FormattedMessage id="pages.loan.repay.amount.validate" /> }]}
                   >
                     <Input
                       style={{ width: '100%' }}
@@ -66,13 +66,13 @@ export default ({ poolReserve, maxAmountToRepay }: any) => {
                         tokenFullName={''}
                         className="MarketTableItem__token"
                       />}
-                      suffix={<a onClick={handler.max}><FormattedMessage id="pages.deposit.withdraw.amount.max" /></a>}
+                      suffix={<a onClick={handler.max}><FormattedMessage id="pages.loan.repay.amount.max" /></a>}
                     />
                   </Form.Item>
 
                   <Form.Item wrapperCol={{ offset: 2, span: 20 }}>
                     <Button block type="primary" htmlType="submit">
-                      <FormattedMessage id="pages.deposit.withdraw.amount.button" />
+                      <FormattedMessage id="pages.loan.repay.amount.button" />
                     </Button>
                   </Form.Item>
                 </Form>
