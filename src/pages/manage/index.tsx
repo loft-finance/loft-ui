@@ -3,7 +3,7 @@ import { DollarCircleOutlined } from '@ant-design/icons';
 import { GridContent } from '@ant-design/pro-layout';
 import Info from '@/components/Info';
 import WalletDisconnected from '@/components/Wallet/Disconnected';
-import { useModel } from 'umi';
+import { useModel, FormattedMessage } from 'umi';
 const { Title } = Typography;
 import styles from './index.less';
 
@@ -15,21 +15,21 @@ export default () => {
       <Info
         items={[
           {
-            title: 'Pledge coin',
+            title: <FormattedMessage id="pages.pledge.info.pledge" />,
             value: '2.2M',
             tag: '($21.12MUSD)',
           },
           {
-            title: 'Coin price',
+            title: <FormattedMessage id="pages.pledge.info.price" />,
             value: '$9.33',
           },
           {
-            title: 'Fluidity',
+            title: <FormattedMessage id="pages.pledge.info.fluidity" />,
             value: '5.3M',
             tag: '(28.5% LOCKED)',
           },
           {
-            title: 'Market value',
+            title: <FormattedMessage id="pages.pledge.info.market" />,
             value: '$49.4M',
           },
         ]}
@@ -42,18 +42,18 @@ export default () => {
             <Card bordered={false}>
               <Row>
                 <Col span={18}>
-                  <Title level={3}>Stake GEIST</Title>
+                  <Title level={3}><FormattedMessage id="pages.pledge.stake.title" /></Title>
                 </Col>
                 <Col span={6}>APY 452.61%</Col>
               </Row>
               <Row>
                 <Col span={24}>
                   <p className={styles.tip}>
-                    Stake GEIST and earn platform fees with no lockup period.
+                    <FormattedMessage id="pages.pledge.stake.desc" />
                   </p>
                 </Col>
                 <Col span={24}>
-                  <p className={styles.tip}>Wallet Balance:</p>
+                  <p className={styles.tip}><FormattedMessage id="pages.pledge.stake.balance" /></p>
                   <p>0 GEIST</p>
                 </Col>
               </Row>
@@ -69,14 +69,14 @@ export default () => {
                         style={{ width: '100%' }}
                         placeholder="Quantity"
                         prefix={<DollarCircleOutlined className="site-form-item-icon" />}
-                        suffix={<a>Max</a>}
+                        suffix={<a><FormattedMessage id="pages.pledge.stake.max" /></a>}
                       />
                     </Form.Item>
                   </Form>
                 </Col>
                 <Col span={5} offset={1}>
                   <Button type="primary" shape="round">
-                    Stake
+                    <FormattedMessage id="pages.pledge.stake.button" />
                   </Button>
                 </Col>
               </Row>
@@ -84,18 +84,18 @@ export default () => {
             <Card bordered={false} style={{ marginTop: 15 }}>
               <Row>
                 <Col span={18}>
-                  <Title level={3}>Help</Title>
+                  <Title level={3}><FormattedMessage id="pages.pledge.help.title" /></Title>
                 </Col>
               </Row>
               <Row>
                 <Col span={24}>
                   <p className={styles.tip}>
-                    Looking for some help?Visit our docs or join our Telegram.
+                    <FormattedMessage id="pages.pledge.help.desc" />
                   </p>
                 </Col>
                 <Col span={5} offset={19} style={{ marginTop: 18 }}>
                   <Button type="primary" shape="round">
-                    Docs
+                    <FormattedMessage id="pages.pledge.help.button" />
                   </Button>
                 </Col>
               </Row>
@@ -105,13 +105,13 @@ export default () => {
             <Card bordered={false}>
               <Row>
                 <Col span={18}>
-                  <Title level={3}>Unlocked GEIST</Title>
+                  <Title level={3}><FormattedMessage id="pages.pledge.unlocked.title" /></Title>
                 </Col>
               </Row>
               <Row>
                 <Col span={10}>
                   <p className={styles.tip}>
-                    Looking for some help?Visit our docs or join our Telegram.
+                    <FormattedMessage id="pages.pledge.unlocked.desc" />
                   </p>
                 </Col>
                 <Col span={6} offset={1}>
@@ -119,12 +119,12 @@ export default () => {
                 </Col>
                 <Col span={5} offset={1}>
                   <Button type="primary" shape="round">
-                    Claim GEIST
+                    <FormattedMessage id="pages.pledge.unlocked.button" />
                   </Button>
                 </Col>
               </Row>
             </Card>
-            <Card bordered={false} style={{ marginTop: 15 }}>
+            {/* <Card bordered={false} style={{ marginTop: 15 }}>
               <Row>
                 <Col span={18}>
                   <Title level={3}>Platform fees</Title>
@@ -163,7 +163,7 @@ export default () => {
                   </Col>
                 </Row>
               </div>
-            </Card>
+            </Card> */}
           </Col>
         </Row>
       )}

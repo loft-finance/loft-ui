@@ -10,6 +10,8 @@ import LoanRepay from '@/pages/loan/repay/locales'
 import LoanRate from '@/pages/loan/rate/locales'
 import LoanDashboard from '@/pages/loan/dashboard/locales'
 import control from '@/pages/control/locales'
+import pledge from '@/pages/pledge/locales'
+import manage from '@/pages/manage/locales'
 export default {
     ...market,
     ...DepositIndex,
@@ -22,5 +24,7 @@ export default {
     ...LoanRepay,
     ...LoanRate,
     ...LoanDashboard,
-    ...control
+    ...control,
+    ...pledge,
+    ...manage
 };

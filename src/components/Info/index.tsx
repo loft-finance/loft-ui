@@ -8,8 +8,8 @@ export default ({ title = '', items = [] }: any) => {
       {title && <div className={styles.title}>{title}</div>}
       <div className={styles.content}>
         <Row>
-          {items.map((item) => (
-            <Col span={item.span?item.span:6} className={styles.col}>
+          {items.map((item: any, index: number) => (
+            <Col key={index} span={item.span?item.span:6} className={styles.col}>
               <div className={styles.text}>
                 {item.title} {item.info && <InfoCircleOutlined className={styles.icon} />}
               </div>
