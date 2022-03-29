@@ -3,13 +3,14 @@ import { DollarCircleOutlined } from '@ant-design/icons';
 import { GridContent } from '@ant-design/pro-layout';
 import Info from '@/components/Info';
 import WalletDisconnected from '@/components/Wallet/Disconnected';
+import Bignumber from '@/components/Bignumber';
 import { useModel, FormattedMessage } from 'umi';
 const { Title } = Typography;
 import styles from './index.less';
 
 export default () => {
   const { wallet } = useModel('wallet')
-
+  const { balanceLoft, depositedLoft } = useModel('pledge')
   return (
     <GridContent>
       <Info
@@ -54,7 +55,7 @@ export default () => {
                 </Col>
                 <Col span={24}>
                   <p className={styles.tip}><FormattedMessage id="pages.pledge.stake.balance" /></p>
-                  <p>0 GEIST</p>
+                  <p><Bignumber value={balanceLoft} /> GEIST</p>
                 </Col>
               </Row>
 
@@ -115,7 +116,7 @@ export default () => {
                   </p>
                 </Col>
                 <Col span={6} offset={1}>
-                  20.902 GEIST
+                  <Bignumber value={depositedLoft} /> GEIST
                 </Col>
                 <Col span={5} offset={1}>
                   <Button type="primary" shape="round">

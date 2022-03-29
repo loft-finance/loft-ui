@@ -14,7 +14,7 @@ export default () => {
   const symbol = ''
 
   const { wallet } = useModel('wallet');
-  const { deposited } = useModel('pledge')
+  const { balanceLp, depositedLp } = useModel('pledge')
   
   const [form] = Form.useForm();
   const refConfirm = useRef()
@@ -75,7 +75,7 @@ export default () => {
                       >
                         <div className={styles.able}>
                           <span><FormattedMessage id="pages.pledge.amount.available" /></span>
-                          <span className={styles.amount}><Bignumber value={1} /> {symbol}</span>
+                          <span className={styles.amount}><Bignumber value={balanceLp} /> {symbol}</span>
                         </div>
                         <Form.Item
                           name="amount"
@@ -129,7 +129,7 @@ export default () => {
                 <Row>
                   <Col span={24}>
                     <div className={styles.title}><FormattedMessage id="pages.pledge.action.require.title" /></div>
-                    <div className={styles.value}>0 ($0 USD)</div>
+                    <div className={styles.value}><Bignumber value={depositedLp} /> ($0 USD)</div>
                     <div className={styles.button}>
                       <Button type="primary" block >
                         <FormattedMessage id="pages.pledge.action.require.button" />
