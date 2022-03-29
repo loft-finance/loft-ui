@@ -1,7 +1,9 @@
 import { useState, useImperativeHandle } from 'react';
 import { Modal, Row, Col, Spin, Image, Popconfirm  } from 'antd';
 import { useModel } from 'umi';
-
+import IconMetamask from '@/images/wallet/metamask.png'
+import IconWalletConnect from '@/images/wallet/wallet-connect.png'
+import IconBsc from '@/images/wallet/bsc.png'
 import styles from './Connect.less';
 
 export default function ({ refs }: any) {
@@ -62,7 +64,7 @@ export default function ({ refs }: any) {
                   <Image
                     width={34}
                     preview={false}
-                    src={'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimgres.1666.com%2F1666%2F72%2F359331-202110091420106161349a96987.jpg&refer=http%3A%2F%2Fimgres.1666.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1648386669&t=07e7aba201369e4269a4a4b59b880e6c'}
+                    src={IconMetamask}
                   />
                 </Col>
               </Row>
@@ -77,7 +79,7 @@ export default function ({ refs }: any) {
                 <Image
                   width={34}
                   preview={false}
-                  src={'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimgres.1666.com%2F1666%2F72%2F359331-202110091420106161349a96987.jpg&refer=http%3A%2F%2Fimgres.1666.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1648386669&t=07e7aba201369e4269a4a4b59b880e6c'}
+                  src={IconWalletConnect}
                 />
               </Col>
             </Row>
@@ -91,7 +93,7 @@ export default function ({ refs }: any) {
                 <Image
                   width={34}
                   preview={false}
-                  src={'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimgres.1666.com%2F1666%2F72%2F359331-202110091420106161349a96987.jpg&refer=http%3A%2F%2Fimgres.1666.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1648386669&t=07e7aba201369e4269a4a4b59b880e6c'}
+                  src={IconBsc}
                 />
               </Col>
             </Row>
