@@ -11,6 +11,10 @@ import styles from './confirm.less';
 const { Step } = Steps;
 
 export default ({ poolReserve, user, userReserve,  maxAmountToDeposit, match: { params: { amount: amount0 } }, }: any,) => {
+    if(!poolReserve || !userReserve) {
+        return <div style={{textAlign:'center'}}><Spin /></div>
+    }
+    
     const amount = valueToBigNumber(amount0);
 
     const [steps, setSteps] = useState<any>([]);
@@ -256,6 +260,7 @@ export default ({ poolReserve, user, userReserve,  maxAmountToDeposit, match: { 
                         {
                             onExecution: handler.action.executed,
                             onConfirmation: handler.action.confirmed,
+                            onError: handler.action.error
                         }
                     );
                 } else {
@@ -275,6 +280,13 @@ export default ({ poolReserve, user, userReserve,  maxAmountToDeposit, match: { 
                 handler.records.set('withdraw', 'withdraw', 'confirmed')
                 setCurrent(current + 1);
                 handler.loading.set('withdraw', false);
+            },
+            error(e: any) {
+                console.log('confirm error:', e)
+                const key = 'deposit'
+                handler.error.set(key, e.message)
+                handler.loading.set(key, false);
+                handler.records.set(key, 'deposit', 'error')
             }
         },
         records: {
@@ -306,6 +318,18 @@ export default ({ poolReserve, user, userReserve,  maxAmountToDeposit, match: { 
                 })
 
                 setSteps(list)
+            }
+        },
+        error: {
+            set(key: string, error: string){
+                let id = steps.findIndex((item: any)=>item.key == key)
+                if(id !==  -1){
+                    steps[id] = {
+                        ...steps[id],
+                        error
+                    }
+                    setSteps([ ...steps ])
+                }
             }
         },
         async submit() {

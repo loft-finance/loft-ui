@@ -33,6 +33,7 @@ export interface EthTransactionData {
 export interface SendEthTransactionCallbacks {
   onExecution?: (txHash: string) => void;
   onConfirmation?: (receipt: TransactionReceipt) => void;
+  onError?: (e: any) => void;
 }
 
 export async function sendEthTransaction(
@@ -84,6 +85,9 @@ export async function sendEthTransaction(
       loading: false,
       error: e.message.toString(),
     }));
+    if(callbacks?.onError){
+      callbacks.onError(e);
+    }
     return;
   }
 

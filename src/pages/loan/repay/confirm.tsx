@@ -12,6 +12,10 @@ import styles from './confirm.less';
 const { Step } = Steps;
 
 export default ({ poolReserve, user, userReserve, maxAmountToRepay, debtType, walletBalance, networkConfig, match: { params: { amount: amount0 } }, }: any,) => {
+    if(!poolReserve || !userReserve) {
+        return <div style={{textAlign:'center'}}><Spin /></div>
+    }
+    
     const amount = valueToBigNumber(amount0);
 
     const [steps, setSteps] = useState<any>([]);
@@ -82,7 +86,7 @@ export default ({ poolReserve, user, userReserve, maxAmountToRepay, debtType, wa
                 });
                 console.log('txs', txs)
                 const mainTxType = ''
-                const approvalTx = txs.find((tx) => tx.txType === 'ERC20_APPROVAL');
+                const approveTx = txs.find((tx) => tx.txType === 'ERC20_APPROVAL');
                 const actionTx = txs.find((tx) =>
                     [
                         'DLP_ACTION',
@@ -95,11 +99,11 @@ export default ({ poolReserve, user, userReserve, maxAmountToRepay, debtType, wa
                 );
 
                 let approve, action: any;
-                if (approvalTx) {
+                if (approveTx) {
                     approve = {
-                        txType: approvalTx.txType,
-                        unsignedData: approvalTx.tx,
-                        gas: approvalTx.gas,
+                        txType: approveTx.txType,
+                        unsignedData: approveTx.tx,
+                        gas: approveTx.gas,
                         name: 'Approve',
                     }
                     setApproveTxData(approve)
@@ -119,7 +123,7 @@ export default ({ poolReserve, user, userReserve, maxAmountToRepay, debtType, wa
                     if (!approve) approve = approveTxData
                     setSteps([
                         {
-                            key: 'approval',
+                            key: 'approve',
                             title: <FormattedMessage id="pages.loan.repay.confirm.steps.approve.title" />,
                             buttonText: <FormattedMessage id="pages.loan.repay.confirm.steps.approve.button" />,
                             stepText: <FormattedMessage id="pages.loan.repay.confirm.steps.approve.step" />,
@@ -177,8 +181,8 @@ export default ({ poolReserve, user, userReserve, maxAmountToRepay, debtType, wa
         },
         approve: {
             submit() {
-                handler.loading.set('approval', true);
-                handler.records.set('approval', 'approval', 'wait')
+                handler.loading.set('approve', true);
+                handler.records.set('approve', 'approve', 'wait')
                 sendEthTransaction(
                     approveTxData.unsignedData,
                     provider,
@@ -186,14 +190,22 @@ export default ({ poolReserve, user, userReserve, maxAmountToRepay, debtType, wa
                     customGasPrice,
                     {
                         onConfirmation: handler.approve.confirmed,
+                        onError: handler.approve.error
                     }
                 )
             },
             confirmed() {
                 console.log('approve confirmed----')
-                handler.loading.set('approval', false);
-                handler.records.set('approval', 'approval', 'confirmed')
+                handler.loading.set('approve', false);
+                handler.records.set('approve', 'approve', 'confirmed')
                 setCurrent(current + 1);
+            },
+            error(e: any) {
+                console.log('approve error:', e)
+                const key = 'approve'
+                handler.error.set(key, e.message)
+                handler.loading.set(key, false);
+                handler.records.set(key, 'approve', 'error')
             }
         },
         action: {
@@ -211,6 +223,7 @@ export default ({ poolReserve, user, userReserve, maxAmountToRepay, debtType, wa
                         {
                             onExecution: handler.action.executed,
                             onConfirmation: handler.action.confirmed,
+                            onError: handler.action.error
                         }
                     );
                 } else {
@@ -230,6 +243,13 @@ export default ({ poolReserve, user, userReserve, maxAmountToRepay, debtType, wa
                 handler.records.set('repay', 'repay', 'confirmed')
                 setCurrent(current + 1);
                 handler.loading.set('repay', false);
+            },
+            error(e: any) {
+                console.log('confirm error:', e)
+                const key = 'repay'
+                handler.error.set(key, e.message)
+                handler.loading.set(key, false);
+                handler.records.set(key, 'repay', 'error')
             }
         },
         records: {
@@ -263,8 +283,20 @@ export default ({ poolReserve, user, userReserve, maxAmountToRepay, debtType, wa
                 setSteps(list)
             }
         },
+        error: {
+            set(key: string, error: string){
+                let id = steps.findIndex((item: any)=>item.key == key)
+                if(id !==  -1){
+                    steps[id] = {
+                        ...steps[id],
+                        error
+                    }
+                    setSteps([ ...steps ])
+                }
+            }
+        },
         async submit() {
-            if (approveTxData && steps[current]?.key === 'approval') {
+            if (approveTxData && steps[current]?.key === 'approve') {
                 handler.approve.submit()
             } else if (actionTxData && steps[current]?.key === 'repay') {
                 handler.action.submit()
