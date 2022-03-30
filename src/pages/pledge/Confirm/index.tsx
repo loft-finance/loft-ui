@@ -199,6 +199,7 @@ export default ({ refs }: any) => {
             title={'Confirm'}
             visible={visible}
             onCancel={handler.close}
+            maskClosable={false}
             width={550}
             footer={false}
         >
@@ -206,9 +207,9 @@ export default ({ refs }: any) => {
                 <Row>
                     <Col span={24}>
                         <div className={styles.desc}>
-                            <div className={styles.title}><FormattedMessage id="pages.deposit.detail.confirm.title" /></div>
+                            <div className={styles.title}>{args?.txt?.overview?.title || ''}</div>
                             <div className={styles.text}>
-                                <FormattedMessage id="pages.deposit.detail.confirm.desc" />
+                                {args?.txt?.overview?.desc || ''}
                             </div>
                         </div>
                     </Col>

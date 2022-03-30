@@ -5,6 +5,7 @@ import Bignumber from '@/components/Bignumber';
 import styles from './overview.less';
 
 export default ({ title = '', items = [], poolReserve = {}, marketRefPriceInUsd = '0' }: any) => {
+  const underlyingSymbol = poolReserve?.symbol || ''
 
   const data = {
     utilizationRate: Number(poolReserve.utilizationRate),
@@ -30,10 +31,10 @@ export default ({ title = '', items = [], poolReserve = {}, marketRefPriceInUsd 
       <Card bordered={false}>
         <Row>
           <Col span={9} offset={1} className={styles.title}>
-            Deposit to FTM
+            <FormattedMessage id="pages.loan.detail.overview.DepositFTM" />{underlyingSymbol}
           </Col>
           <Col span={9} offset={4} className={styles.title}>
-            Fantom Reserve Overview
+          <FormattedMessage id="pages.loan.detail.overview.FantomReserve" />
           </Col>
         </Row>
         <Row>
@@ -46,7 +47,7 @@ export default ({ title = '', items = [], poolReserve = {}, marketRefPriceInUsd 
                 {data.utilizationRate.toFixed(4)} %
               </Descriptions.Item>
               <Descriptions.Item label={<FormattedMessage id="pages.loan.detail.overview.AvailableLiquidity" />} span={3}>
-                <Bignumber value={data.availableLiquidity} /> FTM
+                <Bignumber value={data.availableLiquidity} /> {underlyingSymbol}
               </Descriptions.Item>
             </Descriptions>
           </Col>
@@ -58,7 +59,7 @@ export default ({ title = '', items = [], poolReserve = {}, marketRefPriceInUsd 
               <Descriptions.Item label={<FormattedMessage id="pages.loan.detail.overview.AssetPrice" />} span={3}>
                 <Bignumber value={data.priceInUsd} /> USD
               </Descriptions.Item>
-              <Descriptions.Item label={<FormattedMessage id="pages.loan.detail.overview.LoanAPY" />} span={3}>
+              <Descriptions.Item label={<FormattedMessage id="pages.loan.detail.overview.LoanApy" />} span={3}>
                 {data.baseLTVasCollateral.toFixed(4)} %
               </Descriptions.Item>
             </Descriptions>

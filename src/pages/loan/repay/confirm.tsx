@@ -5,6 +5,7 @@ import { LoadingOutlined } from '@ant-design/icons'
 import { calculateHealthFactorFromBalancesBigUnits, valueToBigNumber, BigNumber, InterestRate } from '@aave/protocol-js';
 import { sendEthTransaction, TxStatusType } from '@/lib/helpers/send-ethereum-tx';
 import Bignumber from '@/components/Bignumber';
+import { refresh } from '@/lib/helpers/refresh';
 import { normalize } from '@aave/math-utils';
 
 import Back from '@/components/Back';
@@ -243,6 +244,7 @@ export default ({ poolReserve, user, userReserve, maxAmountToRepay, debtType, wa
                 handler.records.set('repay', 'repay', 'confirmed')
                 setCurrent(current + 1);
                 handler.loading.set('repay', false);
+                refresh();
             },
             error(e: any) {
                 console.log('confirm error:', e)

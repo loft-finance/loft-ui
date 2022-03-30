@@ -4,7 +4,7 @@ import { Card, Row, Col, Button, Descriptions, Steps, Divider, Badge, Spin } fro
 import { LoadingOutlined } from '@ant-design/icons'
 import { calculateHealthFactorFromBalancesBigUnits, valueToBigNumber, InterestRate } from '@aave/protocol-js';
 import { sendEthTransaction, TxStatusType } from '@/lib/helpers/send-ethereum-tx';
-
+import { refresh } from '@/lib/helpers/refresh';
 import Back from '@/components/Back';
 import { TokenIcon } from '@aave/aave-ui-kit';
 import styles from './confirm.less';
@@ -238,6 +238,7 @@ export default ({ match: { params: { underlyingAsset, id, rateMode } }, }: any,)
                 handler.records.set('deposit', 'deposit', 'confirmed')
                 setCurrent(current + 1);
                 handler.loading.set('deposit', false);
+                refresh();
             },
             error(e: any) {
                 console.log('confirm error:', e)

@@ -4,6 +4,8 @@ export default {
     'pages.loan.detail.info.LoanValue':'Loan value',
     'pages.loan.detail.info.FitnessFactor':'Fitness factor',
 
+    'pages.loan.detail.overview.DepositFTM':'Deposit to',
+    'pages.loan.detail.overview.FantomReserve':'Fantom Reserve Overview',
     'pages.loan.detail.overview.UtilizationRate':'Utilization rate',
     'pages.loan.detail.overview.AvailableLiquidity':'Available liquidity',
     'pages.loan.detail.overview.LoanApy':'Variable loan APY (annual interest rate)',

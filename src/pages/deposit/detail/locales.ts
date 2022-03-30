@@ -3,7 +3,7 @@ export default {
     'pages.deposit.detail.info.WalletBalance':'Your wallet balance',
     'pages.deposit.detail.info.FitnessFactor':'Fitness factor',
 
-    'pages.deposit.detail.overview.DepositFTM':'Deposit to FTM',
+    'pages.deposit.detail.overview.DepositFTM':'Deposit to',
     'pages.deposit.detail.overview.FantomReserve':'Fantom Reserve Overview',
     'pages.deposit.detail.overview.UtilizationRate':'Utilization rate',
     'pages.deposit.detail.overview.AvailableLiquidity':'Available liquidity',
@@ -22,7 +22,7 @@ export default {
     'pages.deposit.detail.amount.validate':'Please input quantity!',
 
     'pages.deposit.detail.confirm.title':'Deposit overview',
-    'pages.deposit.detail.confirm.desc':'Please enter the amount to be deposited, the maximum amount you can deposit is shown below',
+    'pages.deposit.detail.confirm.desc':'These are your transaction details. Please be sure to check whether it is correct before submiting.',
     'pages.deposit.detail.confirm.quantity':'Quantity',
     'pages.deposit.detail.confirm.collateral':'Collateral Usage',
     'pages.deposit.detail.confirm.HealthFactors':'New health factors',

@@ -215,7 +215,13 @@ export default () => {
 
         return () => {};
     }, [currentAccount, lendingPoolAddressProvider]);
-
     
-    return { loading, reserveIncentives, userIncentives };
+    const refresh = () => {
+        const incentiveDataProviderAddress = networkConfig.addresses.uiIncentiveDataProvider
+        if (incentiveDataProviderAddress) {
+            fetchData(currentAccount, lendingPoolAddressProvider, incentiveDataProviderAddress);
+        }
+    }
+    
+    return { loading, reserveIncentives, userIncentives, refresh };
 };

@@ -28,6 +28,10 @@ export default () => {
         return;
       }
       const txt = {
+        overview: {
+          title: 'Pledge Overview',
+          desc: 'These are your transaction details. Please be sure to check whether it is correct before submiting.'
+        },
         approve: {
           title: 'approve',
           buttonText: 'approve',

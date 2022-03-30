@@ -206,6 +206,10 @@ export default () => {
         }
     }
 
+    const refresh = () => {
+        getUserReserves()
+    }
+
     useEffect(() => {
         getReserves()
         if(wallet){
@@ -218,5 +222,5 @@ export default () => {
         }
     },[wallet])
 
-    return { loading, baseCurrency, reserves, user: userReserves, userReservesBase, start };
+    return { loading, baseCurrency, reserves, user: userReserves, userReservesBase, start, refresh };
 };
