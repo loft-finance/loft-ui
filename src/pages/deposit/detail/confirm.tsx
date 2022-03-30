@@ -12,6 +12,10 @@ import styles from './confirm.less';
 const { Step } = Steps;
 
 export default ({ poolReserve, userReserve, maxAmountToDeposit, match: { params: { amount: amount0 } }, }: any,) => {
+    if(!poolReserve || !userReserve) {
+        return <div style={{textAlign:'center'}}><Spin /></div>
+    }
+
     const amount = valueToBigNumber(amount0);
 
     const [steps, setSteps] = useState<any>([]);
@@ -71,7 +75,7 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, match: { params:
                     amount: amount.toString(),
                 });
                 const mainTxType = ''
-                const approvalTx = txs.find((tx) => tx.txType === 'ERC20_APPROVAL');
+                const approveTx = txs.find((tx) => tx.txType === 'ERC20_APPROVAL');
                 const actionTx = txs.find((tx) =>
                     [
                         'DLP_ACTION',
@@ -84,11 +88,11 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, match: { params:
                 );
                 
                 let approve, action: any;
-                if (approvalTx) {
+                if (approveTx) {
                     approve = {
-                        txType: approvalTx.txType,
-                        unsignedData: approvalTx.tx,
-                        gas: approvalTx.gas,
+                        txType: approveTx.txType,
+                        unsignedData: approveTx.tx,
+                        gas: approveTx.gas,
                         name: 'Approve',
                     }
                     setApproveTxData(approve)
@@ -108,7 +112,7 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, match: { params:
                     if(!approve) approve = approveTxData
                     setSteps([
                         {
-                            key: 'approval',
+                            key: 'approve',
                             title: <FormattedMessage id="pages.deposit.detail.confirm.steps.approve.title" />,
                             buttonText: <FormattedMessage id="pages.deposit.detail.confirm.steps.approve.button" />,
                             stepText: <FormattedMessage id="pages.deposit.detail.confirm.steps.approve.step" />,
@@ -166,8 +170,8 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, match: { params:
         },
         approve: {
             submit() {
-                handler.loading.set('approval', true);
-                handler.records.set('approval', 'approval', 'wait')
+                handler.loading.set('approve', true);
+                handler.records.set('approve', 'approve', 'wait')
                 sendEthTransaction(
                     approveTxData.unsignedData,
                     provider,
@@ -175,14 +179,22 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, match: { params:
                     customGasPrice,
                     {
                       onConfirmation: handler.approve.confirmed,
+                      onError: handler.approve.error
                     }
                 )
             },
             confirmed(){
                 console.log('approve confirmed----')
-                handler.loading.set('approval', false);
-                handler.records.set('approval', 'approval', 'confirmed')
+                handler.loading.set('approve', false);
+                handler.records.set('approve', 'approve', 'confirmed')
                 setCurrent(current + 1);
+            },
+            error(e: any) {
+                console.log('approve error:', e)
+                const key = 'approve'
+                handler.error.set(key, e.message)
+                handler.loading.set(key, false);
+                handler.records.set(key, 'approve', 'error')
             }
         },
         action: {
@@ -192,7 +204,7 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, match: { params:
                 const success = await handler.getTx({ depositing: true })
                 if (success) {
                     handler.loading.set('deposit', true);
-                    return sendEthTransaction(
+                    sendEthTransaction(
                         actionTxData.unsignedData,
                         provider,
                         setActionTxData,
@@ -200,6 +212,7 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, match: { params:
                         {
                             onExecution: handler.action.executed,
                             onConfirmation: handler.action.confirmed,
+                            onError: handler.action.error
                         }
                     );
                 } else {
@@ -219,6 +232,13 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, match: { params:
                 handler.records.set('deposit', 'deposit', 'confirmed')
                 setCurrent(current + 1);
                 handler.loading.set('deposit', false);
+            },
+            error(e: any) {
+                console.log('confirm error:', e)
+                const key = 'deposit'
+                handler.error.set(key, e.message)
+                handler.loading.set(key, false);
+                handler.records.set(key, 'deposit', 'error')
             }
         },
         records: {
@@ -252,8 +272,20 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, match: { params:
                 setSteps(list)
             }
         },
+        error: {
+            set(key: string, error: string){
+                let id = steps.findIndex((item: any)=>item.key == key)
+                if(id !==  -1){
+                    steps[id] = {
+                        ...steps[id],
+                        error
+                    }
+                    setSteps([ ...steps ])
+                }
+            }
+        },
         async submit() {
-            if(approveTxData && steps[current]?.key === 'approval'){
+            if(approveTxData && steps[current]?.key === 'approve'){
                 handler.approve.submit()
             }else if(actionTxData && steps[current]?.key === 'deposit'){
                 handler.action.submit()
