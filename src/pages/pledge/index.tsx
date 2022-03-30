@@ -1,10 +1,11 @@
-import React, { useRef, useState } from 'react';
-import { Card, Row, Col, Button, Form, Input } from 'antd';
+import { useRef, useState } from 'react';
+import { Card, Row, Col, Button, Form, Input, message } from 'antd';
 import { GridContent } from '@ant-design/pro-layout';
 import Info from '@/components/Info';
 import WalletDisconnected from '@/components/Wallet/Disconnected';
 import Back from '@/components/Back';
 import { useModel, FormattedMessage } from 'umi';
+import { valueToBigNumber } from '@aave/math-utils';
 import { TokenIcon } from '@aave/aave-ui-kit';
 import Bignumber from '@/components/Bignumber'
 import Confirm from './Confirm'
@@ -14,27 +15,72 @@ export default () => {
   const symbol = ''
 
   const { wallet } = useModel('wallet');
-  const { balanceLp, depositedLp } = useModel('pledge')
+  const { balanceLp, depositedLp, isLpAllowanceEnough, lpApprove, lpDeposit, lpWithdraw } = useModel('pledge')
   
   const [form] = Form.useForm();
   const refConfirm = useRef()
 
   const handler = {
     submit(values: any) {
-      // const amount = valueToBigNumber(values.amount)
-      // if(amount.gt(maxAmountToDeposit)){
-      //   message.error('The quality must be less than max amount to deposit')
-      //   return;
-      // }
-      // history.push(`/deposit/detail/${poolReserve.underlyingAsset}/${poolReserve.id}/confirm/${values.amount}`);
+      const amount = valueToBigNumber(values.amount)
+      if(amount.gt(balanceLp)){
+        message.error('The quality must be less than max amount to deposit')
+        return;
+      }
+      const txt = {
+        approve: {
+          title: 'approve',
+          buttonText: 'approve',
+          stepText: 'approve',
+          description: 'Please approve before confirming',
+        },
+        confirm: {
+          title: 'pledge',
+          buttonText: 'pledge',
+          stepText: 'pledge',
+          description: 'Please submit a pledge',
+        },
+        completed: {
+          title: 'Completed',
+          buttonText: 'control panel',
+          stepText: 'Success',
+          description: '',
+        },
+      }
+      refConfirm.current.show({
+        amount,
+        txt,
+        isAllowanceEnough: isLpAllowanceEnough,
+        approve: lpApprove,
+        confirm: lpDeposit
+      })
     },
     max(){
-      // form.setFieldsValue({
-      //   amount: maxAmountToDeposit.toString()
-      // })
+      form.setFieldsValue({
+        amount: balanceLp.toString()
+      })
     },
     unstake(){
-      refConfirm.current.show()
+      const txt = {
+        confirm: {
+          title: 'withdraw',
+          buttonText: 'withdraw',
+          stepText: 'withdraw',
+          description: 'Please submit a withdraw',
+        },
+        completed: {
+          title: 'Completed',
+          buttonText: 'control panel',
+          stepText: 'Success',
+          description: '',
+        },
+      }
+      const amount = valueToBigNumber('1')
+      refConfirm.current.show({
+        amount,
+        txt,
+        confirm: lpWithdraw
+      })
     }
   };
 

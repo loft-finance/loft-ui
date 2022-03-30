@@ -1,207 +1,143 @@
-import { useEffect, useState, useImperativeHandle } from 'react';
-import { useModel, history, FormattedMessage } from 'umi';
+import { useState, useImperativeHandle } from 'react';
+import { history, FormattedMessage } from 'umi';
 import { Modal, Card, Row, Col, Button, Descriptions, Steps, Divider, Badge, Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons'
-import { calculateHealthFactorFromBalancesBigUnits, valueToBigNumber } from '@aave/protocol-js';
-import { normalize } from '@aave/math-utils';
-import { sendEthTransaction, TxStatusType } from '@/lib/helpers/send-ethereum-tx';
+import { valueToBigNumber } from '@aave/protocol-js';
 import Bignumber from '@/components/Bignumber';
 
 import styles from './index.less';
 const { Step } = Steps;
 
-export default ({ refs, quality, }: any,) => {
+export default ({ refs }: any) => {
     useImperativeHandle(refs, () => {
         return {
-          show: () => {
+          show: (params: any) => {
+            const { amount, txt, isAllowanceEnough = false, approve = false, confirm  } = params
+            setCurrent(0)
+            setAmount(amount)
+            setArgs({
+                txt,
+                isAllowanceEnough,
+                approve,
+                confirm
+            })
+            handler.init(params)
             setVisible(true);
           },
           close: handler.close,
         };
     });
-    const amount = valueToBigNumber(quality);
 
     const [visible, setVisible] = useState(false);
-
+    const [amount, setAmount] = useState(valueToBigNumber('0'));
+    const [args, setArgs] = useState<any>({});
     const [steps, setSteps] = useState<any>([]);
     const [current, setCurrent] = useState(0);
-    const [approveTxData, setApproveTxData] = useState<any>(undefined);
-    const [actionTxData, setActionTxData] = useState<any>(undefined)
-    const [customGasPrice, setCustomGasPrice] = useState<string | null>(null);
     const [records, setRecords] = useState<any>([]);
     
-    const { user } = useModel('pool')
-    const { wallet } = useModel('wallet');
-    const provider = wallet?.provider
-    const { lendingPool } = useModel('lendingPool');
+    // const { wallet } = useModel('wallet');
 
-
-    useEffect(() => {
-        if (wallet) {
-            // handler.getTx({ depositing: false })
-        }
-    }, [wallet]);
+    // useEffect(() => {
+    //     if (wallet) {
+    //         handler.init()
+    //     }
+    // }, [wallet]);
 
     const handler = {
         close: () => {
             setVisible(false);
         },
-        async getTx({ depositing = false }) {
-            try {
-                const txs = await lendingPool.deposit({
-                    user: user.id,
-                    reserve: poolReserve.underlyingAsset,
-                    amount: amount.toString(),
-                });
-                const mainTxType = ''
-                const approvalTx = txs.find((tx) => tx.txType === 'ERC20_APPROVAL');
-                const actionTx = txs.find((tx) =>
-                    [
-                        'DLP_ACTION',
-                        'GOVERNANCE_ACTION',
-                        'STAKE_ACTION',
-                        'GOV_DELEGATION_ACTION',
-                        'REWARD_ACTION',
-                        mainTxType,
-                    ].includes(tx.txType)
-                );
-                
-                let approve, action: any;
-                if (approvalTx) {
-                    approve = {
-                        txType: approvalTx.txType,
-                        unsignedData: approvalTx.tx,
-                        gas: approvalTx.gas,
-                        name: 'Approve',
-                    }
-                    setApproveTxData(approve)
+        async init (params: any, confirming = false) {
+            const { txt, isAllowanceEnough = false } = params
+            const steps = [
+                {
+                    key: 'confirm',
+                    title: txt.confirm.title,
+                    buttonText: txt.confirm.buttonText,
+                    stepText: txt.confirm.stepText,
+                    description: txt.confirm.description,
+                    loading: confirming ? true : false,
+                    error: '',
+                },
+                {
+                    key: 'completed',
+                    title: txt.completed.title,
+                    buttonText: txt.completed.buttonText,
+                    stepText: txt.completed.stepText,
+                    description: txt.completed.description,
+                    loading: false,
+                    error: '',
                 }
-                if (actionTx) {
-                    const mainTxName = 'Deposit'
-                    action = {
-                        txType: actionTx.txType,
-                        unsignedData: actionTx.tx,
-                        gas: actionTx.gas,
-                        name: mainTxName,
-                    }
-                    setActionTxData(action)
-                }
-
-                if((approve || approveTxData) && action){
-                    if(!approve) approve = approveTxData
+            ]
+            if(!isAllowanceEnough){
+                setSteps(steps)
+            }else{
+                if(!await isAllowanceEnough()){
                     setSteps([
                         {
-                            key: 'approval',
-                            title: <FormattedMessage id="pages.deposit.detail.confirm.steps.approve.title" />,
-                            buttonText: <FormattedMessage id="pages.deposit.detail.confirm.steps.approve.button" />,
-                            stepText: <FormattedMessage id="pages.deposit.detail.confirm.steps.approve.step" />,
-                            description: <FormattedMessage id="pages.deposit.detail.confirm.steps.approve.desc" />,
+                            key: 'approve',
+                            title: txt.approve.title,
+                            buttonText: txt.approve.buttonText,
+                            stepText: txt.approve.stepText,
+                            description: txt.approve.description,
                             loading: false,
                             error: '',
                         },
-                        {
-                            key: 'deposit',
-                            title: <FormattedMessage id="pages.deposit.detail.confirm.steps.deposit.title" />,
-                            buttonText: <FormattedMessage id="pages.deposit.detail.confirm.steps.deposit.button" />,
-                            stepText: <FormattedMessage id="pages.deposit.detail.confirm.steps.deposit.step" />,
-                            description: <FormattedMessage id="pages.deposit.detail.confirm.steps.deposit.desc" />,
-                            loading: depositing ? true:false,
-                            error: '',
-                        },
-                        {
-                            key: 'completed',
-                            title: <FormattedMessage id="pages.deposit.detail.confirm.steps.completed.title" />,
-                            buttonText: <FormattedMessage id="pages.deposit.detail.confirm.steps.completed.button" />,
-                            stepText: <FormattedMessage id="pages.deposit.detail.confirm.steps.completed.step" />,
-                            description: <FormattedMessage id="pages.deposit.detail.confirm.steps.completed.desc" />,
-                            loading: false,
-                            error: '',
-                        },
-                    ]);
-                }else if(action){
-                    setSteps([
-                        {
-                            key: 'deposit',
-                            title: <FormattedMessage id="pages.deposit.detail.confirm.steps.deposit.title" />,
-                            buttonText: <FormattedMessage id="pages.deposit.detail.confirm.steps.deposit.button" />,
-                            stepText: <FormattedMessage id="pages.deposit.detail.confirm.steps.deposit.step" />,
-                            description: <FormattedMessage id="pages.deposit.detail.confirm.steps.deposit.desc" />,
-                            loading: depositing ? true:false,
-                            error: '',
-                        },
-                        {
-                            key: 'completed',
-                            title: <FormattedMessage id="pages.deposit.detail.confirm.steps.completed.title" />,
-                            buttonText: <FormattedMessage id="pages.deposit.detail.confirm.steps.completed.button" />,
-                            stepText: <FormattedMessage id="pages.deposit.detail.confirm.steps.completed.step" />,
-                            description: <FormattedMessage id="pages.deposit.detail.confirm.steps.completed.desc" />,
-                            loading: false,
-                            error: '',
-                        },
-                    ]);
+                        ...steps
+                    ])
+                }else{
+                    setSteps(steps)
                 }
-                
-                return true;
-            } catch (e) {
-                console.log('Error on txs loading', e);
-                return false;
             }
         },
         approve: {
-            submit() {
-                handler.loading.set('approval', true);
-                handler.records.set('approval', 'approval', 'wait')
-                sendEthTransaction(
-                    approveTxData.unsignedData,
-                    provider,
-                    setApproveTxData,
-                    customGasPrice,
-                    {
-                      onConfirmation: handler.approve.confirmed,
-                    }
-                )
+            async submit() {
+                handler.loading.set('approve', true);
+                handler.records.set('approve', 'approve', 'wait')
+                const { approve } = args
+                try {
+                    const res = await approve()
+                    console.log('approve:', res)
+                    handler.approve.confirmed()
+                } catch (e: any) {
+                    console.log('approve error:', e)
+                    const key = 'approve'
+                    handler.error.set(key, e?.message || 'Error')
+                    handler.loading.set(key, false);
+                    handler.records.set(key, 'approve', 'error')
+                }
             },
             confirmed(){
                 console.log('approve confirmed----')
-                handler.loading.set('approval', false);
-                handler.records.set('approval', 'approval', 'confirmed')
+                handler.loading.set('approve', false);
+                handler.records.set('approve', 'approve', 'confirmed')
                 setCurrent(current + 1);
             }
         },
-        action: {
+        confirm: {
             async submit() {
-                handler.loading.set('deposit', true);
-                handler.records.set('deposit', 'deposit', 'wait')
-                const success = await handler.getTx({ depositing: true })
-                if (success) {
-                    handler.loading.set('deposit', true);
-                    return sendEthTransaction(
-                        actionTxData.unsignedData,
-                        provider,
-                        setActionTxData,
-                        customGasPrice,
-                        {
-                            onExecution: handler.action.executed,
-                            onConfirmation: handler.action.confirmed,
-                        }
-                    );
-                } else {
-                    setActionTxData((state) => ({
-                        ...state,
-                        txStatus: TxStatusType.error,
-                        loading: false,
-                        error: 'transaction no longer valid',
-                    }));
-                    handler.loading.set('deposit', false);
+                handler.loading.set('confirm', true);
+                handler.records.set('confirm', 'confirm', 'wait')
+                const { confirm } = args
+                try{
+                    const res = await confirm(amount.toString())
+                    console.log('confirm:', res)
+                    handler.confirm.confirmed()
+                }catch(e: any){
+                    console.log('confirm error:', e)
+                    const key = 'confirm'
+                    handler.error.set(key, e?.message || 'Error')
+                    handler.loading.set(key, false);
+                    handler.records.set(key, 'confirm', 'error')
                 }
             },
             executed(){
                 console.log('--------deposit executed----')
             },
             confirmed(){
-                handler.records.set('deposit', 'deposit', 'confirmed')
+                handler.records.set('confirm', 'confirm', 'confirmed')
                 setCurrent(current + 1);
-                handler.loading.set('deposit', false);
+                handler.loading.set('confirm', false);
             }
         },
         records: {
@@ -223,6 +159,18 @@ export default ({ refs, quality, }: any,) => {
                 setRecords([ ...records ])
             }
         },
+        error: {
+            set(key: string, error: string){
+                let id = steps.findIndex((item: any)=>item.key == key)
+                if(id !==  -1){
+                    steps[id] = {
+                        ...steps[id],
+                        error
+                    }
+                    setSteps([ ...steps ])
+                }
+            }
+        },
         loading: {
             set(key: string, status: boolean){
                 let list = steps.map((item: any)=>{
@@ -236,10 +184,10 @@ export default ({ refs, quality, }: any,) => {
             }
         },
         async submit() {
-            if(approveTxData && steps[current]?.key === 'approval'){
+            if(steps[current]?.key === 'approve'){
                 handler.approve.submit()
-            }else if(actionTxData && steps[current]?.key === 'deposit'){
-                handler.action.submit()
+            }else if(steps[current]?.key === 'confirm'){
+                handler.confirm.submit()
             }else if(steps[current]?.key === 'completed'){
                 history.push('/control')
             }
@@ -304,10 +252,10 @@ export default ({ refs, quality, }: any,) => {
                         </Col>
                     </Row>
                 </div>
-                {!steps.length && <Row><Col span={10} offset={7} style={{ marginTop: 20, textAlign:'center' }}><Spin /></Col></Row>}
+                {!steps.length && <Row><Col span={24} style={{ marginTop: 20, textAlign:'center' }}><Spin /></Col></Row>}
                 {steps.length > 0 &&
                 <Row>
-                    <Col span={10} offset={7} style={{ marginBottom: 20 }}>
+                    <Col span={24} style={{ marginBottom: 20 }}>
                         <Steps
                             type="navigation"
                             size="small"
@@ -319,22 +267,22 @@ export default ({ refs, quality, }: any,) => {
                             ))}
                         </Steps>
                     </Col>
-                    <Col span={7} offset={7}>
+                    <Col span={19}>
                         <p className={styles.tip}>
                             {current + 1}/{steps.length} {steps[current]?.stepText}
                         </p>
 
                         <p className={styles.tip} style={steps[current]?.error?{ color: '#F46D6D' }:{}}>{steps[current]?.error?steps[current]?.error:steps[current]?.description}</p>
                     </Col>
-                    <Col span={3}>
+                    <Col span={5} >
                         <Button type="primary" shape="round" loading={steps[current]?.loading?true:false} onClick={handler.submit}>
                             {steps[current]?.buttonText}
                         </Button>
                     </Col>
-                    <Col span={10} offset={7}>
+                    <Col span={24}>
                         <Divider style={{ margin: '12px 0' }} />
                     </Col>
-                    <Col span={10} offset={7}>
+                    <Col span={24}>
                         <Row>
                             {records.map((item: any) => <>
                             <Col span={8}>{item.name}</Col>
