@@ -197,8 +197,7 @@ export default (props: any) => {
       content: {
         customHtml: (container, view, datum, data) => {
           const { width } = container.getBoundingClientRect();
-          return `<img style="width:${(3 * width) / 4
-            }px; border-radius:50%;" src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fwww.ccvalue.cn%2Fupload%2F2020%2F0217%2F3f5dae19531be0617b6dc6a966d60c08.jpg&refer=http%3A%2F%2Fwww.ccvalue.cn&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1647253782&t=ebc9ea3e23e24cf30dd232075f6551aa" />`;
+          return ``;
         },
       },
     },

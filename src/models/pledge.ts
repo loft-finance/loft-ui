@@ -5,6 +5,7 @@ import { getProvider } from '@/lib/helpers/provider';
 import { config } from "@/lib/config/pledge"
 import { formatUnits, parseUnits } from 'ethers/lib/utils';
 import { valueToBigNumber } from '@aave/math-utils';
+import { toWei } from '@/lib/helpers/utils';
 
 const ALLOWANCE_THRESHOLD_VALUE = valueToBigNumber('2').pow(128)
 function isAllowanceEnough(allowance: string): boolean {
@@ -40,9 +41,9 @@ export default () => {
         ])
 
         setBalanceLp(valueToBigNumber(formatUnits(balanceLp, lp.decimals).toString()))
-        setDepositedLp(valueToBigNumber(depositedLp.toString()))
+        setDepositedLp(valueToBigNumber(formatUnits(depositedLp, lp.decimals).toString()))
         setBalanceLoft(valueToBigNumber(formatUnits(balanceLoft, loft.decimals).toString()))
-        setDepositedLoft(valueToBigNumber(depositedLoft.toString()))
+        setDepositedLoft(valueToBigNumber(formatUnits(depositedLoft, loft.decimals).toString()))
     }
     
     
@@ -72,8 +73,9 @@ export default () => {
 
       const { farm, lp } = config;
       const contract = new ethers.Contract(farm.address, farm.abi, signer || provider);
-      console.log('params:', lp.poolNumber, amount)
-      return contract.deposit(lp.poolNumber, amount);
+      const amountInWei = toWei(amount)
+      console.log('params:', lp.poolNumber, amountInWei)
+      return contract.deposit(lp.poolNumber, amountInWei);
     }
 
     const lpWithdraw = async (amount: number) => {
@@ -82,8 +84,8 @@ export default () => {
 
       const { farm, lp } = config;
       const contract = new ethers.Contract(farm.address, farm.abi, signer || provider);
-
-      return contract.withdraw(lp.poolNumber, amount);
+      const amountInWei = toWei(amount)
+      return contract.withdraw(lp.poolNumber, amountInWei);
     }
 
 
@@ -114,8 +116,8 @@ export default () => {
 
       const { farm, loft } = config;
       const contract = new ethers.Contract(farm.address, farm.abi, signer || provider);
-
-      return contract.deposit(loft.poolNumber, amount);
+      const amountInWei = toWei(amount)
+      return contract.deposit(loft.poolNumber, amountInWei);
     }
 
     const loftWithdraw = async (amount: number) => {
@@ -124,63 +126,9 @@ export default () => {
 
       const { farm, loft } = config;
       const contract = new ethers.Contract(farm.address, farm.abi, signer || provider);
-
-      return contract.withdraw(loft.poolNumber, amount);
+      const amountInWei = toWei(amount)
+      return contract.withdraw(loft.poolNumber, amountInWei);
     }
-
-    // async function getAPY(
-    //     lpTokenAddress: string,
-    //     farmAddress: string,
-    //     poolNumber: number,
-    //     lpMultiplier: number,
-    //     dowsPrice: number
-    //   ) {
-        
-    //     if(!wallet?.currentAccount) return;
-    //     const chainId = currentMarket.chainId
-    //     const provider = getProvider(chainId);
-
-    //     const { address, abi } = config;
-    //     const contract = new ethers.Contract(address, abi, provider);
-
-    //     const [_rewardPerBlock, _BONUS_MULTIPLIER, _staked, _poolInfo, _totalAllocPoint] = await Promise.all([
-    //       contract.rewardPerBlock(farmAddress),
-    //       contract.multiplier(farmAddress),
-    //       contract.balanceOf(lpTokenAddress, farmAddress),
-    //       contract.poolInfo(farmAddress, poolNumber),
-    //       contract.totalAllocPoint(farmAddress)
-    //     ])
-
-    //     const rewardPerBlock = valueToBigNumber(_rewardPerBlock)
-      
-    //     const BONUS_MULTIPLIER = _BONUS_MULTIPLIER.toString()
-      
-    //     const staked = valueToBigNumber(_staked)
-    //       .multipliedBy(lpMultiplier)
-      
-    //     if (staked.eq(0)) {
-    //       return '0'
-    //     }
-      
-    //     const allocPoint = _poolInfo.allocPoint.toString()
-      
-    //     const totalAllocPoint = _totalAllocPoint.toString()
-      
-    //     const rewardPerYear = rewardPerBlock.multipliedBy(BONUS_MULTIPLIER)
-    //       .multipliedBy(allocPoint)
-    //       .dividedBy(totalAllocPoint)
-    //       .multipliedBy('10368000')
-      
-    //     if (poolNumber === 2 && dowsPrice) {
-    //       return rewardPerYear.multipliedBy(dowsPrice.toString()).dividedBy(staked)
-    //         .multipliedBy(100)
-    //         .toString(10)
-    //     }
-      
-    //     return rewardPerYear.dividedBy(staked)
-    //       .multipliedBy(100)
-    //       .toString(10)
-    // }
 
 
     let IntervalIdUserReserves: any = undefined

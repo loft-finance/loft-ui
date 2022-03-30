@@ -201,6 +201,7 @@ export default ({ refs }: any) => {
             onCancel={handler.close}
             maskClosable={false}
             width={550}
+            bodyStyle={{paddingTop:0}}
             footer={false}
         >
             <Card bordered={false}>
