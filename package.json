@@ -90,7 +90,8 @@
     "react-helmet-async": "^1.0.4",
     "react-router": "^4.3.1",
     "umi": "^3.5.0",
-    "umi-serve": "^1.9.10"
+    "umi-serve": "^1.9.10",
+    "web3-utils": "^1.7.1"
   },
   "devDependencies": {
     "@ant-design/pro-cli": "^2.0.2",

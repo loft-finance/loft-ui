@@ -1,20 +1,21 @@
 import BigNumber from 'bignumber.js'
 import { config } from "@/lib/config/pledge"
 import { valueToBigNumber } from '@aave/math-utils'
+import Utils from 'web3-utils';
 
 export function toBigNumber(value: string | number): BigNumber {
     return new BigNumber(value)
 }
 
-export function weiToBigNumber(value?: string | number | BN, decimalPlaces = 18): BigNumber {
+export function weiToBigNumber(value?: string | number, decimalPlaces = 18): BigNumber {
     if (!value) {
         return new BigNumber(0)
     }
 
-    return new BigNumber(web3Utils.fromWei(value.toString())).dp(decimalPlaces, BigNumber.ROUND_DOWN)
+    return new BigNumber(Utils.fromWei(value.toString())).dp(decimalPlaces, BigNumber.ROUND_DOWN)
 }
 
-export function weiToString(value: string | number | BN, decimalPlaces = 18): string {
+export function weiToString(value: string | number, decimalPlaces = 18): string {
     return weiToBigNumber(value, decimalPlaces)
         .toFixed(decimalPlaces)
 }

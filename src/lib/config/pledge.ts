@@ -947,6 +947,7 @@ export const config = {
         poolNumber: 1,
         decimals: 18,
         price: 2,
+        multiplier: 2,
         abi
     },
     loft: {
@@ -954,6 +955,7 @@ export const config = {
         poolNumber: 0,
         decimals: 18,
         price: 3,
+        multiplier: 1,
         abi
     }
 };

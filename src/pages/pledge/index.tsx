@@ -16,7 +16,17 @@ export default () => {
   const symbol = ''
 
   const { wallet } = useModel('wallet');
-  const { balanceLp, depositedLp, earnedLp, isLpAllowanceEnough, lpApprove, lpDeposit, lpWithdraw } = useModel('pledge')
+  const { lpRewardPerYear, lpApy, balanceLp, depositedLp, earnedLp, isLpAllowanceEnough, lpApprove, lpDeposit, lpWithdraw } = useModel('pledge', res => ({
+    lpRewardPerYear: res.lpRewardPerYear,
+    lpApy: res.lpApy,
+    balanceLp: res.balanceLp,
+    depositedLp: res.depositedLp,
+    earnedLp: res.earnedLp,
+    isLpAllowanceEnough: res.isLpAllowanceEnough,
+    lpApprove: res.lpApprove,
+    lpDeposit: res.lpDeposit,
+    lpWithdraw: res.lpWithdraw,
+  }))
   
   const [form] = Form.useForm();
   const refAmount = useRef()
@@ -262,9 +272,9 @@ export default () => {
               <Card bordered={false} className={styles.view} bodyStyle={{padding:'10px 20px'}}>
                 <Row>
                   <Col span={14} className={styles.label}><FormattedMessage id="pages.pledge.view.geist" /></Col>
-                  <Col span={10} className={styles.value}>0</Col>
+                  <Col span={10} className={styles.value}><Bignumber value={lpRewardPerYear.div(12)} /></Col>
                   <Col span={14} className={styles.label}><FormattedMessage id="pages.pledge.view.annualization" /></Col>
-                  <Col span={10} className={styles.value}>5.2321%</Col>
+                  <Col span={10} className={styles.value}><Bignumber value={lpApy} />%</Col>
                 </Row>
               </Card>
             </Col>

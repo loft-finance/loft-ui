@@ -18,7 +18,17 @@ const price = config.loft.price
 
 export default () => {
   const { wallet } = useModel('wallet')
-  const { balanceLoft, depositedLoft, earnedLoft, isLoftAllowanceEnough, loftApprove, loftDeposit, loftWithdraw } = useModel('pledge')
+  const { loftRewardPerYear, loftApy, balanceLoft, depositedLoft, earnedLoft, isLoftAllowanceEnough, loftApprove, loftDeposit, loftWithdraw, getLoftAPY } = useModel('pledge', res=>({
+    loftRewardPerYear: res.loftRewardPerYear,
+    loftApy: res.loftApy,
+    balanceLoft: res.balanceLoft,
+    depositedLoft: res.depositedLoft,
+    earnedLoft: res.earnedLoft,
+    isLoftAllowanceEnough: res.isLoftAllowanceEnough,
+    loftApprove: res.loftApprove,
+    loftDeposit: res.loftDeposit,
+    loftWithdraw: res.loftWithdraw,
+  }))
   
   const [form] = Form.useForm();
   const refAmount = useRef()
@@ -200,7 +210,7 @@ export default () => {
                 <Col span={18}>
                   <Title level={3}><FormattedMessage id="pages.manage.stake.title" /></Title>
                 </Col>
-                <Col span={6}>APY 452.61%</Col>
+                <Col span={6}>APY <Bignumber value={loftApy} />%</Col>
               </Row>
               <Row>
                 <Col span={24}>
