@@ -243,7 +243,7 @@ export default () => {
       const lpApy = await getLpAPY()
       const loftApy = await getLoftAPY()
       // const { loft, lp } = config;
-      console.log('apy:', lpApy, loftApy)
+      // console.log('apy:', lpApy, loftApy)
       setLpApy(valueToBigNumber(lpApy))
       setLoftpApy(valueToBigNumber(loftApy))
     }
