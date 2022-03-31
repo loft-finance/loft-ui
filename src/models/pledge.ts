@@ -19,8 +19,10 @@ export default () => {
     const { current: currentMarket } = useModel('market');
     const [balanceLp, setBalanceLp] = useState(valueToBigNumber('0'));
     const [depositedLp, setDepositedLp] = useState(valueToBigNumber('0'));
+    const [earnedLp, setEarnedLp] = useState(valueToBigNumber('0'));
     const [balanceLoft, setBalanceLoft] = useState(valueToBigNumber('0'));
     const [depositedLoft, setDepositedLoft] = useState(valueToBigNumber('0'));
+    const [earnedLoft, setEarnedLoft] = useState(valueToBigNumber('0'));
 
 
     const getUserData = async () => {
@@ -33,17 +35,21 @@ export default () => {
         const contractLp = new ethers.Contract(lp.address, lp.abi, provider);
         const contractLoft = new ethers.Contract(loft.address, loft.abi, provider);
 
-        const [balanceLp, depositedLp, balanceLoft, depositedLoft] = await Promise.all([
+        const [balanceLp, depositedLp, earnedLp, balanceLoft, depositedLoft, earnedLoft] = await Promise.all([
           contractLp.balanceOf(wallet?.currentAccount),
           contractFarm.deposited(lp.poolNumber, wallet?.currentAccount),
+          contractFarm.pending(lp.poolNumber, wallet?.currentAccount),
           contractLoft.balanceOf(wallet?.currentAccount),
           contractFarm.deposited(loft.poolNumber, wallet?.currentAccount),
+          contractFarm.pending(loft.poolNumber, wallet?.currentAccount),
         ])
 
         setBalanceLp(valueToBigNumber(formatUnits(balanceLp, lp.decimals).toString()))
         setDepositedLp(valueToBigNumber(formatUnits(depositedLp, lp.decimals).toString()))
+        setEarnedLp(valueToBigNumber(formatUnits(earnedLp, lp.decimals).toString()))
         setBalanceLoft(valueToBigNumber(formatUnits(balanceLoft, loft.decimals).toString()))
         setDepositedLoft(valueToBigNumber(formatUnits(depositedLoft, loft.decimals).toString()))
+        setEarnedLoft(valueToBigNumber(formatUnits(earnedLoft, loft.decimals).toString()))
     }
     
     
@@ -144,5 +150,5 @@ export default () => {
         }
     },[wallet])
 
-    return { balanceLp, depositedLp, isLpAllowanceEnough, lpApprove, lpDeposit, lpWithdraw,  balanceLoft, depositedLoft, isLoftAllowanceEnough, loftApprove, loftDeposit, loftWithdraw, }
+    return { balanceLp, depositedLp, earnedLp, isLpAllowanceEnough, lpApprove, lpDeposit, lpWithdraw,  balanceLoft, depositedLoft,earnedLoft, isLoftAllowanceEnough, loftApprove, loftDeposit, loftWithdraw, }
 }

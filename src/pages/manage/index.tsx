@@ -16,21 +16,21 @@ export default () => {
       <Info
         items={[
           {
-            title: <FormattedMessage id="pages.pledge.info.pledge" />,
+            title: <FormattedMessage id="pages.manage.info.pledge" />,
             value: '2.2M',
             tag: '($21.12MUSD)',
           },
           {
-            title: <FormattedMessage id="pages.pledge.info.price" />,
+            title: <FormattedMessage id="pages.manage.info.price" />,
             value: '$9.33',
           },
           {
-            title: <FormattedMessage id="pages.pledge.info.fluidity" />,
+            title: <FormattedMessage id="pages.manage.info.fluidity" />,
             value: '5.3M',
             tag: '(28.5% LOCKED)',
           },
           {
-            title: <FormattedMessage id="pages.pledge.info.market" />,
+            title: <FormattedMessage id="pages.manage.info.market" />,
             value: '$49.4M',
           },
         ]}
@@ -43,24 +43,24 @@ export default () => {
             <Card bordered={false}>
               <Row>
                 <Col span={18}>
-                  <Title level={3}><FormattedMessage id="pages.pledge.stake.title" /></Title>
+                  <Title level={3}><FormattedMessage id="pages.manage.stake.title" /></Title>
                 </Col>
                 <Col span={6}>APY 452.61%</Col>
               </Row>
               <Row>
                 <Col span={24}>
                   <p className={styles.tip}>
-                    <FormattedMessage id="pages.pledge.stake.desc" />
+                    <FormattedMessage id="pages.manage.stake.desc" />
                   </p>
                 </Col>
                 <Col span={24}>
-                  <p className={styles.tip}><FormattedMessage id="pages.pledge.stake.balance" /></p>
+                  <p className={styles.tip}><FormattedMessage id="pages.manage.stake.balance" /></p>
                   <p><Bignumber value={balanceLoft} /> GEIST</p>
                 </Col>
               </Row>
 
               <Row className={styles.form}>
-                <Col span={18}>
+                <Col span={15}>
                   <Form name="basic" layout={'vertical'} autoComplete="off">
                     <Form.Item
                       name="quantity"
@@ -70,14 +70,19 @@ export default () => {
                         style={{ width: '100%' }}
                         placeholder="Quantity"
                         prefix={<DollarCircleOutlined className="site-form-item-icon" />}
-                        suffix={<a><FormattedMessage id="pages.pledge.stake.max" /></a>}
+                        suffix={<a><FormattedMessage id="pages.manage.stake.max" /></a>}
                       />
                     </Form.Item>
                   </Form>
                 </Col>
-                <Col span={5} offset={1}>
+                <Col span={4} offset={1}>
                   <Button type="primary" shape="round">
-                    <FormattedMessage id="pages.pledge.stake.button" />
+                    <FormattedMessage id="pages.manage.stake.button.stake" />
+                  </Button>
+                </Col>
+                <Col span={4}>
+                  <Button shape="round">
+                    <FormattedMessage id="pages.manage.stake.button.withdraw" />
                   </Button>
                 </Col>
               </Row>
@@ -85,18 +90,18 @@ export default () => {
             <Card bordered={false} style={{ marginTop: 15 }}>
               <Row>
                 <Col span={18}>
-                  <Title level={3}><FormattedMessage id="pages.pledge.help.title" /></Title>
+                  <Title level={3}><FormattedMessage id="pages.manage.help.title" /></Title>
                 </Col>
               </Row>
               <Row>
                 <Col span={24}>
                   <p className={styles.tip}>
-                    <FormattedMessage id="pages.pledge.help.desc" />
+                    <FormattedMessage id="pages.manage.help.desc" />
                   </p>
                 </Col>
                 <Col span={5} offset={19} style={{ marginTop: 18 }}>
                   <Button type="primary" shape="round">
-                    <FormattedMessage id="pages.pledge.help.button" />
+                    <FormattedMessage id="pages.manage.help.button" />
                   </Button>
                 </Col>
               </Row>
@@ -106,13 +111,13 @@ export default () => {
             <Card bordered={false}>
               <Row>
                 <Col span={18}>
-                  <Title level={3}><FormattedMessage id="pages.pledge.unlocked.title" /></Title>
+                  <Title level={3}><FormattedMessage id="pages.manage.unlocked.title" /></Title>
                 </Col>
               </Row>
               <Row>
                 <Col span={10}>
                   <p className={styles.tip}>
-                    <FormattedMessage id="pages.pledge.unlocked.desc" />
+                    <FormattedMessage id="pages.manage.unlocked.desc" />
                   </p>
                 </Col>
                 <Col span={6} offset={1}>
@@ -120,7 +125,7 @@ export default () => {
                 </Col>
                 <Col span={5} offset={1}>
                   <Button type="primary" shape="round">
-                    <FormattedMessage id="pages.pledge.unlocked.button" />
+                    <FormattedMessage id="pages.manage.unlocked.button" />
                   </Button>
                 </Col>
               </Row>
