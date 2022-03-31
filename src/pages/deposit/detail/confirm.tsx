@@ -6,6 +6,7 @@ import { calculateHealthFactorFromBalancesBigUnits, valueToBigNumber } from '@aa
 import { normalize } from '@aave/math-utils';
 import { sendEthTransaction, TxStatusType } from '@/lib/helpers/send-ethereum-tx';
 import Bignumber from '@/components/Bignumber';
+import { refresh } from '@/lib/helpers/refresh';
 
 import Back from '@/components/Back';
 import styles from './confirm.less';
@@ -16,7 +17,9 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, match: { params:
         return <div style={{textAlign:'center'}}><Spin /></div>
     }
 
+    const underlyingSymbol = poolReserve?.symbol || ''
     const amount = valueToBigNumber(amount0);
+    
 
     const [steps, setSteps] = useState<any>([]);
     const [current, setCurrent] = useState(0);
@@ -232,6 +235,8 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, match: { params:
                 handler.records.set('deposit', 'deposit', 'confirmed')
                 setCurrent(current + 1);
                 handler.loading.set('deposit', false);
+
+                refresh();
             },
             error(e: any) {
                 console.log('confirm error:', e)
@@ -317,7 +322,7 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, match: { params:
                                 contentStyle={{ justifyContent: 'end', color: '#29292D', fontWeight: 'bold' }}
                             >
                                 <Descriptions.Item label={<FormattedMessage id="pages.deposit.detail.confirm.quantity" />} span={3}>
-                                    <Bignumber value={amount} />
+                                    <Bignumber value={amount} /> {underlyingSymbol}
                                 </Descriptions.Item>
                                 <Descriptions.Item
                                     span={3}

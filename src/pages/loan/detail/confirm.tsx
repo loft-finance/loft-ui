@@ -6,6 +6,7 @@ import { calculateHealthFactorFromBalancesBigUnits, InterestRate, valueToBigNumb
 import { sendEthTransaction, TxStatusType } from '@/lib/helpers/send-ethereum-tx';
 import { normalize } from '@aave/math-utils';
 import Bignumber from '@/components/Bignumber';
+import { refresh } from '@/lib/helpers/refresh';
 
 import Back from '@/components/Back';
 import styles from './confirm.less';
@@ -252,6 +253,7 @@ export default ({ poolReserve, maxAmountToDeposit, location:{ query }, match: { 
                 handler.records.set('loan', 'loan', 'confirmed')
                 setCurrent(current + 1);
                 handler.loading.set('loan', false);
+                refresh();
             },
             error(e: any) {
                 console.log('confirm error:', e)

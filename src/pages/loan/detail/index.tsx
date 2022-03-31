@@ -19,7 +19,7 @@ export default (props: any) => {
         id? res.id === id : res.underlyingAsset.toLowerCase() === underlyingAsset.toLowerCase()
   );
 
-
+  const underlyingSymbol = poolReserve?.symbol || ''
   let walletBalance = valueToBigNumber('0').dividedBy(valueToBigNumber(10).pow(18))
 
   if(balance && poolReserve) {
@@ -55,19 +55,19 @@ export default (props: any) => {
       <Info
         items={[
           {
-            title: <FormattedMessage id="pages.deposit.detail.info.borrowed" />,
-            value: <Bignumber value={currentBorrows} />,
+            title: <FormattedMessage id="pages.loan.detail.info.borrowed" />,
+            value: <><Bignumber value={currentBorrows} /> {underlyingSymbol}</>,
           },
           {
-            title: <FormattedMessage id="pages.deposit.detail.info.TotalCollateral" />,
+            title: <FormattedMessage id="pages.loan.detail.info.TotalCollateral" />,
             value: <><Bignumber value={user?.totalCollateralUSD} maximumValueDecimals={4} /> USD</> ,
           },
           {
-            title: <FormattedMessage id="pages.deposit.detail.info.LoanValue" />,
+            title: <FormattedMessage id="pages.loan.detail.info.LoanValue" />,
             value: <Bignumber value={user?.currentLoanToValue} />,
           },
           {
-            title: <FormattedMessage id="pages.deposit.detail.info.FitnessFactor" />,
+            title: <FormattedMessage id="pages.loan.detail.info.FitnessFactor" />,
             value: <Bignumber value={user?.healthFactor || '-1'} />,
           }
         ]}

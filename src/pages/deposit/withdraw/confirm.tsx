@@ -5,6 +5,7 @@ import { LoadingOutlined } from '@ant-design/icons'
 import { calculateHealthFactorFromBalancesBigUnits, valueToBigNumber, BigNumber } from '@aave/protocol-js';
 import { sendEthTransaction, TxStatusType } from '@/lib/helpers/send-ethereum-tx';
 import Bignumber from '@/components/Bignumber';
+import { refresh } from '@/lib/helpers/refresh';
 
 import Back from '@/components/Back';
 import styles from './confirm.less';
@@ -15,6 +16,7 @@ export default ({ poolReserve, user, userReserve,  maxAmountToDeposit, match: { 
         return <div style={{textAlign:'center'}}><Spin /></div>
     }
     
+    const underlyingSymbol = poolReserve?.symbol || ''
     const amount = valueToBigNumber(amount0);
 
     const [steps, setSteps] = useState<any>([]);
@@ -280,6 +282,7 @@ export default ({ poolReserve, user, userReserve,  maxAmountToDeposit, match: { 
                 handler.records.set('withdraw', 'withdraw', 'confirmed')
                 setCurrent(current + 1);
                 handler.loading.set('withdraw', false);
+                refresh();
             },
             error(e: any) {
                 console.log('confirm error:', e)
@@ -365,7 +368,7 @@ export default ({ poolReserve, user, userReserve,  maxAmountToDeposit, match: { 
                                 contentStyle={{ justifyContent: 'end', color: '#29292D', fontWeight: 'bold' }}
                             >
                                 <Descriptions.Item label="Quantity" span={3}>
-                                    <Bignumber value={displayAmountToWithdraw} />
+                                    <Bignumber value={displayAmountToWithdraw} /> {underlyingSymbol}
                                 </Descriptions.Item>
                                 {/* <Descriptions.Item
                                     span={3}

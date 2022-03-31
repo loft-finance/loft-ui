@@ -14,7 +14,7 @@ export default (props) => {
     const { wallet, balances } = useModel('wallet');
     const { reserves, user } = useModel('pool')
 
-
+    const underlyingSymbol = poolReserve?.symbol || ''
     const balance = balances ? balances[underlyingAsset] : '0'
 
     const poolReserve = reserves.find((res) => id ? res.id === id : res.underlyingAsset.toLowerCase() === underlyingAsset.toLowerCase());
@@ -68,7 +68,7 @@ export default (props) => {
                 items={[
                     {
                         title: <FormattedMessage id="pages.deposit.withdraw.info.balance" />,
-                        value: <Bignumber value={userReserve?.underlyingBalance || '0'} />,
+                        value: <><Bignumber value={userReserve?.underlyingBalance || '0'} /> {underlyingSymbol}</>,
                     },
                     {
                         title: <FormattedMessage id="pages.deposit.withdraw.info.FitnessFactor" />,

@@ -5,6 +5,7 @@ import styles from './overview.less';
 import Bignumber from '@/components/Bignumber';
 
 export default ({ title = '', items = [], poolReserve = {}, marketRefPriceInUsd = '0' }: any) => {
+  const underlyingSymbol = poolReserve?.symbol || ''
 
   const data = {
     utilizationRate: Number(poolReserve.utilizationRate),
@@ -30,10 +31,10 @@ export default ({ title = '', items = [], poolReserve = {}, marketRefPriceInUsd 
       <Card bordered={false}>
         <Row>
           <Col span={9} offset={1} className={styles.title}>
-            <FormattedMessage id="pages.deposit.detail.overview.DepositFTM" />
+            <FormattedMessage id="pages.deposit.detail.overview.DepositFTM" /> {underlyingSymbol}
           </Col>
           <Col span={9} offset={4} className={styles.title}>
-            <FormattedMessage id="pages.deposit.detail.overview.DepositFTM" />
+            <FormattedMessage id="pages.deposit.detail.overview.FantomReserve" />
           </Col>
         </Row>
         <Row>
@@ -46,7 +47,7 @@ export default ({ title = '', items = [], poolReserve = {}, marketRefPriceInUsd 
                 {data.utilizationRate.toFixed(2)}%
               </Descriptions.Item>
               <Descriptions.Item label={<FormattedMessage id="pages.deposit.detail.overview.AvailableLiquidity" />} span={3}>
-                <Bignumber value={data.availableLiquidity} /> FTM
+                <Bignumber value={data.availableLiquidity} /> {underlyingSymbol}
               </Descriptions.Item>
               <Descriptions.Item label={<FormattedMessage id="pages.deposit.detail.overview.DepositApy" />} span={3}>
                 {data.depositApy.toFixed(2)}%

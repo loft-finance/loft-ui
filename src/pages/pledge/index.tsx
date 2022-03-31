@@ -1,10 +1,11 @@
-import React, { useRef, useState } from 'react';
-import { Card, Row, Col, Button, Form, Input } from 'antd';
+import { useRef, useState } from 'react';
+import { Card, Row, Col, Button, Form, Input, message } from 'antd';
 import { GridContent } from '@ant-design/pro-layout';
 import Info from '@/components/Info';
 import WalletDisconnected from '@/components/Wallet/Disconnected';
 import Back from '@/components/Back';
 import { useModel, FormattedMessage } from 'umi';
+import { valueToBigNumber } from '@aave/math-utils';
 import { TokenIcon } from '@aave/aave-ui-kit';
 import Bignumber from '@/components/Bignumber'
 import Confirm from './Confirm'
@@ -14,27 +15,76 @@ export default () => {
   const symbol = ''
 
   const { wallet } = useModel('wallet');
-  const { deposited } = useModel('pledge')
+  const { balanceLp, depositedLp, isLpAllowanceEnough, lpApprove, lpDeposit, lpWithdraw } = useModel('pledge')
   
   const [form] = Form.useForm();
   const refConfirm = useRef()
 
   const handler = {
     submit(values: any) {
-      // const amount = valueToBigNumber(values.amount)
-      // if(amount.gt(maxAmountToDeposit)){
-      //   message.error('The quality must be less than max amount to deposit')
-      //   return;
-      // }
-      // history.push(`/deposit/detail/${poolReserve.underlyingAsset}/${poolReserve.id}/confirm/${values.amount}`);
+      const amount = valueToBigNumber(values.amount)
+      if(amount.gt(balanceLp)){
+        message.error('The quality must be less than max amount to deposit')
+        return;
+      }
+      const txt = {
+        overview: {
+          title: 'Pledge Overview',
+          desc: 'These are your transaction details. Please be sure to check whether it is correct before submiting.'
+        },
+        approve: {
+          title: 'approve',
+          buttonText: 'approve',
+          stepText: 'approve',
+          description: 'Please approve before confirming',
+        },
+        confirm: {
+          title: 'pledge',
+          buttonText: 'pledge',
+          stepText: 'pledge',
+          description: 'Please submit a pledge',
+        },
+        completed: {
+          title: 'Completed',
+          buttonText: 'control panel',
+          stepText: 'Success',
+          description: '',
+        },
+      }
+      refConfirm.current.show({
+        amount,
+        txt,
+        isAllowanceEnough: isLpAllowanceEnough,
+        approve: lpApprove,
+        confirm: lpDeposit
+      })
     },
     max(){
-      // form.setFieldsValue({
-      //   amount: maxAmountToDeposit.toString()
-      // })
+      form.setFieldsValue({
+        amount: balanceLp.toString()
+      })
     },
     unstake(){
-      refConfirm.current.show()
+      const txt = {
+        confirm: {
+          title: 'withdraw',
+          buttonText: 'withdraw',
+          stepText: 'withdraw',
+          description: 'Please submit a withdraw',
+        },
+        completed: {
+          title: 'Completed',
+          buttonText: 'control panel',
+          stepText: 'Success',
+          description: '',
+        },
+      }
+      const amount = valueToBigNumber('1')
+      refConfirm.current.show({
+        amount,
+        txt,
+        confirm: lpWithdraw
+      })
     }
   };
 
@@ -75,7 +125,7 @@ export default () => {
                       >
                         <div className={styles.able}>
                           <span><FormattedMessage id="pages.pledge.amount.available" /></span>
-                          <span className={styles.amount}><Bignumber value={1} /> {symbol}</span>
+                          <span className={styles.amount}><Bignumber value={balanceLp} /> {symbol}</span>
                         </div>
                         <Form.Item
                           name="amount"
@@ -129,7 +179,7 @@ export default () => {
                 <Row>
                   <Col span={24}>
                     <div className={styles.title}><FormattedMessage id="pages.pledge.action.require.title" /></div>
-                    <div className={styles.value}>0 ($0 USD)</div>
+                    <div className={styles.value}><Bignumber value={depositedLp} /> ($0 USD)</div>
                     <div className={styles.button}>
                       <Button type="primary" block >
                         <FormattedMessage id="pages.pledge.action.require.button" />

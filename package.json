@@ -69,6 +69,7 @@
     "@web3-react/walletconnect": "8.0.13-beta.0",
     "ahooks": "^2.0.0",
     "antd": "^4.14.0",
+    "bignumber.js": "^9.0.2",
     "bizcharts": "^3.5.3-beta.0",
     "bizcharts-plugin-slider": "^2.1.1-beta.1",
     "classnames": "^2.2.6",

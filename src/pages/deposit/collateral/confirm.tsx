@@ -6,6 +6,7 @@ import { calculateHealthFactorFromBalancesBigUnits, valueToBigNumber } from '@aa
 import { sendEthTransaction, TxStatusType } from '@/lib/helpers/send-ethereum-tx';
 import { TokenIcon } from '@aave/aave-ui-kit';
 import Back from '@/components/Back';
+import { refresh } from '@/lib/helpers/refresh';
 import styles from './confirm.less';
 const { Step } = Steps;
 
@@ -220,6 +221,7 @@ export default ({ match: { params: { underlyingAsset, id,  status } }, }: any,) 
                 handler.records.set('deposit', 'deposit', 'confirmed')
                 setCurrent(current + 1);
                 handler.loading.set('deposit', false);
+                refresh();
             },
             error(e: any) {
                 console.log('confirm error:', e)

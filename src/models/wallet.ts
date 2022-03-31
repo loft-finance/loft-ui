@@ -113,11 +113,15 @@ export default () => {
         return false;
     }
 
+    const refresh = () => {
+        getBalance()
+    }
+
     useEffect(() => {
         if(currentAccount){
             getBalance();
         }
     },[currentAccount])
 
-    return { connect, disconnect, status, wallet: getWallet(), balances }
+    return { connect, disconnect, status, wallet: getWallet(), balances, refresh }
 }

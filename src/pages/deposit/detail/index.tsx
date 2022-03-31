@@ -19,6 +19,7 @@ export default (props) => {
   const { current: currentMarket } = useModel('market');
 
   const balance = balances ? balances[underlyingAsset] : '0'
+  const underlyingSymbol = poolReserve?.symbol || ''
 
   const poolReserve = reserves.find((res) =>
         id? res.id === id : res.underlyingAsset.toLowerCase() === underlyingAsset.toLowerCase()
@@ -61,7 +62,7 @@ export default (props) => {
           },
           {
             title: <FormattedMessage id="pages.deposit.detail.info.WalletBalance" />,
-            value: <><Bignumber value={walletBalance} /> FUSDT</>,
+            value: <><Bignumber value={walletBalance} /> {underlyingSymbol}</>,
           },
           {
             title: <FormattedMessage id="pages.deposit.detail.info.FitnessFactor" />,
