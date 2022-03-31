@@ -213,6 +213,10 @@ export default () => {
             setLoadingUserIncentives(false);
         }
 
+        if(!currentAccount){
+            userIncentiveData([])
+        }
+
         return () => {};
     }, [currentAccount, lendingPoolAddressProvider]);
     

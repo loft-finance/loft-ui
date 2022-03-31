@@ -14,7 +14,7 @@ export default ({ depositedPositions }: any) => {
       },
       collateral(record: any){
         const { id, underlyingAsset  } = record.reserve
-        history.push(`/deposit/collateral/${underlyingAsset}/${id}/confirm/${record.usageAsCollateralEnabledOnUser && record.usageAsCollateralEnabledOnThePool?0:1}`);
+        history.push(`/deposit/collateral/${underlyingAsset}/${id}/confirm/${record.usageAsCollateralEnabledOnUser && record.usageAsCollateralEnabledOnThePool?1:0}`);
       }
     }
     return (<div className={styles.table}>

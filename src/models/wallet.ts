@@ -46,6 +46,7 @@ export default () => {
                 }
                 localStorage.setItem('wallet', current)
             }else{
+                setCurrent('')
                 setStatus('unconnect');
                 setCurrentAccount('')
             }
@@ -68,7 +69,6 @@ export default () => {
     }
     const disconnect = () => {
         walletRef.current.deactivate()
-        setCurrent('')
         localStorage.removeItem('wallet')
     }
 
@@ -120,6 +120,8 @@ export default () => {
     useEffect(() => {
         if(currentAccount){
             getBalance();
+        }else{
+            setBalances({})
         }
     },[currentAccount])
 

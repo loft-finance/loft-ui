@@ -326,7 +326,7 @@ export default () => {
                 </Row>
               </Card>
             </Col>
-            {/* <Col span={24} style={{ marginTop: 15 }} className={styles.statistic}>
+            <Col span={24} style={{ marginTop: 15 }} className={styles.statistic}>
               <Row style={{ padding: 12 }}>
                 <Col span={5}>Lend borrow to earn GEIST rewards</Col>
                 <Col span={3}>Earned</Col>
@@ -399,7 +399,7 @@ export default () => {
                   </Card>
                 </Col>
               </Row>
-            </Col> */}
+            </Col>
             <Col span={12} style={{ marginTop: 15, paddingRight: 10 }}>
               <Card bordered={false}>
                 <Row>

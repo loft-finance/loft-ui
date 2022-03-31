@@ -83,7 +83,7 @@ export default ({ match: { params: { underlyingAsset, id, rateMode } }, }: any,)
                     reserve: poolReserve.underlyingAsset,
                     interestRateMode: currentRateMode,
                 });
-                console.log('txs:', txs)
+
                 const mainTxType = ''
                 const approveTx = txs.find((tx) => tx.txType === 'ERC20_APPROVAL');
                 const actionTx = txs.find((tx) =>
