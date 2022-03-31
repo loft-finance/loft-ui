@@ -116,7 +116,7 @@ export default () => {
     const refresh = () => {
         getBalance()
     }
-
+    
     useEffect(() => {
         if(currentAccount){
             getBalance();

@@ -18,18 +18,14 @@ export default () => {
   const { reserveIncentives } = useModel('incentives')
 
   const { 
-    lpRewardPerYear, lpApy, balanceLp, depositedLp, earnedLp,
-    loftRewardPerYear, loftApy, balanceLoft, depositedLoft, earnedLoft,
+    lpApy, depositedLp, earnedLp,
+    loftApy, depositedLoft, earnedLoft,
   } = useModel('pledge', res => ({
-    lpRewardPerYear: res.lpRewardPerYear,
     lpApy: res.lpApy,
-    balanceLp: res.balanceLp,
     depositedLp: res.depositedLp,
     earnedLp: res.earnedLp,
     
-    loftRewardPerYear: res.loftRewardPerYear,
     loftApy: res.loftApy,
-    balanceLoft: res.balanceLoft,
     depositedLoft: res.depositedLoft,
     earnedLoft: res.earnedLoft,
   }))
@@ -417,7 +413,7 @@ export default () => {
                         </div>
                       </Col>
                       <Col span={3} className={styles.single}>
-                        <Bignumber value={loftApy} />%
+                        <Bignumber value={lpApy} />%
                       </Col>
                       <Col span={4}>
                         <div className={styles.multi}>

@@ -22,6 +22,10 @@ export default () => {
 
   const { reserveIncentives } = useModel('incentives')
 
+  const { wallet } = useModel('wallet', res => ({
+    wallet: res.wallet,
+  }))
+
   const availableBorrowsMarketReferenceCurrency = valueToBigNumber(
     user?.availableBorrowsMarketReferenceCurrency || 0
   );
@@ -36,7 +40,7 @@ export default () => {
   const list = (withFilter: boolean) => {
     const data = (reserves: any) =>
       reserves.map((reserve: any) => {
-        const availableBorrows = availableBorrowsMarketReferenceCurrency.gt(0)
+        const availableBorrows = wallet && availableBorrowsMarketReferenceCurrency.gt(0)
           ? BigNumber.min(
             // one percent margin to don't fail tx
             availableBorrowsMarketReferenceCurrency
@@ -55,10 +59,10 @@ export default () => {
         return {
           ...reserve,
           currentBorrows:
-            user?.userReservesData.find((userReserve) => userReserve.reserve.id === reserve.id)
+            wallet&&user?.userReservesData.find((userReserve) => userReserve.reserve.id === reserve.id)
               ?.totalBorrows || '0',
           currentBorrowsInUSD:
-            user?.userReservesData.find((userReserve) => userReserve.reserve.id === reserve.id)
+            wallet&&user?.userReservesData.find((userReserve) => userReserve.reserve.id === reserve.id)
               ?.totalBorrowsUSD || '0',
           availableBorrows,
           availableBorrowsInUSD,

@@ -246,7 +246,7 @@ export default () => {
                   </Button>
                 </Col>
                 <Col span={5}>
-                  <Button shape="round" onClick={handler.withdraw.principal.amount}>
+                  <Button shape="round"  disabled={!wallet || depositedLoft.eq('0')} onClick={handler.withdraw.principal.amount}>
                     <FormattedMessage id="pages.manage.stake.button.withdraw" />
                   </Button>
                 </Col>
@@ -289,7 +289,7 @@ export default () => {
                   <Bignumber value={earnedLoft} /> GEIST
                 </Col>
                 <Col span={5} offset={1}>
-                  <Button type="primary" shape="round" onClick={handler.withdraw.earned}>
+                  <Button type="primary" shape="round" disabled={!wallet || earnedLoft.eq('0')} onClick={handler.withdraw.earned}>
                     <FormattedMessage id="pages.manage.unlocked.button" />
                   </Button>
                 </Col>

@@ -247,9 +247,9 @@ export default () => {
                 <Row>
                   <Col span={24}>
                     <div className={styles.title}><FormattedMessage id="pages.pledge.action.unstake.title" /></div>
-                    <div className={styles.value}><Bignumber value={depositedLp} /> ($<Bignumber value={lpToUsd(depositedLp)} /> USD)</div>
+                    <div className={styles.value}><Bignumber value={wallet?depositedLp:valueToBigNumber(0)} /> ($<Bignumber value={wallet?lpToUsd(depositedLp):valueToBigNumber(0)} /> USD)</div>
                     <div className={styles.button}>
-                      <Button type="primary" block onClick={handler.withdraw.principal.amount} >
+                      <Button type="primary" block disabled={!wallet || depositedLp.eq('0')} onClick={handler.withdraw.principal.amount} >
                         <FormattedMessage id="pages.pledge.action.unstake.button" />
                       </Button>
                     </div>
@@ -260,9 +260,9 @@ export default () => {
                 <Row>
                   <Col span={24}>
                     <div className={styles.title}><FormattedMessage id="pages.pledge.action.require.title" /></div>
-                    <div className={styles.value}><Bignumber value={earnedLp} /> ($<Bignumber value={lpToUsd(earnedLp)} /> USD)</div>
+                    <div className={styles.value}><Bignumber value={wallet?earnedLp:valueToBigNumber(0)} /> ($<Bignumber value={wallet?lpToUsd(earnedLp):valueToBigNumber(0)} /> USD)</div>
                     <div className={styles.button}>
-                      <Button type="primary" block onClick={handler.withdraw.earned}>
+                      <Button type="primary" block disabled={!wallet || earnedLp.eq('0')} onClick={handler.withdraw.earned}>
                         <FormattedMessage id="pages.pledge.action.require.button" />
                       </Button>
                     </div>
