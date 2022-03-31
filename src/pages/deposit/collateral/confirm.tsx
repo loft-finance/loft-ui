@@ -195,7 +195,6 @@ export default ({ match: { params: { underlyingAsset, id,  status } }, }: any,) 
                 handler.loading.set('deposit', true);
                 handler.records.set('deposit', 'deposit', 'wait')
                 const success = await handler.getTx({ depositing: true })
-                console.log('success: ',success, actionTxData)
                 if (success) {
                     handler.loading.set('deposit', true);
                     return sendEthTransaction(
