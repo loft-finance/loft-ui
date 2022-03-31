@@ -3,11 +3,12 @@ import { Card, Row, Col, Button, Form, Input, message } from 'antd';
 import { GridContent } from '@ant-design/pro-layout';
 import Info from '@/components/Info';
 import WalletDisconnected from '@/components/Wallet/Disconnected';
-import Back from '@/components/Back';
 import { useModel, FormattedMessage } from 'umi';
 import { valueToBigNumber } from '@aave/math-utils';
 import { TokenIcon } from '@aave/aave-ui-kit';
 import Bignumber from '@/components/Bignumber'
+import { lpToUsd } from '@/lib/helpers/utils';
+import Amount from './Amount';
 import Confirm from './Confirm'
 import styles from './index.less'
 
@@ -15,9 +16,10 @@ export default () => {
   const symbol = ''
 
   const { wallet } = useModel('wallet');
-  const { balanceLp, depositedLp, isLpAllowanceEnough, lpApprove, lpDeposit, lpWithdraw } = useModel('pledge')
+  const { balanceLp, depositedLp, earnedLp, isLpAllowanceEnough, lpApprove, lpDeposit, lpWithdraw } = useModel('pledge')
   
   const [form] = Form.useForm();
+  const refAmount = useRef()
   const refConfirm = useRef()
 
   const handler = {
@@ -52,7 +54,9 @@ export default () => {
         },
       }
       refConfirm.current.show({
+        title: 'Stake',
         amount,
+        amountInUsd: lpToUsd(amount),
         txt,
         isAllowanceEnough: isLpAllowanceEnough,
         approve: lpApprove,
@@ -64,27 +68,95 @@ export default () => {
         amount: balanceLp.toString()
       })
     },
-    unstake(){
-      const txt = {
-        confirm: {
-          title: 'withdraw',
-          buttonText: 'withdraw',
-          stepText: 'withdraw',
-          description: 'Please submit a withdraw',
+    withdraw: {
+      principal: {
+        amount(){
+          const txt = {
+            title: 'How much do you want to unstake?',
+            desc: 'Provide GEIST/FTM liquidity on SpookySwap and stake the LP token here to earn more GEIST',
+            available: 'Can be pledge',
+            max: 'Max',
+            validate: 'Please input quantity!',
+            button: 'Unstake'
+          }
+  
+          refAmount.current.show({
+            title: 'Unstake',
+            txt,
+            max: depositedLp,
+            ok: handler.withdraw.principal.amountOk
+          })
         },
-        completed: {
-          title: 'Completed',
-          buttonText: 'control panel',
-          stepText: 'Success',
-          description: '',
-        },
+        amountOk({ amount }: any){
+          refAmount.current.close();
+  
+          const txt = {
+            overview: {
+              title: 'Unstake Overview',
+              desc: 'These are your transaction details. Please be sure to check whether it is correct before submiting.'
+            },
+            approve: {
+              title: 'approve',
+              buttonText: 'approve',
+              stepText: 'approve',
+              description: 'Please approve before confirming',
+            },
+            confirm: {
+              title: 'unstake',
+              buttonText: 'unstake',
+              stepText: 'unstake',
+              description: 'Please submit a unstake',
+            },
+            completed: {
+              title: 'Completed',
+              buttonText: 'control panel',
+              stepText: 'Success',
+              description: '',
+            },
+          }
+          refConfirm.current.show({
+            title: 'Unstake',
+            amount,
+            amountInUsd: lpToUsd(amount),
+            txt,
+            confirm: lpWithdraw
+          })
+        }
+      },
+      earned() {
+        const txt = {
+          overview: {
+            title: 'Unstake Earned Overview',
+            desc: 'These are your transaction details. Please be sure to check whether it is correct before submiting.'
+          },
+          approve: {
+            title: 'approve',
+            buttonText: 'approve',
+            stepText: 'approve',
+            description: 'Please approve before confirming',
+          },
+          confirm: {
+            title: 'unstake',
+            buttonText: 'unstake',
+            stepText: 'unstake',
+            description: 'Please submit a unstake',
+          },
+          completed: {
+            title: 'Completed',
+            buttonText: 'control panel',
+            stepText: 'Success',
+            description: '',
+          },
+        }
+
+        refConfirm.current.show({
+          title: 'Unstake Earned',
+          amount: 0,
+          amountInUsd: 0,
+          txt,
+          confirm: lpWithdraw
+        })
       }
-      const amount = valueToBigNumber('1')
-      refConfirm.current.show({
-        amount,
-        txt,
-        confirm: lpWithdraw
-      })
     }
   };
 
@@ -105,7 +177,6 @@ export default () => {
           {!wallet && <WalletDisconnected showBack={false} />}
           {wallet &&
           <Card bordered={false}>
-            <Back />
             <Card bordered={false}>
                 <div className={styles.desc}>
                   <div className={styles.title}><FormattedMessage id="pages.pledge.amount.title" /></div>
@@ -166,9 +237,9 @@ export default () => {
                 <Row>
                   <Col span={24}>
                     <div className={styles.title}><FormattedMessage id="pages.pledge.action.unstake.title" /></div>
-                    <div className={styles.value}>0 ($0 USD)</div>
+                    <div className={styles.value}><Bignumber value={depositedLp} /> ($<Bignumber value={lpToUsd(depositedLp)} /> USD)</div>
                     <div className={styles.button}>
-                      <Button type="primary" block onClick={handler.unstake} >
+                      <Button type="primary" block onClick={handler.withdraw.principal.amount} >
                         <FormattedMessage id="pages.pledge.action.unstake.button" />
                       </Button>
                     </div>
@@ -179,9 +250,9 @@ export default () => {
                 <Row>
                   <Col span={24}>
                     <div className={styles.title}><FormattedMessage id="pages.pledge.action.require.title" /></div>
-                    <div className={styles.value}><Bignumber value={depositedLp} /> ($0 USD)</div>
+                    <div className={styles.value}><Bignumber value={earnedLp} /> ($<Bignumber value={lpToUsd(earnedLp)} /> USD)</div>
                     <div className={styles.button}>
-                      <Button type="primary" block >
+                      <Button type="primary" block onClick={handler.withdraw.earned}>
                         <FormattedMessage id="pages.pledge.action.require.button" />
                       </Button>
                     </div>
@@ -201,7 +272,8 @@ export default () => {
         </Col>
       </Row>
     </GridContent>
-    <Confirm refs={refConfirm} quality={0} />
+    <Amount refs={refAmount} />
+    <Confirm refs={refConfirm} />
     </>
   );
 };

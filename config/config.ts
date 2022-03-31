@@ -245,24 +245,24 @@ export default defineConfig({
         }
       ],
     },
-    // {
-    //   path: '/manage',
-    //   name: 'manage',
-    //   icon: 'icon-ic_platform_currency',
-    //   component: './manage',
-    //   wrappers: [
-    //     '@/pages/wrappers/index',
-    //   ],
-    // },
-    // {
-    //   path: '/pledge',
-    //   name: 'pledge',
-    //   icon: 'icon-ic_Pledge',
-    //   component: './pledge',
-    //   wrappers: [
-    //     '@/pages/wrappers/index',
-    //   ],
-    // },
+    {
+      path: '/manage',
+      name: 'manage',
+      icon: 'icon-ic_platform_currency',
+      component: './manage',
+      wrappers: [
+        '@/pages/wrappers/index',
+      ],
+    },
+    {
+      path: '/pledge',
+      name: 'pledge',
+      icon: 'icon-ic_Pledge',
+      component: './pledge',
+      wrappers: [
+        '@/pages/wrappers/index',
+      ],
+    },
     {
       path: '/control',
       name: 'control',

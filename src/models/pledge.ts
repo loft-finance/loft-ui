@@ -17,6 +17,10 @@ const APPROVE_VALUE =  valueToBigNumber('2').pow(256).minus(1).toString(10)
 export default () => {
     const { wallet } = useModel('wallet')
     const { current: currentMarket } = useModel('market');
+
+    const [rewardPerBlock, setRewardPerBlock] = useState(valueToBigNumber('0'));
+    const [BONUS_MULTIPLIER, setBONUS_MULTIPLIER] = useState(valueToBigNumber('0'));
+
     const [balanceLp, setBalanceLp] = useState(valueToBigNumber('0'));
     const [depositedLp, setDepositedLp] = useState(valueToBigNumber('0'));
     const [earnedLp, setEarnedLp] = useState(valueToBigNumber('0'));
@@ -24,6 +28,68 @@ export default () => {
     const [depositedLoft, setDepositedLoft] = useState(valueToBigNumber('0'));
     const [earnedLoft, setEarnedLoft] = useState(valueToBigNumber('0'));
 
+    const getPublicData = async () => {
+      const chainId = currentMarket.chainId
+      const provider = getProvider(chainId);
+
+      const { farm } = config;
+      const contract = new ethers.Contract(farm.address, farm.abi, provider);
+
+      const [rewardPerBlock, BONUS_MULTIPLIER] = await Promise.all([
+        contract.rewardPerBlock(),
+        contract.BONUS_MULTIPLIER(),
+      ])
+
+      console.log('public data:', rewardPerBlock.toString(), BONUS_MULTIPLIER.toString())
+      // setRewardPerBlock(rewardPerBlock)
+      // setBONUS_MULTIPLIER(BONUS_MULTIPLIER)
+    }
+
+    // async function getAPY(
+    //   lpTokenAddress: string,
+    //   farmAddress: string,
+    //   poolNumber: number,
+    //   lpMultiplier: number,
+    //   dowsPrice: number
+    // ): Promise<string> {
+    
+    //   const [_rewardPerBlock, _BONUS_MULTIPLIER, _staked, _poolInfo, _totalAllocPoint] = await Promise.all([
+    //     dowsJSConnector.dowsJs.Farm.rewardPerBlock(farmAddress),
+    //     dowsJSConnector.dowsJs.Farm.multiplier(farmAddress),
+    //     dowsJSConnector.dowsJs.LpERC20Token.balanceOf(lpTokenAddress, farmAddress),
+    //     dowsJSConnector.dowsJs.Farm.poolInfo(farmAddress, poolNumber),
+    //     dowsJSConnector.dowsJs.Farm.totalAllocPoint(farmAddress)
+    //   ])
+    //   const rewardPerBlock = weiToBigNumber(_rewardPerBlock)
+    
+    //   const BONUS_MULTIPLIER = _BONUS_MULTIPLIER.toString()
+    
+    //   const staked = weiToBigNumber(_staked)
+    //     .multipliedBy(lpMultiplier)
+    
+    //   if (staked.eq(0)) {
+    //     return '0'
+    //   }
+    
+    //   const allocPoint = _poolInfo.allocPoint.toString()
+    
+    //   const totalAllocPoint = _totalAllocPoint.toString()
+    
+    //   const rewardPerYear = rewardPerBlock.multipliedBy(BONUS_MULTIPLIER)
+    //     .multipliedBy(allocPoint)
+    //     .dividedBy(totalAllocPoint)
+    //     .multipliedBy('10368000')
+    
+    //   if (poolNumber === 2 && dowsPrice) {
+    //     return rewardPerYear.multipliedBy(dowsPrice.toString()).dividedBy(staked)
+    //       .multipliedBy(100)
+    //       .toString(10)
+    //   }
+    
+    //   return rewardPerYear.dividedBy(staked)
+    //     .multipliedBy(100)
+    //     .toString(10)
+    // }
 
     const getUserData = async () => {
         if(!wallet?.currentAccount) return;
@@ -80,7 +146,7 @@ export default () => {
       const { farm, lp } = config;
       const contract = new ethers.Contract(farm.address, farm.abi, signer || provider);
       const amountInWei = toWei(amount)
-      console.log('params:', lp.poolNumber, amountInWei)
+
       return contract.deposit(lp.poolNumber, amountInWei);
     }
 
@@ -108,11 +174,10 @@ export default () => {
     }
 
     const loftApprove = async () => {
-      const chainId = currentMarket.chainId
-      const provider = getProvider(chainId);
-
-      const { farm } = config;
-      const contract = new ethers.Contract(farm.address, farm.abi, provider);
+      const provider = wallet.provider;
+      const signer = provider.getSigner()
+      const { farm, loft } = config;
+      const contract = new ethers.Contract(loft.address, loft.abi, signer || provider);
       return await contract.approve(farm.address, APPROVE_VALUE)
     }
 
@@ -140,6 +205,7 @@ export default () => {
     let IntervalIdUserReserves: any = undefined
 
     useEffect(() => {
+        getPublicData()
         if(wallet){
           getUserData()
             IntervalIdUserReserves = setInterval(() => {
@@ -150,5 +216,9 @@ export default () => {
         }
     },[wallet])
 
-    return { balanceLp, depositedLp, earnedLp, isLpAllowanceEnough, lpApprove, lpDeposit, lpWithdraw,  balanceLoft, depositedLoft,earnedLoft, isLoftAllowanceEnough, loftApprove, loftDeposit, loftWithdraw, }
+    const refresh = () => {
+      getUserData()
+    }
+
+    return { balanceLp, depositedLp, earnedLp, isLpAllowanceEnough, lpApprove, lpDeposit, lpWithdraw,  balanceLoft, depositedLoft,earnedLoft, isLoftAllowanceEnough, loftApprove, loftDeposit, loftWithdraw, refresh }
 }

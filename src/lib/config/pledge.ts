@@ -946,12 +946,14 @@ export const config = {
         address: '0xb3aFdAcda97D0f6c5b5e49743D9520C84F5f02fA',
         poolNumber: 1,
         decimals: 18,
+        price: 2,
         abi
     },
     loft: {
         address: '0x4044D49c107A133c7b81f698Ea0133C114A25773',
         poolNumber: 0,
         decimals: 18,
+        price: 3,
         abi
     }
 };

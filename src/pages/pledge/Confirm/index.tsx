@@ -1,5 +1,5 @@
 import { useState, useImperativeHandle } from 'react';
-import { history, FormattedMessage } from 'umi';
+import { history, FormattedMessage, useModel } from 'umi';
 import { Modal, Card, Row, Col, Button, Descriptions, Steps, Divider, Badge, Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons'
 import { valueToBigNumber } from '@aave/protocol-js';
@@ -12,9 +12,11 @@ export default ({ refs }: any) => {
     useImperativeHandle(refs, () => {
         return {
           show: (params: any) => {
-            const { amount, txt, isAllowanceEnough = false, approve = false, confirm  } = params
+            const { title, amount, amountInUsd, txt, isAllowanceEnough = false, approve = false, confirm  } = params
+            setTitle(title)
             setCurrent(0)
             setAmount(amount)
+            setAmountInUsd(amountInUsd)
             setArgs({
                 txt,
                 isAllowanceEnough,
@@ -28,20 +30,19 @@ export default ({ refs }: any) => {
         };
     });
 
+    const { refresh } = useModel('pledge', res => ({
+        refresh: res.refresh
+    }))
+
     const [visible, setVisible] = useState(false);
+    const [title, setTitle] = useState(false);
     const [amount, setAmount] = useState(valueToBigNumber('0'));
+    const [amountInUsd, setAmountInUsd] = useState(valueToBigNumber('0'));
     const [args, setArgs] = useState<any>({});
     const [steps, setSteps] = useState<any>([]);
     const [current, setCurrent] = useState(0);
     const [records, setRecords] = useState<any>([]);
     
-    // const { wallet } = useModel('wallet');
-
-    // useEffect(() => {
-    //     if (wallet) {
-    //         handler.init()
-    //     }
-    // }, [wallet]);
 
     const handler = {
         close: () => {
@@ -123,6 +124,8 @@ export default ({ refs }: any) => {
                     const res = await confirm(amount.toString())
                     console.log('confirm:', res)
                     handler.confirm.confirmed()
+
+                    refresh();
                 }catch(e: any){
                     console.log('confirm error:', e)
                     const key = 'confirm'
@@ -196,7 +199,7 @@ export default ({ refs }: any) => {
 
     return (
         <Modal
-            title={'Confirm'}
+            title={title}
             visible={visible}
             onCancel={handler.close}
             maskClosable={false}
@@ -234,21 +237,7 @@ export default ({ refs }: any) => {
                                         marginTop: -20,
                                     }}
                                 >
-                                    $ <Bignumber value={0} />
-                                </Descriptions.Item>
-                                <Descriptions.Item
-                                    label={<FormattedMessage id="pages.deposit.detail.confirm.collateral" />}
-                                    span={3}
-                                    contentStyle={{ color: '#3163E2' }}
-                                >
-                                    {true ? 'yes' : 'no'}
-                                </Descriptions.Item>
-                                <Descriptions.Item
-                                    label={<FormattedMessage id="pages.deposit.detail.confirm.HealthFactors" />}
-                                    span={3}
-                                    contentStyle={{ color: '#3163E2' }}
-                                >
-                                    {3}
+                                    $ <Bignumber value={amountInUsd} />
                                 </Descriptions.Item>
                             </Descriptions>
                         </Col>
