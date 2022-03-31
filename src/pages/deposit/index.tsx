@@ -19,7 +19,10 @@ export default () => {
   const { reserves, baseCurrency, user } = useModel('pool')
   const marketRefPriceInUsd = normalize(baseCurrency?.marketReferenceCurrencyPriceInUsd || '0', 8)
 
-  const { balances } = useModel('wallet')
+  const { wallet, balances } = useModel('wallet', res => ({
+    wallet: res.wallet,
+    balances: res.balances,
+  }))
 
 
   const { reserveIncentives } = useModel('incentives')
@@ -42,7 +45,7 @@ export default () => {
           (userRes) => userRes.reserve.symbol === reserve.symbol
         );
         const walletBalance =
-          balances[reserve.underlyingAsset] === '0'
+          !wallet || balances[reserve.underlyingAsset] === '0'
             ? valueToBigNumber('0')
             : valueToBigNumber(balances[reserve.underlyingAsset] || '0').dividedBy(
               valueToBigNumber('10').pow(reserve.decimals)
@@ -56,8 +59,8 @@ export default () => {
           ...reserve,
           walletBalance,
           walletBalanceInUSD,
-          underlyingBalance: userReserve ? userReserve.underlyingBalance : '0',
-          underlyingBalanceInUSD: userReserve ? userReserve.underlyingBalanceUSD : '0',
+          underlyingBalance: wallet && userReserve ? userReserve.underlyingBalance : '0',
+          underlyingBalanceInUSD: wallet && userReserve ? userReserve.underlyingBalanceUSD : '0',
           liquidityRate: reserve.supplyAPY,
           avg30DaysLiquidityRate: Number(reserve.avg30DaysLiquidityRate),
           borrowingEnabled: reserve.borrowingEnabled,
