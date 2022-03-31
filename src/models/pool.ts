@@ -214,9 +214,9 @@ export default () => {
         getReserves()
         if(wallet){
             getUserReserves()
-            IntervalIdUserReserves = setInterval(() => {
-                getUserReserves()
-            }, 30 * 1000)
+            // IntervalIdUserReserves = setInterval(() => {
+            //     getUserReserves()
+            // }, 30 * 1000)
         }else{
             if(IntervalIdUserReserves) clearInterval(IntervalIdUserReserves)
         }

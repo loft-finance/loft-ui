@@ -31,7 +31,7 @@ export default ({ title = '', items = [], poolReserve = {}, marketRefPriceInUsd 
       <Card bordered={false}>
         <Row>
           <Col span={9} offset={1} className={styles.title}>
-            <FormattedMessage id="pages.loan.detail.overview.DepositFTM" />{underlyingSymbol}
+            <FormattedMessage id="pages.loan.detail.overview.DepositFTM" /> {underlyingSymbol}
           </Col>
           <Col span={9} offset={4} className={styles.title}>
           <FormattedMessage id="pages.loan.detail.overview.FantomReserve" />

@@ -5,7 +5,6 @@ import { LoadingOutlined } from '@ant-design/icons'
 import { calculateHealthFactorFromBalancesBigUnits, valueToBigNumber, BigNumber, InterestRate } from '@aave/protocol-js';
 import { sendEthTransaction, TxStatusType } from '@/lib/helpers/send-ethereum-tx';
 import Bignumber from '@/components/Bignumber';
-import { refresh } from '@/lib/helpers/refresh';
 import { normalize } from '@aave/math-utils';
 
 import Back from '@/components/Back';
@@ -14,7 +13,7 @@ const { Step } = Steps;
 
 export default ({ poolReserve, user, userReserve, maxAmountToRepay, debtType, walletBalance, networkConfig, match: { params: { amount: amount0 } }, }: any,) => {
     if(!poolReserve || !userReserve) {
-        return <div style={{textAlign:'center'}}><Spin /></div>
+        // return <div style={{textAlign:'center'}}><Spin /></div>
     }
     
     const amount = valueToBigNumber(amount0);
@@ -26,10 +25,14 @@ export default ({ poolReserve, user, userReserve, maxAmountToRepay, debtType, wa
     const [customGasPrice, setCustomGasPrice] = useState<string | null>(null);
     const [records, setRecords] = useState<any>([]);
 
-    const { baseCurrency } = useModel('pool')
-    const { wallet } = useModel('wallet');
+    const { baseCurrency, refresh: refreshPool } = useModel('pool')
+    const { wallet, refresh: refreshWallet } = useModel('wallet');
     const provider = wallet?.provider
     const { lendingPool } = useModel('lendingPool');
+    const refresh = () => {
+        refreshPool();
+        refreshWallet();
+    }
 
     const marketRefPriceInUsd = normalize(baseCurrency?.marketReferenceCurrencyPriceInUsd || '0', 8)
 
@@ -85,7 +88,6 @@ export default ({ poolReserve, user, userReserve, maxAmountToRepay, debtType, wa
                     amount: amountToRepay.toString(),
                     interestRateMode: debtType as InterestRate,
                 });
-                console.log('txs', txs)
                 const mainTxType = ''
                 const approveTx = txs.find((tx) => tx.txType === 'ERC20_APPROVAL');
                 const actionTx = txs.find((tx) =>
@@ -134,10 +136,10 @@ export default ({ poolReserve, user, userReserve, maxAmountToRepay, debtType, wa
                         },
                         {
                             key: 'repay',
-                            title: <FormattedMessage id="pages.loan.repay.confirm.steps.withdraw.title" />,
-                            buttonText: <FormattedMessage id="pages.loan.repay.confirm.steps.withdraw.button" />,
-                            stepText: <FormattedMessage id="pages.loan.repay.confirm.steps.withdraw.step" />,
-                            description: <FormattedMessage id="pages.loan.repay.confirm.steps.withdraw.desc" />,
+                            title: <FormattedMessage id="pages.loan.repay.confirm.steps.repay.title" />,
+                            buttonText: <FormattedMessage id="pages.loan.repay.confirm.steps.repay.button" />,
+                            stepText: <FormattedMessage id="pages.loan.repay.confirm.steps.repay.step" />,
+                            description: <FormattedMessage id="pages.loan.repay.confirm.steps.repay.desc" />,
                             loading: repaying ? true : false,
                             error: '',
                         },
@@ -155,10 +157,10 @@ export default ({ poolReserve, user, userReserve, maxAmountToRepay, debtType, wa
                     setSteps([
                         {
                             key: 'repay',
-                            title: <FormattedMessage id="pages.loan.repay.confirm.steps.withdraw.title" />,
-                            buttonText: <FormattedMessage id="pages.loan.repay.confirm.steps.withdraw.button" />,
-                            stepText: <FormattedMessage id="pages.loan.repay.confirm.steps.withdraw.step" />,
-                            description: <FormattedMessage id="pages.loan.repay.confirm.steps.withdraw.desc" />,
+                            title: <FormattedMessage id="pages.loan.repay.confirm.steps.repay.title" />,
+                            buttonText: <FormattedMessage id="pages.loan.repay.confirm.steps.repay.button" />,
+                            stepText: <FormattedMessage id="pages.loan.repay.confirm.steps.repay.step" />,
+                            description: <FormattedMessage id="pages.loan.repay.confirm.steps.repay.desc" />,
                             loading: repaying ? true : false,
                             error: '',
                         },
@@ -351,11 +353,11 @@ export default ({ poolReserve, user, userReserve, maxAmountToRepay, debtType, wa
                                     {usageAsCollateralEnabledOnDeposit ? 'yes' : 'no'}
                                 </Descriptions.Item>
                                 <Descriptions.Item
-                                    label={<FormattedMessage id="pages.loan.repay.confirm.quaHealthFactorsntity" />}
+                                    label={<FormattedMessage id="pages.loan.repay.confirm.HealthFactors" />}
                                     span={3}
                                     contentStyle={{ color: '#3163E2' }}
                                 >
-                                    {user?.healthFactor.toString()}
+                                    <Bignumber value={user?.healthFactor} />
                                 </Descriptions.Item>
                             </Descriptions>
                         </Col>

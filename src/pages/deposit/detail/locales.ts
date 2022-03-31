@@ -40,7 +40,7 @@ export default {
     'pages.deposit.detail.confirm.steps.completed.title':'Completed',
     'pages.deposit.detail.confirm.steps.completed.button':'control panel',
     'pages.deposit.detail.confirm.steps.completed.step':'Success',
-    'pages.deposit.detail.confirm.steps.completed.desc':'',
+    'pages.deposit.detail.confirm.steps.completed.desc':' ',
 
     'pages.deposit.detail.confirm.explorer':'Explorer',
 };

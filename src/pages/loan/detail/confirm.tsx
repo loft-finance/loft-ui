@@ -6,15 +6,14 @@ import { calculateHealthFactorFromBalancesBigUnits, InterestRate, valueToBigNumb
 import { sendEthTransaction, TxStatusType } from '@/lib/helpers/send-ethereum-tx';
 import { normalize } from '@aave/math-utils';
 import Bignumber from '@/components/Bignumber';
-import { refresh } from '@/lib/helpers/refresh';
 
 import Back from '@/components/Back';
 import styles from './confirm.less';
 const { Step } = Steps;
 
-export default ({ poolReserve, maxAmountToDeposit, location:{ query }, match: { params: { amount: amount0 } }, }: any,) => {
-    if(!poolReserve || !userReserve) {
-        return <div style={{textAlign:'center'}}><Spin /></div>
+export default ({ poolReserve, userReserve, maxAmountToDeposit, location:{ query }, match: { params: { amount: amount0 } }, }: any,) => {
+    if(!poolReserve) {
+        // return <div style={{textAlign:'center'}}><Spin /></div>
     }
     
     const amount = valueToBigNumber(amount0);
@@ -26,10 +25,15 @@ export default ({ poolReserve, maxAmountToDeposit, location:{ query }, match: { 
     const [customGasPrice, setCustomGasPrice] = useState<string | null>(null);
     const [records, setRecords] = useState<any>([]);
     
-    const { user, userReserve, baseCurrency } = useModel('pool')
-    const { wallet } = useModel('wallet');
+    const { user, baseCurrency, refresh: refreshPool } = useModel('pool')
+    const { wallet, refresh: refreshWallet } = useModel('wallet');
     const provider = wallet?.provider
     const { lendingPool } = useModel('lendingPool');
+
+    const refresh = () => {
+        refreshPool();
+        refreshWallet();
+    }
 
 
     const interestRateMode =

@@ -37,7 +37,7 @@ export default {
     'pages.loan.detail.confirm.steps.completed.title':'Completed',
     'pages.loan.detail.confirm.steps.completed.button':'control panel',
     'pages.loan.detail.confirm.steps.completed.step':'Success',
-    'pages.loan.detail.confirm.steps.completed.desc':'',
+    'pages.loan.detail.confirm.steps.completed.desc':' ',
 
     'pages.loan.detail.confirm.explorer':'Explorer',
 };

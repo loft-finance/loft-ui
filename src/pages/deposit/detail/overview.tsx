@@ -66,7 +66,7 @@ export default ({ title = '', items = [], poolReserve = {}, marketRefPriceInUsd 
                 <Bignumber value={data.priceInUsd} /> USD
               </Descriptions.Item>
               <Descriptions.Item label={<FormattedMessage id="pages.deposit.detail.overview.MaxLtv" />} span={3}>
-                <Bignumber value={data.baseLTVasCollateral} /> FTM
+                <Bignumber value={data.baseLTVasCollateral} /> {underlyingSymbol}
               </Descriptions.Item>
               <Descriptions.Item label={<FormattedMessage id="pages.deposit.detail.overview.LiquidationThreshold" />} span={3}>
                 {data.liquidationThreshold.toFixed(2)}%

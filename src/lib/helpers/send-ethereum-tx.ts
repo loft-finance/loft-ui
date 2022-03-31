@@ -65,6 +65,9 @@ export async function sendEthTransaction(
       loading: false,
       error: e.message.toString(),
     }));
+    if(callbacks?.onError){
+      callbacks.onError({message: 'tx building error'});
+    }
     return;
   }
 

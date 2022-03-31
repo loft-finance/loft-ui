@@ -32,7 +32,7 @@ export default {
     'pages.deposit.withdraw.confirm.steps.completed.title':'Completed',
     'pages.deposit.withdraw.confirm.steps.completed.button':'control panel',
     'pages.deposit.withdraw.confirm.steps.completed.step':'Success',
-    'pages.deposit.withdraw.confirm.steps.completed.desc':'',
+    'pages.deposit.withdraw.confirm.steps.completed.desc':' ',
 
     'pages.deposit.withdraw.confirm.explorer':'Explorer',
 };

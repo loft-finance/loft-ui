@@ -32,7 +32,7 @@ export default {
     'pages.loan.rate.confirm.steps.completed.title':'Completed',
     'pages.loan.rate.confirm.steps.completed.button':'control panel',
     'pages.loan.rate.confirm.steps.completed.step':'Success',
-    'pages.loan.rate.confirm.steps.completed.desc':'',
+    'pages.loan.rate.confirm.steps.completed.desc':' ',
 
     'pages.loan.rate.confirm.explorer':'Explorer',
 };

@@ -6,7 +6,6 @@ import { calculateHealthFactorFromBalancesBigUnits, valueToBigNumber } from '@aa
 import { normalize } from '@aave/math-utils';
 import { sendEthTransaction, TxStatusType } from '@/lib/helpers/send-ethereum-tx';
 import Bignumber from '@/components/Bignumber';
-import { refresh } from '@/lib/helpers/refresh';
 
 import Back from '@/components/Back';
 import styles from './confirm.less';
@@ -14,7 +13,7 @@ const { Step } = Steps;
 
 export default ({ poolReserve, userReserve, maxAmountToDeposit, match: { params: { amount: amount0 } }, }: any,) => {
     if(!poolReserve || !userReserve) {
-        return <div style={{textAlign:'center'}}><Spin /></div>
+        // return <div style={{textAlign:'center'}}><Spin /></div>
     }
 
     const underlyingSymbol = poolReserve?.symbol || ''
@@ -28,11 +27,15 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, match: { params:
     const [customGasPrice, setCustomGasPrice] = useState<string | null>(null);
     const [records, setRecords] = useState<any>([]);
     
-    const { user, baseCurrency } = useModel('pool')
-    const { wallet } = useModel('wallet');
+    const { user, baseCurrency, refresh: refreshPool } = useModel('pool')
+    const { wallet, refresh: refreshWallet } = useModel('wallet');
     const provider = wallet?.provider
     const { lendingPool } = useModel('lendingPool');
 
+    const refresh = () => {
+        refreshPool();
+        refreshWallet()
+    }
 
     const marketRefPriceInUsd = normalize(baseCurrency?.marketReferenceCurrencyPriceInUsd || '0', 8)
     const amountIntEth = amount.multipliedBy(poolReserve.priceInMarketReferenceCurrency);

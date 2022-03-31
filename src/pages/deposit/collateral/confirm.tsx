@@ -6,7 +6,6 @@ import { calculateHealthFactorFromBalancesBigUnits, valueToBigNumber } from '@aa
 import { sendEthTransaction, TxStatusType } from '@/lib/helpers/send-ethereum-tx';
 import { TokenIcon } from '@aave/aave-ui-kit';
 import Back from '@/components/Back';
-import { refresh } from '@/lib/helpers/refresh';
 import styles from './confirm.less';
 const { Step } = Steps;
 
@@ -19,10 +18,14 @@ export default ({ match: { params: { underlyingAsset, id,  status } }, }: any,) 
     const [customGasPrice, setCustomGasPrice] = useState<string | null>(null);
     const [records, setRecords] = useState<any>([]);
     
-    const { reserves, user } = useModel('pool')
-    const { wallet } = useModel('wallet');
+    const { reserves, user, refresh: refreshPool } = useModel('pool')
+    const { wallet, refresh: refreshWallet } = useModel('wallet');
     const provider = wallet?.provider
     const { lendingPool } = useModel('lendingPool');
+    const refresh = () => {
+        refreshPool();
+        refreshWallet();
+    }
 
     const poolReserve: any = reserves.find((res) => id ? res.id === id : res.underlyingAsset.toLowerCase() === underlyingAsset.toLowerCase());
 
@@ -63,6 +66,7 @@ export default ({ match: { params: { underlyingAsset, id,  status } }, }: any,) 
                     reserve: poolReserve.underlyingAsset,
                     usageAsCollateral: status == 1
                 });
+                
                 const mainTxType = ''
                 const approveTx = txs.find((tx) => tx.txType === 'ERC20_APPROVAL');
                 const actionTx = txs.find((tx) =>
@@ -191,6 +195,7 @@ export default ({ match: { params: { underlyingAsset, id,  status } }, }: any,) 
                 handler.loading.set('deposit', true);
                 handler.records.set('deposit', 'deposit', 'wait')
                 const success = await handler.getTx({ depositing: true })
+                console.log('success: ',success, actionTxData)
                 if (success) {
                     handler.loading.set('deposit', true);
                     return sendEthTransaction(

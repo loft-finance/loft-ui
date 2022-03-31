@@ -51,7 +51,7 @@ export default (props) => {
                 : userReserve.reserve.underlyingAsset.toLowerCase() === underlyingAsset.toLowerCase()
         )
         : undefined;
-  
+
   return (
     <GridContent>
       <Info

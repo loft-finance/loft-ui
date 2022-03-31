@@ -4,7 +4,6 @@ import { Card, Row, Col, Button, Descriptions, Steps, Divider, Badge, Spin } fro
 import { LoadingOutlined } from '@ant-design/icons'
 import { calculateHealthFactorFromBalancesBigUnits, valueToBigNumber, InterestRate } from '@aave/protocol-js';
 import { sendEthTransaction, TxStatusType } from '@/lib/helpers/send-ethereum-tx';
-import { refresh } from '@/lib/helpers/refresh';
 import Back from '@/components/Back';
 import { TokenIcon } from '@aave/aave-ui-kit';
 import styles from './confirm.less';
@@ -19,10 +18,14 @@ export default ({ match: { params: { underlyingAsset, id, rateMode } }, }: any,)
     const [customGasPrice, setCustomGasPrice] = useState<string | null>(null);
     const [records, setRecords] = useState<any>([]);
 
-    const { reserves, user } = useModel('pool')
-    const { wallet } = useModel('wallet');
+    const { reserves, user, refresh: refreshPool } = useModel('pool')
+    const { wallet, refresh: refreshWallet } = useModel('wallet');
     const provider = wallet?.provider
     const { lendingPool } = useModel('lendingPool');
+    const refresh = () => {
+        refreshPool();
+        refreshWallet();
+    }
 
     const poolReserve: any = reserves.find((res) => id ? res.id === id : res.underlyingAsset.toLowerCase() === underlyingAsset.toLowerCase());
 
@@ -80,6 +83,7 @@ export default ({ match: { params: { underlyingAsset, id, rateMode } }, }: any,)
                     reserve: poolReserve.underlyingAsset,
                     interestRateMode: currentRateMode,
                 });
+                console.log('txs:', txs)
                 const mainTxType = ''
                 const approveTx = txs.find((tx) => tx.txType === 'ERC20_APPROVAL');
                 const actionTx = txs.find((tx) =>
@@ -128,10 +132,10 @@ export default ({ match: { params: { underlyingAsset, id, rateMode } }, }: any,)
                         },
                         {
                             key: 'deposit',
-                            title: <FormattedMessage id="pages.loan.rate.confirm.steps.withdraw.title" />,
-                            buttonText: <FormattedMessage id="pages.loan.rate.confirm.steps.withdraw.button" />,
-                            stepText: <FormattedMessage id="pages.loan.rate.confirm.steps.withdraw.step" />,
-                            description: <FormattedMessage id="pages.loan.rate.confirm.steps.withdraw.desc" />,
+                            title: <FormattedMessage id="pages.loan.rate.confirm.steps.rate.title" />,
+                            buttonText: <FormattedMessage id="pages.loan.rate.confirm.steps.rate.button" />,
+                            stepText: <FormattedMessage id="pages.loan.rate.confirm.steps.rate.step" />,
+                            description: <FormattedMessage id="pages.loan.rate.confirm.steps.rate.desc" />,
                             loading: depositing ? true : false,
                             error: '',
                         },
@@ -149,10 +153,10 @@ export default ({ match: { params: { underlyingAsset, id, rateMode } }, }: any,)
                     setSteps([
                         {
                             key: 'deposit',
-                            title: <FormattedMessage id="pages.loan.rate.confirm.steps.withdraw.title" />,
-                            buttonText: <FormattedMessage id="pages.loan.rate.confirm.steps.withdraw.button" />,
-                            stepText: <FormattedMessage id="pages.loan.rate.confirm.steps.withdraw.step" />,
-                            description: <FormattedMessage id="pages.loan.rate.confirm.steps.withdraw.desc" />,
+                            title: <FormattedMessage id="pages.loan.rate.confirm.steps.rate.title" />,
+                            buttonText: <FormattedMessage id="pages.loan.rate.confirm.steps.rate.button" />,
+                            stepText: <FormattedMessage id="pages.loan.rate.confirm.steps.rate.step" />,
+                            description: <FormattedMessage id="pages.loan.rate.confirm.steps.rate.desc" />,
                             loading: depositing ? true : false,
                             error: '',
                         },
@@ -336,14 +340,14 @@ export default ({ match: { params: { underlyingAsset, id, rateMode } }, }: any,)
                                     span={3}
                                     contentStyle={{ color: '#3163E2' }}
                                 >
-                                    {Number(currentApy).toFixed(4)} %
+                                    {Number(currentApy).toFixed(2)} %
                                 </Descriptions.Item>
                                 <Descriptions.Item
                                     label={`Next ${currentRateMode} rate`}
                                     span={3}
                                     contentStyle={{ color: '#3163E2' }}
                                 >
-                                    {Number(apyAfterSwitch).toFixed(4)} %
+                                    {Number(apyAfterSwitch).toFixed(2)} %
                                 </Descriptions.Item>
                             </Descriptions>
                         </Col>

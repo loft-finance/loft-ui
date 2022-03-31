@@ -11,14 +11,14 @@ export default {
     'pages.deposit.collateral.confirm.steps.approve.desc':'Please approve before depositing',
 
     'pages.deposit.collateral.confirm.steps.collateral.title':'Usage as collateral',
-    'pages.deposit.collateral.confirm.steps.collateral.button':'WithdConfirmraw',
+    'pages.deposit.collateral.confirm.steps.collateral.button':'Confirm',
     'pages.deposit.collateral.confirm.steps.collateral.step':'Confirm',
     'pages.deposit.collateral.confirm.steps.collateral.desc':'Usage as collateral',
 
     'pages.deposit.collateral.confirm.steps.completed.title':'Completed',
     'pages.deposit.collateral.confirm.steps.completed.button':'control panel',
     'pages.deposit.collateral.confirm.steps.completed.step':'Success',
-    'pages.deposit.collateral.confirm.steps.completed.desc':'',
+    'pages.deposit.collateral.confirm.steps.completed.desc':' ',
 
     'pages.deposit.collateral.confirm.explorer':'Explorer',
 };
