@@ -9,11 +9,30 @@ const { Title } = Typography;
 import styles from './index.less';
 import DepositDashbord from '@/pages/deposit/dashboard'
 import LoanDashboard from '@/pages/loan/dashboard'
+import { loftToUsd, lpToUsd } from '@/lib/helpers/utils';
+import Bignumber from '@/components/Bignumber';
 
 export default () => {
   const { wallet } = useModel('wallet');
   const { reserves, user } = useModel('pool')
   const { reserveIncentives } = useModel('incentives')
+
+  const { 
+    lpRewardPerYear, lpApy, balanceLp, depositedLp, earnedLp,
+    loftRewardPerYear, loftApy, balanceLoft, depositedLoft, earnedLoft,
+  } = useModel('pledge', res => ({
+    lpRewardPerYear: res.lpRewardPerYear,
+    lpApy: res.lpApy,
+    balanceLp: res.balanceLp,
+    depositedLp: res.depositedLp,
+    earnedLp: res.earnedLp,
+    
+    loftRewardPerYear: res.loftRewardPerYear,
+    loftApy: res.loftApy,
+    balanceLoft: res.balanceLoft,
+    depositedLoft: res.depositedLoft,
+    earnedLoft: res.earnedLoft,
+  }))
 
   const [isLTVModalVisible, setLTVModalVisible] = useState(false);
   const [isBorrow, setIsBorrow] = useState(false);
@@ -332,7 +351,6 @@ export default () => {
                 <Col span={3}>Earned</Col>
                 <Col span={3}>APY</Col>
                 <Col span={4}>Your stacked balance</Col>
-                <Col span={4}>Your locked balance</Col>
               </Row>
               <Row>
                 <Col span={24}>
@@ -340,24 +358,24 @@ export default () => {
                     <Row>
                       <Col span={5} className={styles.single}>
                         {' '}
-                        GEIST
+                        LOFT
                       </Col>
                       <Col span={3}>
                         <div className={styles.multi}>
-                          0.015
-                          <div className={styles.tag}>$0.138</div>
+                          <Bignumber value={earnedLoft} />
+                          <div className={styles.tag}>$<Bignumber value={loftToUsd(earnedLoft)} /></div>
                         </div>
                       </Col>
                       <Col span={3} className={styles.single}>
-                        8,178.59%
+                        <Bignumber value={loftApy} />%
                       </Col>
                       <Col span={4}>
                         <div className={styles.multi}>
-                          20.904
-                          <div className={styles.tag}>$194.234</div>
+                          <Bignumber value={depositedLoft} />
+                          <div className={styles.tag}>$<Bignumber value={loftToUsd(depositedLoft)} /></div>
                         </div>
                       </Col>
-                      <Col span={4}>
+                      {/* <Col span={4}>
                         <Row>
                           <Col span={6} style={{ textAlign: 'right' }}>
                             <div className={styles.multi}>
@@ -372,7 +390,7 @@ export default () => {
                       </Col>
                       <Col span={2} className={styles.single}>
                         $0 USD
-                      </Col>
+                      </Col> */}
                       <Col span={3} className={styles.single}>
                         <Button size="small" type="primary" shape="round">
                           To trade coins
@@ -383,18 +401,30 @@ export default () => {
                 </Col>
               </Row>
             </Col>
-            <Col span={24} style={{ marginTop: 5 }}>
+            <Col span={24} style={{ marginTop: 5 }} className={styles.statistic}>
               <Row style={{ padding: 12 }}>
                 <Col span={12}>Stake Spookyswap LP tokens to earn GEIST rewards</Col>
               </Row>
               <Row>
                 <Col span={24}>
-                  <Card bordered={false} bodyStyle={{ padding: 12 }}>
+                  <Card bordered={false} bodyStyle={{ padding: '6px 12px' }}>
                     <Row>
-                      <Col span={5}> GEIST</Col>
-                      <Col span={3}>0</Col>
-                      <Col span={3}>8,178.59%</Col>
-                      <Col span={4}>0</Col>
+                      <Col span={5} className={styles.single}> LP</Col>
+                      <Col span={3}>
+                        <div className={styles.multi}>
+                          <Bignumber value={earnedLp} />
+                          <div className={styles.tag}>$<Bignumber value={lpToUsd(earnedLp)} /></div>
+                        </div>
+                      </Col>
+                      <Col span={3} className={styles.single}>
+                        <Bignumber value={loftApy} />%
+                      </Col>
+                      <Col span={4}>
+                        <div className={styles.multi}>
+                          <Bignumber value={depositedLp} />
+                          <div className={styles.tag}>$<Bignumber value={lpToUsd(depositedLp)} /></div>
+                        </div>
+                      </Col>
                     </Row>
                   </Card>
                 </Col>
