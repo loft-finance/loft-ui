@@ -161,8 +161,9 @@ export default () => {
 
         refConfirm.current.show({
           title: 'Unstake Earned',
-          amount: 0,
-          amountInUsd: 0,
+          earned: true,
+          amount: earnedLp,
+          amountInUsd: lpToUsd(earnedLp),
           txt,
           confirm: lpWithdraw
         })

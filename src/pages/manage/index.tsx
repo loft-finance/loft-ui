@@ -167,6 +167,7 @@ export default () => {
 
         refConfirm.current.show({
           title: 'Withdraw Earned',
+          earned: true,
           amount: 0,
           amountInUsd: 0,
           txt,
@@ -183,7 +184,7 @@ export default () => {
           {
             title: <FormattedMessage id="pages.manage.info.pledge" />,
             value: <Bignumber value={depositedLoft} />,
-            tag: <>($<Bignumber value={loftToUsd(depositedLoft)} /> USD)</>,
+            tag: <>($<Bignumber value={wallet?loftToUsd(depositedLoft):valueToBigNumber(0)} /> USD)</>,
           },
           {
             title: <FormattedMessage id="pages.manage.info.price" />,

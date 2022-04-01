@@ -12,12 +12,13 @@ export default ({ refs }: any) => {
     useImperativeHandle(refs, () => {
         return {
           show: (params: any) => {
-            const { title, amount, amountInUsd, txt, isAllowanceEnough = false, approve = false, confirm  } = params
+            const { title, amount, amountInUsd, txt, isAllowanceEnough = false, approve = false, confirm, earned = false  } = params
             setTitle(title)
             setCurrent(0)
             setAmount(amount)
             setAmountInUsd(amountInUsd)
             setArgs({
+                earned,
                 txt,
                 isAllowanceEnough,
                 approve,
@@ -125,9 +126,9 @@ export default ({ refs }: any) => {
             async submit() {
                 handler.loading.set('confirm', true);
                 handler.records.set('confirm', 'confirm', 'wait')
-                const { confirm } = args
+                const { confirm, earned } = args
                 try{
-                    const res = await confirm(amount.toString())
+                    const res = await confirm(earned?0:amount.toString())
                     console.log('-----executed-----')
                     res.wait()
                     .then(() => {
