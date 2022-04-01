@@ -98,8 +98,14 @@ export default ({ refs }: any) => {
                 const { approve } = args
                 try {
                     const res = await approve()
-                    console.log('approve:', res)
-                    handler.approve.confirmed()
+                    res.wait()
+                    .then(() => {
+                        console.log('approve:', res)
+                        handler.approve.confirmed()
+                    })
+                    .catch((e: any) => {
+                       console.log('approve error 1:', e) 
+                    })
                 } catch (e: any) {
                     console.log('approve error:', e)
                     const key = 'approve'
@@ -122,10 +128,16 @@ export default ({ refs }: any) => {
                 const { confirm } = args
                 try{
                     const res = await confirm(amount.toString())
-                    console.log('confirm:', res)
-                    handler.confirm.confirmed()
-
-                    refresh();
+                    console.log('-----executed-----')
+                    res.wait()
+                    .then(() => {
+                        console.log('--------confirmed--------')
+                        handler.confirm.confirmed()
+                        refresh();
+                    })
+                    .catch((e: any) => {
+                       console.log('confirm error 1:', e) 
+                    })
                 }catch(e: any){
                     console.log('confirm error:', e)
                     const key = 'confirm'
