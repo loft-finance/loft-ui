@@ -5,11 +5,11 @@ import { hooks, metaMask } from '@/lib/connectors/metaMask'
 import { WalletBalanceProviderFactory } from '@/lib/contracts/WalletBalanceProviderContract';
 import { getProvider, getNetwork } from '@/lib/helpers/provider';
 
-const { 
-    useIsActivating, 
+const {
+    useIsActivating,
     useIsActive,
     useAccounts,
-    useProvider, 
+    useProvider,
     // useChainId, 
     // useError,
     // useENSNames 
@@ -24,7 +24,8 @@ export default () => {
     const [current, setCurrent] = useState('');
     const [status, setStatus] = useState('unconnect');
     const [currentAccount, setCurrentAccount] = useState('');
-    const [balances, setBalances] = useState({})
+    const [balances, setBalances] = useState({});
+    const [wallet, setWallet] = useState<any>(undefined);
 
     const walletRef = useRef<any>();
 
@@ -36,31 +37,31 @@ export default () => {
     }
 
     useEffect(() => {
-        if(current == 'MetaMask'){
-            if(metamask.isActivating && !metamask.isActive){
+        if (current == 'MetaMask') {
+            if (metamask.isActivating && !metamask.isActive) {
                 setStatus('connecting')
-            }else if(metamask.isActive){
+            } else if (metamask.isActive) {
                 setStatus('connected')
-                if(metamask?.accounts){
+                if (metamask?.accounts) {
                     setCurrentAccount(metamask.accounts[0])
                 }
                 localStorage.setItem('wallet', current)
-            }else{
+            } else {
                 setCurrent('')
                 setStatus('unconnect');
                 setCurrentAccount('')
             }
         }
-    },[metamask])
+    }, [metamask])
 
-    const connect  = async (type: string) => {
-        if(current) return;
+    const connect = async (type: string) => {
+        if (current) return;
 
-        if(type == 'MetaMask'){
-            if(!isMetaMaskReady()){
+        if (type == 'MetaMask') {
+            if (!isMetaMaskReady()) {
                 return message.error('No MetaMask wallet detected.')
             }
-            
+
             setCurrent(type)
             walletRef.current = metaMask
         }
@@ -73,7 +74,7 @@ export default () => {
     }
 
     const getBalance = async () => {
-        if(!currentAccount) return;
+        if (!currentAccount) return;
 
         const chainId = currentMarket.chainId
         const provider = getProvider(chainId);
@@ -85,11 +86,11 @@ export default () => {
         );
 
         const { 0: reserves, 1: balances } =
-        await contract.getUserWalletBalances(
-            currentMarket.addresses.LENDING_POOL_ADDRESS_PROVIDER,
-            currentAccount
-        );
-        
+            await contract.getUserWalletBalances(
+                currentMarket.addresses.LENDING_POOL_ADDRESS_PROVIDER,
+                currentAccount
+            );
+
         const aggregatedBalance = reserves.reduce((acc, reserve, i) => {
             acc[reserve.toLowerCase()] = balances[i].toString();
             return acc;
@@ -98,32 +99,33 @@ export default () => {
         setBalances(aggregatedBalance)
     }
 
-    const getWallet = (): any => {
-        if(status === 'connected'){
-            if(current === 'MetaMask'){
-                return {
+    const refresh = () => {
+        getBalance()
+    }
+
+    useEffect(() => {
+        if (status === 'connected') {
+            if (current === 'MetaMask') {
+                setWallet({
                     current,
                     currentAccount,
                     balances,
                     provider: metamask.provider
-                }
+                })
             }
         }
+        else {
+            setWallet(undefined);
+        }
+    }, [status]);
 
-        return false;
-    }
-
-    const refresh = () => {
-        getBalance()
-    }
-    
     useEffect(() => {
-        if(currentAccount){
+        if (currentAccount) {
             getBalance();
-        }else{
+        } else {
             setBalances({})
         }
-    },[currentAccount])
+    }, [currentAccount])
 
-    return { connect, disconnect, status, wallet: getWallet(), balances, refresh }
+    return { connect, disconnect, status, wallet, balances, refresh }
 }
