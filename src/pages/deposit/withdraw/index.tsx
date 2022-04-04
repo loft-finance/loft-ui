@@ -8,11 +8,17 @@ import WalletDisconnected from '@/components/Wallet/Disconnected';
 import WalletEmpty from '@/components/Wallet/Empty';
 import { BigNumber, valueToBigNumber } from '@aave/protocol-js';
 
-export default (props) => {
+export default (props: any) => {
     const { match: { params: { underlyingAsset, id } } } = props
 
-    const { wallet, balances } = useModel('wallet');
-    const { reserves, user } = useModel('pool')
+    const { wallet, balances } = useModel('wallet', res=>({
+        wallet: res.wallet,
+        balances: res.balances
+    }));
+    const { reserves, user } = useModel('pool', res=>({
+        reserves: res.reserves,
+        user: res.user
+    }))
 
     const underlyingSymbol = poolReserve?.symbol || ''
     const balance = balances ? balances[underlyingAsset] : '0'

@@ -27,10 +27,19 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, match: { params:
     const [customGasPrice, setCustomGasPrice] = useState<string | null>(null);
     const [records, setRecords] = useState<any>([]);
     
-    const { user, baseCurrency, refresh: refreshPool } = useModel('pool')
-    const { wallet, refresh: refreshWallet } = useModel('wallet');
+    const { user, baseCurrency, refreshPool } = useModel('pool', res=>({
+        user: res.user,
+        baseCurrency: res.baseCurrency,
+        refreshPool: res.refresh
+    }))
+    const { wallet, refreshWallet } = useModel('wallet', res=>({
+        wallet: res.wallet,
+        refreshWallet: res.refresh
+    }));
     const provider = wallet?.provider
-    const { lendingPool } = useModel('lendingPool');
+    const { lendingPool } = useModel('lendingPool', res=>({
+        lendingPool: res.lendingPool
+    }));
 
     const refresh = () => {
         refreshPool();

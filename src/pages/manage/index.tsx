@@ -18,7 +18,9 @@ const price = config.loft.price
 
 export default () => {
   const symbol = 'LOFT'
-  const { wallet } = useModel('wallet')
+  const { wallet } = useModel('wallet', res=>({
+    wallet: res.wallet
+  }))
   const { loftRewardPerYear, loftApy, balanceLoft, depositedLoft, earnedLoft, isLoftAllowanceEnough, loftApprove, loftDeposit, loftWithdraw, getLoftAPY } = useModel('pledge', res=>({
     loftRewardPerYear: res.loftRewardPerYear,
     loftApy: res.loftApy,

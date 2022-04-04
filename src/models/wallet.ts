@@ -19,7 +19,9 @@ const isMetaMaskReady = () => window.ethereum && typeof window.ethereum === 'obj
 
 export default () => {
 
-    const { current: currentMarket } = useModel('market');
+    const { currentMarket } = useModel('market', res => ({
+        currentMarket: res.current
+    }));
 
     const [current, setCurrent] = useState('');
     const [status, setStatus] = useState('unconnect');

@@ -8,17 +8,21 @@ import { assetsOrder } from '@aave/aave-ui-kit';
 import { getProvider, getNetwork } from '@/lib/helpers/provider';
 
 export default () => {
-    const { current: currentMarket } = useModel('market');
-    const { wallet } = useModel('wallet')
+    const { currentMarket } = useModel('market', res => ({
+        currentMarket: res.current
+    }));
+    const { wallet } = useModel('wallet', res=>({
+        wallet: res.wallet
+    }))
 
-    const [loading, setLoading] = useState(false);
+    const [loadingReverse, setLoadingReverse] = useState(false);
+    const [loadingUserReverse, setLoadingUserReverse] = useState(false);
     const [baseCurrency, setbaseCurrency] = useState<any>({})
     const [reservesBase, setReservesBase] = useState<any>([]);
-    const [reserves, setReserves] = useState([]);
-    const [userReserves, setUserReserves] = useState<any>(undefined);
     const [userReservesBase, setUserReservesBase] = useState<any>([]);
 
-    const getReserves = async () => {
+
+    const fetchReserves = async () => {
         const chainId = currentMarket.chainId
         const provider = getProvider(chainId);
 
@@ -29,24 +33,24 @@ export default () => {
         });
         const lendingPoolAddressProvider = currentMarket.addresses.LENDING_POOL_ADDRESS_PROVIDER
         try {
-            setLoading(true);
+            setLoadingReverse(true);
             const { reservesData, baseCurrencyData } = await contract.getReservesHumanized(
                 lendingPoolAddressProvider
             );
+            setLoadingReverse(false);
             setReservesBase(reservesData)
-            let reserves = fixUnderlyingReserves(reservesData);
-
-            reserves = formatReserves(reserves)
-            
-            setReserves(reserves);
             setbaseCurrency(baseCurrencyData)
         } catch (e) {
+            setLoadingReverse(false);
             console.log('e', e);
         }
-        setLoading(false);
+    }
+    const getReserves = (): any => {
+        if(!reservesBase) return [];
+        return formatReserves(fixUnderlyingReserves(reservesBase));
     }
 
-    const getUserReserves = async () => {
+    const fetchUserReserves = async () => {
         if(!wallet?.currentAccount) return;
 
         const chainId = currentMarket.chainId
@@ -58,22 +62,19 @@ export default () => {
             provider,
         });
         const lendingPoolAddressProvider = currentMarket.addresses.LENDING_POOL_ADDRESS_PROVIDER
-        try {
-            setLoading(true);
-            const userReservesResponse = await contract.getUserReservesHumanized(
-                lendingPoolAddressProvider,
-                wallet?.currentAccount
-            );
-            if(userReservesResponse){
-                let res = fixUnderlyingUserReserves(reservesBase, userReservesResponse);
-                res = formatUserReserves(res)
-                setUserReserves(res);
-            }
-        } catch (e) {
-            console.log('e', e);
-        }
-        setLoading(false);
+        setLoadingUserReverse(true);
+        const userReservesResponse = await contract.getUserReservesHumanized(
+            lendingPoolAddressProvider,
+            wallet?.currentAccount
+        );
+        setLoadingUserReverse(false);
+        setUserReservesBase(userReservesResponse)
     }
+    const getUserReserves = (): any => {
+        if(!wallet?.currentAccount || !userReservesBase || !userReservesBase?.length) return undefined;
+        return  formatUserReserves(fixUnderlyingUserReserves(reservesBase, userReservesBase));
+    }
+
     const fixUnderlyingReserves = (reserves: any) => {
         const chainId = currentMarket.chainId
         const networkConfig = getNetwork(chainId);
@@ -107,15 +108,15 @@ export default () => {
         return reserves
     }
 
-    const fixUnderlyingUserReserves = (reserves, userReserves) => {
+    const userReservesFixUnderlying: any = []
+    const fixUnderlyingUserReserves = (reserves: any, userReserves: any) => {
         const chainId = currentMarket.chainId
         const networkConfig = getNetwork(chainId);
 
         const list: any = [];
-        const listBase: any = []
-        userReserves?.forEach((userReserve) => {
+        userReserves?.forEach((userReserve: any) => {
             const reserve = reserves?.find(
-            (reserve) =>
+            (reserve: any) =>
                 reserve.underlyingAsset.toLowerCase() === userReserve.underlyingAsset.toLowerCase()
             );
             if (reserve) {
@@ -123,7 +124,7 @@ export default () => {
                     ...userReserve,
                     reserve,
                 };
-                listBase.push(reserveWithBase);
+                userReservesFixUnderlying.push(reserveWithBase);
                 if (reserve.symbol.toUpperCase() === `W${networkConfig.baseAsset}`) {
                     const userReserveFixed = {
                     ...userReserve,
@@ -140,8 +141,6 @@ export default () => {
                 }
             }
         });
-
-        setUserReservesBase(listBase)
         return list;
     }
 
@@ -193,34 +192,24 @@ export default () => {
     let IntervalIdReserves: any = undefined
     let IntervalIdUserReserves: any = undefined
 
-    const start = async() => {
-        await getReserves()
-        IntervalIdReserves = setInterval(() => {
-            getReserves()
-        }, 30 * 1000)
-        if(wallet?.currentAccount){
-            await getUserReserves()
-            IntervalIdUserReserves = setInterval(() => {
-                getUserReserves()
-            }, 30 * 1000)
-        }
-    }
-
     const refresh = () => {
-        getUserReserves()
+        fetchUserReserves()
     }
 
     useEffect(() => {
-        getReserves()
+        fetchReserves()
         if(wallet){
-            getUserReserves()
+            fetchUserReserves()
             // IntervalIdUserReserves = setInterval(() => {
             //     getUserReserves()
             // }, 30 * 1000)
         }else{
-            if(IntervalIdUserReserves) clearInterval(IntervalIdUserReserves)
+            // if(IntervalIdUserReserves) clearInterval(IntervalIdUserReserves)
         }
     },[wallet])
 
-    return { loading, baseCurrency, reserves, user: userReserves, userReservesBase, start, refresh };
+    const reserves = getReserves()
+    const user = getUserReserves()
+
+    return { loading: loadingReverse||loadingUserReverse?true:false , baseCurrency, reserves, user, userReservesFixUnderlying, refresh };
 };

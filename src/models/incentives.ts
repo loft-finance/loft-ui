@@ -15,11 +15,17 @@ const POOLING_INTERVAL = 30 * 1000;
 // decreased interval in case there was a network error for faster recovery
 const RECOVER_INTERVAL = 10 * 1000;
 
-
 export default () => {
-    const { current: currentMarket } = useModel('market');
-    const { wallet } = useModel('wallet')
-    const { reserves: rawReservesWithBase, userReservesBase: rawUserReservesWithBase } = useModel('pool')
+    const { currentMarket } = useModel('market', res => ({
+        currentMarket: res.current
+    }));
+    const { wallet } = useModel('wallet', res=>({
+        wallet: res.wallet
+    }))
+    const { rawReservesWithBase, rawUserReservesWithBase } = useModel('pool', res=>({
+        rawReservesWithBase: res.reserves,
+        rawUserReservesWithBase: res.userReservesFixUnderlying
+    }))
 
     const currentAccount = wallet?.currentAccount || ''
     const lendingPoolAddressProvider = currentMarket.addresses.LENDING_POOL_ADDRESS_PROVIDER

@@ -16,7 +16,11 @@ export default () => {
   const [searchValue, setSearchValue] = useState('');
   const [showOnlyStableCoins, setShowOnlyStableCoins] = useState(false);
 
-  const { reserves, baseCurrency, user } = useModel('pool')
+  const { reserves, baseCurrency, user } = useModel('pool', res=>({
+    reserves: res.reserves,
+    baseCurrency: res.baseCurrency,
+    user: res.user
+  }))
   const marketRefPriceInUsd = normalize(baseCurrency?.marketReferenceCurrencyPriceInUsd || '0', 8)
 
   const { wallet, balances } = useModel('wallet', res => ({
@@ -25,7 +29,9 @@ export default () => {
   }))
 
 
-  const { reserveIncentives } = useModel('incentives')
+  const { reserveIncentives } = useModel('incentives', res=>({
+    reserveIncentives: res.reserveIncentives
+  }))
 
   const [sortName, setSortName] = useState('');
   const [sortDesc, setSortDesc] = useState(false);

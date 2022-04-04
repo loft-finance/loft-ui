@@ -18,10 +18,19 @@ export default ({ match: { params: { underlyingAsset, id, rateMode } }, }: any,)
     const [customGasPrice, setCustomGasPrice] = useState<string | null>(null);
     const [records, setRecords] = useState<any>([]);
 
-    const { reserves, user, refresh: refreshPool } = useModel('pool')
-    const { wallet, refresh: refreshWallet } = useModel('wallet');
+    const { reserves, user, refreshPool } = useModel('pool', res=>({
+        reserves: res.reserves,
+        user: res.user,
+        refreshPool: res.refresh
+    }))
+    const { wallet, refreshWallet } = useModel('wallet', res=>({
+        wallet: res.wallet,
+        refreshWallet: res.refresh
+    }));
     const provider = wallet?.provider
-    const { lendingPool } = useModel('lendingPool');
+    const { lendingPool } = useModel('lendingPool', res=>({
+        lendingPool: res.lendingPool
+    }));
     const refresh = () => {
         refreshPool();
         refreshWallet();

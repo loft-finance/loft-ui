@@ -15,7 +15,9 @@ import styles from './index.less'
 export default () => {
   const symbol = 'LP'
 
-  const { wallet } = useModel('wallet');
+  const { wallet } = useModel('wallet', res=>({
+    wallet: res.wallet
+  }));
   const { lpRewardPerYear, lpApy, balanceLp, depositedLp, earnedLp, isLpAllowanceEnough, lpApprove, lpDeposit, lpWithdraw } = useModel('pledge', res => ({
     lpRewardPerYear: res.lpRewardPerYear,
     lpApy: res.lpApy,

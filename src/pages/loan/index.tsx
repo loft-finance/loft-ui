@@ -17,10 +17,16 @@ export default () => {
   const [sortName, setSortName] = useState('');
   const [sortDesc, setSortDesc] = useState(false);
 
-  const { reserves, baseCurrency, user } = useModel('pool')
+  const { reserves, baseCurrency, user } = useModel('pool', res=>({
+    reserves: res.reserves,
+    baseCurrency: res.baseCurrency,
+    user: res.user
+  }))
   const marketRefPriceInUsd = baseCurrency.marketRefPriceInUsd
 
-  const { reserveIncentives } = useModel('incentives')
+  const { reserveIncentives } = useModel('incentives', res=>({
+    reserveIncentives: res.reserveIncentives
+  }))
 
   const { wallet } = useModel('wallet', res => ({
     wallet: res.wallet,

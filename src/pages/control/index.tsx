@@ -13,9 +13,16 @@ import { loftToUsd, lpToUsd } from '@/lib/helpers/utils';
 import Bignumber from '@/components/Bignumber';
 
 export default () => {
-  const { wallet } = useModel('wallet');
-  const { reserves, user } = useModel('pool')
-  const { reserveIncentives } = useModel('incentives')
+  const { wallet } = useModel('wallet', res => ({
+    wallet: res.wallet
+  }));
+  const { reserves, user } = useModel('pool', res=>({
+    reserves: res.reserves,
+    user: res.user
+  }))
+  const { reserveIncentives } = useModel('incentives', res=>({
+    reserveIncentives: res.reserveIncentives
+  }))
 
   const { 
     lpApy, depositedLp, earnedLp,
