@@ -17,6 +17,7 @@ import styles from './index.less';
 const price = config.loft.price
 
 export default () => {
+  const symbol = 'LOFT'
   const { wallet } = useModel('wallet')
   const { loftRewardPerYear, loftApy, balanceLoft, depositedLoft, earnedLoft, isLoftAllowanceEnough, loftApprove, loftDeposit, loftWithdraw, getLoftAPY } = useModel('pledge', res=>({
     loftRewardPerYear: res.loftRewardPerYear,
@@ -221,7 +222,7 @@ export default () => {
                 </Col>
                 <Col span={24}>
                   <p className={styles.tip}><FormattedMessage id="pages.manage.stake.balance" /></p>
-                  <p><Bignumber value={balanceLoft} /> GEIST</p>
+                  <p><Bignumber value={balanceLoft} /> {symbol}</p>
                 </Col>
               </Row>
 
@@ -287,7 +288,7 @@ export default () => {
                   </p>
                 </Col>
                 <Col span={6} offset={1}>
-                  <Bignumber value={earnedLoft} /> GEIST
+                  <Bignumber value={earnedLoft} /> {symbol}
                 </Col>
                 <Col span={5} offset={1}>
                   <Button type="primary" shape="round" disabled={!wallet || earnedLoft.eq('0')} onClick={handler.withdraw.earned}>

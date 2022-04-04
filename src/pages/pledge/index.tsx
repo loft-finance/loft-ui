@@ -13,7 +13,7 @@ import Confirm from './Confirm'
 import styles from './index.less'
 
 export default () => {
-  const symbol = ''
+  const symbol = 'LP'
 
   const { wallet } = useModel('wallet');
   const { lpRewardPerYear, lpApy, balanceLp, depositedLp, earnedLp, isLpAllowanceEnough, lpApprove, lpDeposit, lpWithdraw } = useModel('pledge', res => ({
@@ -36,7 +36,7 @@ export default () => {
     submit(values: any) {
       const amount = valueToBigNumber(values.amount)
       if(amount.gt(balanceLp)){
-        message.error('The quality must be less than max amount to deposit')
+        message.error('The quality must be less than max amount')
         return;
       }
       const txt = {
