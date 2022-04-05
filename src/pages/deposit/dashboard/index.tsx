@@ -23,8 +23,8 @@ export default ({ depositedPositions }: any) => {
           <Col span={7}><FormattedMessage id="pages.deposit.dashboard.table.col.rate" /></Col>
           <Col span={3}><FormattedMessage id="pages.deposit.dashboard.table.col.collateral" /></Col>
         </Row>
-        {depositedPositions.map((item: any)=>
-        <Row className={styles.row}>
+        {depositedPositions.map((item: any, index: number)=>
+        <Row key={index} className={styles.row}>
             <Col span={2} className={styles.single}>
                 <TokenIcon 
                     tokenSymbol={item.symbol}
@@ -40,7 +40,7 @@ export default ({ depositedPositions }: any) => {
               </div>
             </Col>
             <Col span={7} className={styles.single}>
-              {Number(item.avg30DaysLiquidityRate || item.aincentivesAPR).toFixed(2)}
+              {Number(item.avg30DaysLiquidityRate || item.aincentivesAPR).toFixed(2)}%
             </Col>
             <Col span={3} className={styles.single}>
               <Switch onClick={()=>handler.collateral(item)} checked={item.usageAsCollateralEnabledOnUser && item.usageAsCollateralEnabledOnThePool} checkedChildren="yes" unCheckedChildren="no" />

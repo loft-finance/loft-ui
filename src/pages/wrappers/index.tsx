@@ -9,11 +9,10 @@ export default (props: any) => {
         }))
         if(!wallet){
             if(walletCurrent === 'MetaMask'){
-            connect(walletCurrent);
+                setTimeout(()=>connect(walletCurrent), 500);
             }
         }
     }
     
-
     return (props.children)
 }
