@@ -28,8 +28,8 @@ export default ({borrowedPositions}: any) => {
         <Col span={7}><FormattedMessage id="pages.loan.dashboard.table.col.rate" /></Col>
         <Col span={3}><FormattedMessage id="pages.loan.dashboard.table.col.collateral" /></Col>
       </Row>
-      {borrowedPositions.map((item: any)=>
-      <Row className={styles.row}>
+      {borrowedPositions.map((item: any, index: number)=>
+      <Row key={index} className={styles.row}>
         <Col span={2} className={styles.single}>
           <TokenIcon 
               tokenSymbol={item.symbol}
@@ -45,7 +45,7 @@ export default ({borrowedPositions}: any) => {
           </div>
         </Col>
         <Col span={7} className={styles.single}>
-        {Number(item.borrowRate).toFixed(2)}
+        {Number(item.borrowRate).toFixed(2)}%
         </Col>
         <Col span={3} className={styles.single}>
           <Switch onClick={()=>handler.rate(item)} checked={item.borrowRateMode === BorrowRateMode.Variable} checkedChildren="yes" unCheckedChildren="no" />
