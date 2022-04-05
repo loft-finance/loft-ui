@@ -4,8 +4,9 @@ import { LendingPool } from '@aave/contract-helpers';
 import { getProvider } from '@/lib/helpers/provider';
 
 export default () =>  {
-    
-    const { current: currentMarket } = useModel('market');
+    const { currentMarket } = useModel('market', res => ({
+        currentMarket: res.current
+    }));
     const chainId = currentMarket.chainId
     
     const lendingPool: any = new LendingPool(getProvider(chainId), {

@@ -15,8 +15,12 @@ function isAllowanceEnough(allowance: string): boolean {
 const APPROVE_VALUE = valueToBigNumber('2').pow(256).minus(1).toString(10)
 
 export default () => {
-  const { wallet } = useModel('wallet')
-  const { current: currentMarket } = useModel('market');
+  const { currentMarket } = useModel('market', res => ({
+      currentMarket: res.current
+  }));
+  const { wallet } = useModel('wallet', res=>({
+      wallet: res.wallet
+  }))
 
   const [lpApy, setLpApy] = useState(valueToBigNumber('0'));
   const [lpRewardPerYear, setLpRewardPerYear] = useState(valueToBigNumber('0'));

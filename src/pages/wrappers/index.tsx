@@ -3,13 +3,17 @@ export default (props: any) => {
     // wallet cache
     const walletCurrent = localStorage.getItem('wallet');
     if(walletCurrent){
-        const { connect, wallet } = useModel<any>('wallet')
+        const { connect, wallet } = useModel('wallet', res => ({
+            connect: res.connect,
+            wallet: res.wallet
+        }))
         if(!wallet){
             if(walletCurrent === 'MetaMask'){
             connect(walletCurrent);
             }
         }
     }
+    
 
     return (props.children)
 }

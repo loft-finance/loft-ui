@@ -19,8 +19,15 @@ export enum BorrowRateMode {
 export default (props: any) => {
   const { match: { params: { underlyingAsset, id } } } = props
 
-  const { wallet, balances } = useModel('wallet')
-  const { reserves, user, baseCurrency } = useModel('pool')
+  const { wallet, balances } = useModel('wallet', res=>({
+    wallet: res.wallet,
+    balances: res.balances
+  }))
+  const { reserves, user, baseCurrency } = useModel('pool', res=>({
+    reserves: res.reserves,
+    user: res.user,
+    baseCurrency: res.baseCurrency
+  }))
 
   const balance = balances ? balances[underlyingAsset] : '0'
 

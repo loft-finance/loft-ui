@@ -12,8 +12,13 @@ import styles from './style.less';
 
 
 export default () => {
-  const { reserves, baseCurrency } = useModel('pool')
-  const { reserveIncentives } = useModel('incentives')
+  const { reserves, baseCurrency } = useModel('pool', res=>({
+    reserves: res.reserves,
+    baseCurrency: res.baseCurrency
+  }))
+  const { reserveIncentives } = useModel('incentives', res=>({
+    reserveIncentives: res.reserveIncentives
+  }))
 
   let list: any = []
 
