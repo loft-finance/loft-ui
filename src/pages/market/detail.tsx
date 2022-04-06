@@ -28,7 +28,6 @@ export default (props: any) => {
     user: res.user,
     baseCurrency: res.baseCurrency
   }))
-  console.log(reserves, user);
 
   const balance = balances ? balances[underlyingAsset] : '0'
 
@@ -68,7 +67,6 @@ export default (props: any) => {
         : userReserve.reserve.underlyingAsset.toLowerCase() === underlyingAsset.toLowerCase()
     )
     : undefined;
-
   const totalBorrows = valueToBigNumber(userReserve?.totalBorrows || '0').toNumber();
   const underlyingBalance = valueToBigNumber(userReserve?.underlyingBalance || '0').toNumber();
 
@@ -227,6 +225,7 @@ export default (props: any) => {
     },
   };
 
+  console.log(data);
   return (
     <GridContent>
       <div className={styles.alert}>
@@ -406,7 +405,7 @@ export default (props: any) => {
                             <FormattedMessage id="pages.market.detail.your.deposit.collateral" />
                           </Col>
                           <Col span={12} className={styles.value}>
-                            <Switch onClick={handler.collateral} checked={userReserve?.usageAsCollateralEnabledOnUser} checkedChildren="yes" unCheckedChildren="no" disabled={!poolReserve?.usageAsCollateralEnabled} />
+                            <Switch onClick={handler.collateral} checked={poolReserve?.usageAsCollateralEnabled ? userReserve?.usageAsCollateralEnabledOnUser ? true : false : false} checkedChildren="yes" unCheckedChildren="no" disabled={!poolReserve?.usageAsCollateralEnabled} />
                           </Col>
                         </Row>
                       </Col>
@@ -447,7 +446,7 @@ export default (props: any) => {
                     </Row>
                   </Card>
                 </Col>
-                <Col span={24}>
+                {!!totalBorrows && <Col span={24}>
                   <Row style={{ marginTop: 15, padding: '0 24px' }}>
                     <Col span={8}><FormattedMessage id="pages.market.detail.your.loan.record.loan" /></Col>
                     <Col span={8}><FormattedMessage id="pages.market.detail.your.loan.record.borrowed" /></Col>
@@ -468,8 +467,8 @@ export default (props: any) => {
                         />
                       </Col>
                       <Col span={6} className={styles.value}>
-                        <div>{Number(availableBorrows).toFixed(2)}</div>
-                        <div className={styles.tag}>${Number(availableBorrows).toFixed(2)}</div>
+                        <div>{Number(totalBorrows).toFixed(2)}</div>
+                        <div className={styles.tag}>${Number(data.totalBorrowsInUsd).toFixed(2)}</div>
                       </Col>
                       <Col span={9} offset={1} className={styles.label}>
                         <Button size="small" type="primary" shape="round" onClick={handler.loan}>
@@ -481,7 +480,7 @@ export default (props: any) => {
                       </Col>
                     </Row>
                   </Card>
-                </Col>
+                </Col>}
               </Row>
             </Spin>
           )}

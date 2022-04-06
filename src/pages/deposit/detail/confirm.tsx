@@ -12,13 +12,12 @@ import styles from './confirm.less';
 const { Step } = Steps;
 
 export default ({ poolReserve, userReserve, maxAmountToDeposit, match: { params: { amount: amount0 } }, }: any,) => {
-    if(!poolReserve || !userReserve) {
+    if (!poolReserve || !userReserve) {
         // return <div style={{textAlign:'center'}}><Spin /></div>
     }
-
     const underlyingSymbol = poolReserve?.symbol || ''
     const amount = valueToBigNumber(amount0);
-    
+
 
     const [steps, setSteps] = useState<any>([]);
     const [current, setCurrent] = useState(0);
@@ -26,18 +25,18 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, match: { params:
     const [actionTxData, setActionTxData] = useState<any>(undefined)
     const [customGasPrice, setCustomGasPrice] = useState<string | null>(null);
     const [records, setRecords] = useState<any>([]);
-    
-    const { user, baseCurrency, refreshPool } = useModel('pool', res=>({
+
+    const { user, baseCurrency, refreshPool } = useModel('pool', res => ({
         user: res.user,
         baseCurrency: res.baseCurrency,
         refreshPool: res.refresh
     }))
-    const { wallet, refreshWallet } = useModel('wallet', res=>({
+    const { wallet, refreshWallet } = useModel('wallet', res => ({
         wallet: res.wallet,
         refreshWallet: res.refresh
     }));
     const provider = wallet?.provider
-    const { lendingPool } = useModel('lendingPool', res=>({
+    const { lendingPool } = useModel('lendingPool', res => ({
         lendingPool: res.lendingPool
     }));
 
@@ -69,11 +68,7 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, match: { params:
     const notShowHealthFactor =
         user.totalBorrowsMarketReferenceCurrency !== '0' && poolReserve.usageAsCollateralEnabled;
 
-    const usageAsCollateralEnabledOnDeposit =
-        poolReserve.usageAsCollateralEnabled &&
-        (!userReserve?.underlyingBalance ||
-            userReserve.underlyingBalance === '0' ||
-            userReserve.usageAsCollateralEnabledOnUser);
+    const usageAsCollateralEnabledOnDeposit = poolReserve.usageAsCollateralEnabled ? userReserve.usageAsCollateralEnabledOnUser ? true : false : false;
 
     useEffect(() => {
         if (wallet) {
@@ -101,7 +96,7 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, match: { params:
                         mainTxType,
                     ].includes(tx.txType)
                 );
-                
+
                 let approve, action: any;
                 if (approveTx) {
                     approve = {
@@ -123,8 +118,8 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, match: { params:
                     setActionTxData(action)
                 }
 
-                if((approve || approveTxData) && action){
-                    if(!approve) approve = approveTxData
+                if ((approve || approveTxData) && action) {
+                    if (!approve) approve = approveTxData
                     setSteps([
                         {
                             key: 'approve',
@@ -141,7 +136,7 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, match: { params:
                             buttonText: <FormattedMessage id="pages.deposit.detail.confirm.steps.deposit.button" />,
                             stepText: <FormattedMessage id="pages.deposit.detail.confirm.steps.deposit.step" />,
                             description: <FormattedMessage id="pages.deposit.detail.confirm.steps.deposit.desc" />,
-                            loading: depositing ? true:false,
+                            loading: depositing ? true : false,
                             error: '',
                         },
                         {
@@ -154,7 +149,7 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, match: { params:
                             error: '',
                         },
                     ]);
-                }else if(action){
+                } else if (action) {
                     setSteps([
                         {
                             key: 'deposit',
@@ -162,7 +157,7 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, match: { params:
                             buttonText: <FormattedMessage id="pages.deposit.detail.confirm.steps.deposit.button" />,
                             stepText: <FormattedMessage id="pages.deposit.detail.confirm.steps.deposit.step" />,
                             description: <FormattedMessage id="pages.deposit.detail.confirm.steps.deposit.desc" />,
-                            loading: depositing ? true:false,
+                            loading: depositing ? true : false,
                             error: '',
                         },
                         {
@@ -176,7 +171,7 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, match: { params:
                         },
                     ]);
                 }
-                
+
                 return true;
             } catch (e) {
                 console.log('Error on txs loading', e);
@@ -193,12 +188,12 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, match: { params:
                     setApproveTxData,
                     customGasPrice,
                     {
-                      onConfirmation: handler.approve.confirmed,
-                      onError: handler.approve.error
+                        onConfirmation: handler.approve.confirmed,
+                        onError: handler.approve.error
                     }
                 )
             },
-            confirmed(){
+            confirmed() {
                 console.log('approve confirmed----')
                 handler.loading.set('approve', false);
                 handler.records.set('approve', 'approve', 'confirmed')
@@ -240,10 +235,10 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, match: { params:
                     handler.loading.set('deposit', false);
                 }
             },
-            executed(){
+            executed() {
                 console.log('--------deposit executed----')
             },
-            confirmed(){
+            confirmed() {
                 handler.records.set('deposit', 'deposit', 'confirmed')
                 setCurrent(current + 1);
                 handler.loading.set('deposit', false);
@@ -259,14 +254,14 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, match: { params:
             }
         },
         records: {
-            set(key: string, name: string, status: string){
-                let id = records.findIndex((item: any)=>item.key == key)
-                if(id !==  -1){
+            set(key: string, name: string, status: string) {
+                let id = records.findIndex((item: any) => item.key == key)
+                if (id !== -1) {
                     records[id] = {
                         ...records[id],
                         status
                     }
-                }else{
+                } else {
                     records.push({
                         key,
                         name,
@@ -274,13 +269,13 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, match: { params:
                     })
                 }
 
-                setRecords([ ...records ])
+                setRecords([...records])
             }
         },
         loading: {
-            set(key: string, status: boolean){
-                let list = steps.map((item: any)=>{
-                    if(item.key === key){
+            set(key: string, status: boolean) {
+                let list = steps.map((item: any) => {
+                    if (item.key === key) {
                         item.loading = status
                     }
                     return item;
@@ -290,23 +285,23 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, match: { params:
             }
         },
         error: {
-            set(key: string, error: string){
-                let id = steps.findIndex((item: any)=>item.key == key)
-                if(id !==  -1){
+            set(key: string, error: string) {
+                let id = steps.findIndex((item: any) => item.key == key)
+                if (id !== -1) {
                     steps[id] = {
                         ...steps[id],
                         error
                     }
-                    setSteps([ ...steps ])
+                    setSteps([...steps])
                 }
             }
         },
         async submit() {
-            if(approveTxData && steps[current]?.key === 'approve'){
+            if (approveTxData && steps[current]?.key === 'approve') {
                 handler.approve.submit()
-            }else if(actionTxData && steps[current]?.key === 'deposit'){
+            } else if (actionTxData && steps[current]?.key === 'deposit') {
                 handler.action.submit()
-            }else if(steps[current]?.key === 'completed'){
+            } else if (steps[current]?.key === 'completed') {
                 history.push('/control')
             }
         }
@@ -365,48 +360,48 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, match: { params:
                         </Col>
                     </Row>
                 </div>
-                {!steps.length && <Row><Col span={10} offset={7} style={{ marginTop: 20, textAlign:'center' }}><Spin /></Col></Row>}
+                {!steps.length && <Row><Col span={10} offset={7} style={{ marginTop: 20, textAlign: 'center' }}><Spin /></Col></Row>}
                 {steps.length > 0 &&
-                <Row>
-                    <Col span={10} offset={7} style={{ marginBottom: 20 }}>
-                        <Steps
-                            type="navigation"
-                            size="small"
-                            current={current}
-                            className="site-navigation-steps"
-                        >
-                            {steps.map((item) => (
-                                <Step title={item.title} />
-                            ))}
-                        </Steps>
-                    </Col>
-                    <Col span={7} offset={7}>
-                        <p className={styles.tip}>
-                            {current + 1}/{steps.length} {steps[current]?.stepText}
-                        </p>
+                    <Row>
+                        <Col span={10} offset={7} style={{ marginBottom: 20 }}>
+                            <Steps
+                                type="navigation"
+                                size="small"
+                                current={current}
+                                className="site-navigation-steps"
+                            >
+                                {steps.map((item: any, index: number) => (
+                                    <Step title={item.title} key={index} />
+                                ))}
+                            </Steps>
+                        </Col>
+                        <Col span={7} offset={7}>
+                            <p className={styles.tip}>
+                                {current + 1}/{steps.length} {steps[current]?.stepText}
+                            </p>
 
-                        <p className={styles.tip} style={steps[current]?.error?{ color: '#F46D6D' }:{}}>{steps[current]?.error?steps[current]?.error:steps[current]?.description}</p>
-                    </Col>
-                    <Col span={3}>
-                        <Button type="primary" shape="round" loading={steps[current]?.loading?true:false} onClick={handler.submit}>
-                            {steps[current]?.buttonText}
-                        </Button>
-                    </Col>
-                    <Col span={10} offset={7}>
-                        <Divider style={{ margin: '12px 0' }} />
-                    </Col>
-                    <Col span={10} offset={7}>
-                        <Row>
-                            {records.map((item: any) => <>
-                            <Col span={8}>{item.name}</Col>
-                            <Col span={8}>
-                                {item.status} {item.status == 'wait' ? <LoadingOutlined /> : <Badge status={item.status == 'confirmed' ? "success" : "error"} />}
-                            </Col>
-                            <Col span={8}><FormattedMessage id="pages.deposit.detail.confirm.explorer" /></Col>
-                            </>)}
-                        </Row>
-                    </Col>
-                </Row>
+                            <p className={styles.tip} style={steps[current]?.error ? { color: '#F46D6D' } : {}}>{steps[current]?.error ? steps[current]?.error : steps[current]?.description}</p>
+                        </Col>
+                        <Col span={3}>
+                            <Button type="primary" shape="round" loading={steps[current]?.loading ? true : false} onClick={handler.submit}>
+                                {steps[current]?.buttonText}
+                            </Button>
+                        </Col>
+                        <Col span={10} offset={7}>
+                            <Divider style={{ margin: '12px 0' }} />
+                        </Col>
+                        <Col span={10} offset={7}>
+                            <Row>
+                                {records.map((item: any) => <>
+                                    <Col span={8}>{item.name}</Col>
+                                    <Col span={8}>
+                                        {item.status} {item.status == 'wait' ? <LoadingOutlined /> : <Badge status={item.status == 'confirmed' ? "success" : "error"} />}
+                                    </Col>
+                                    <Col span={8}><FormattedMessage id="pages.deposit.detail.confirm.explorer" /></Col>
+                                </>)}
+                            </Row>
+                        </Col>
+                    </Row>
                 }
             </Card>
         </Card>

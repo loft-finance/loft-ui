@@ -11,11 +11,11 @@ import { BigNumber, valueToBigNumber } from '@aave/protocol-js';
 export default (props: any) => {
     const { match: { params: { underlyingAsset, id } } } = props
 
-    const { wallet, balances } = useModel('wallet', res=>({
+    const { wallet, balances } = useModel('wallet', res => ({
         wallet: res.wallet,
         balances: res.balances
     }));
-    const { reserves, user } = useModel('pool', res=>({
+    const { reserves, user } = useModel('pool', res => ({
         reserves: res.reserves,
         user: res.user
     }))
@@ -93,9 +93,9 @@ export default (props: any) => {
 
             {!wallet && <WalletDisconnected />}
 
-            {/* {wallet && walletBalance.eq('0') && <WalletEmpty symbol={poolReserve ? poolReserve?.symbol : ''} />} */}
+            {wallet && maxUserAmountToWithdraw == '0' && <WalletEmpty symbol={poolReserve ? poolReserve?.symbol : ''} />}
 
-            {wallet && React.cloneElement(props.children, { poolReserve, user, userReserve, maxUserAmountToWithdraw: maxUserAmountToWithdraw.toString(10) })}
+            {wallet && maxUserAmountToWithdraw !== '0' && React.cloneElement(props.children, { poolReserve, user, userReserve, maxUserAmountToWithdraw: maxUserAmountToWithdraw.toString() })}
         </GridContent>
     );
 };

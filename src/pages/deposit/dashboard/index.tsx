@@ -44,7 +44,7 @@ export default ({ depositedPositions }: any) => {
           {Number(item.avg30DaysLiquidityRate || item.aincentivesAPR).toFixed(2)}%
         </Col>
         <Col span={3} className={styles.single}>
-          <Switch onClick={() => handler.collateral(item)} checked={item.usageAsCollateralEnabledOnUser} checkedChildren="yes" unCheckedChildren="no" disabled={!item.usageAsCollateralEnabledOnThePool} />
+          <Switch onClick={() => handler.collateral(item)} checked={item.usageAsCollateralEnabledOnThePool ? item.usageAsCollateralEnabledOnUser ? true : false : false} checkedChildren="yes" unCheckedChildren="no" disabled={!item.usageAsCollateralEnabledOnThePool} />
         </Col>
         <Col span={7} className={styles.single}>
           <Button size="small" type="primary" shape={'round'} style={{ marginLeft: 5 }} onClick={() => handler.deposit(item)}>

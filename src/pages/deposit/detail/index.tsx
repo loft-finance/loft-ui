@@ -12,20 +12,20 @@ import { getNetwork } from '@/lib/helpers/provider';
 
 
 export default (props) => {
-  const { match: { params: { underlyingAsset,id } } } = props
+  const { match: { params: { underlyingAsset, id } } } = props
 
-  const { wallet, balances } = useModel('wallet', res=>({
+  const { wallet, balances } = useModel('wallet', res => ({
     wallet: res.wallet,
     balances: res.balances
   }));
 
-  const { reserves, user, baseCurrency } = useModel('pool', res=>({
+  const { reserves, user, baseCurrency } = useModel('pool', res => ({
     reserves: res.reserves,
     user: res.user,
     baseCurrency: res.baseCurrency
   }))
 
-  const { currentMarket } = useModel('market', res=>({
+  const { currentMarket } = useModel('market', res => ({
     currentMarket: res.current
   }));
 
@@ -33,8 +33,8 @@ export default (props) => {
   const underlyingSymbol = poolReserve?.symbol || ''
 
   const poolReserve = reserves.find((res) =>
-        id? res.id === id : res.underlyingAsset.toLowerCase() === underlyingAsset.toLowerCase()
-      );
+    id ? res.id === id : res.underlyingAsset.toLowerCase() === underlyingAsset.toLowerCase()
+  );
   const asset = getAssetInfo(id);
 
   const chainId = currentMarket.chainId
@@ -42,7 +42,7 @@ export default (props) => {
 
   let walletBalance = valueToBigNumber('0').dividedBy(valueToBigNumber(10).pow(18))
 
-  if(balance && poolReserve) {
+  if (balance && poolReserve) {
     walletBalance = valueToBigNumber(balance).dividedBy(valueToBigNumber(10).pow(poolReserve.decimals))
   }
 
@@ -56,13 +56,13 @@ export default (props) => {
   }
 
   const userReserve = user
-        ? user.userReservesData.find((userReserve) =>
-            id
-                ? userReserve.reserve.id === id
-                : userReserve.reserve.underlyingAsset.toLowerCase() === underlyingAsset.toLowerCase()
-        )
-        : undefined;
-
+    ? user.userReservesData.find((userReserve) =>
+      id
+        ? userReserve.reserve.id === id
+        : userReserve.reserve.underlyingAsset.toLowerCase() === underlyingAsset.toLowerCase()
+    )
+    : undefined;
+    
   return (
     <GridContent>
       <Info
@@ -81,13 +81,13 @@ export default (props) => {
           },
         ]}
       />
-      <Overview  poolReserve={poolReserve} marketRefPriceInUsd={baseCurrency.marketRefPriceInUsd} />
+      <Overview poolReserve={poolReserve} marketRefPriceInUsd={baseCurrency.marketRefPriceInUsd} />
 
       {!wallet && <WalletDisconnected />}
 
-      {/* {wallet && walletBalance.eq('0') && <WalletEmpty symbol={poolReserve?poolReserve?.symbol:''} />} */}
+      {wallet && maxAmountToDeposit.toString() == '0' && walletBalance.eq('0') && <WalletEmpty symbol={poolReserve ? poolReserve?.symbol : ''} />}
 
-      {wallet && React.cloneElement(props.children, { poolReserve, userReserve,  maxAmountToDeposit: maxAmountToDeposit.toString(10) }) }
+      {wallet && maxAmountToDeposit.toString() !== '0' && React.cloneElement(props.children, { poolReserve, userReserve, maxAmountToDeposit: maxAmountToDeposit.toString(10) })}
     </GridContent>
   );
 };

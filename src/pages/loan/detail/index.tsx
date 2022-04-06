@@ -9,13 +9,13 @@ import Bignumber from '@/components/Bignumber';
 import { valueToBigNumber, BigNumber } from '@aave/protocol-js';
 
 export default (props: any) => {
-  const { match: { params: { underlyingAsset,id } } } = props
+  const { match: { params: { underlyingAsset, id } } } = props
 
-  const { wallet, balances } = useModel('wallet', res=>({
+  const { wallet, balances } = useModel('wallet', res => ({
     wallet: res.wallet,
     balances: res.balances
   }));
-  const { reserves, user, baseCurrency } = useModel('pool', res=>({
+  const { reserves, user, baseCurrency } = useModel('pool', res => ({
     reserves: res.reserves,
     user: res.user,
     baseCurrency: res.baseCurrency
@@ -23,13 +23,13 @@ export default (props: any) => {
   const balance = balances ? balances[underlyingAsset] : '0'
 
   const poolReserve = reserves.find((res) =>
-        id? res.id === id : res.underlyingAsset.toLowerCase() === underlyingAsset.toLowerCase()
+    id ? res.id === id : res.underlyingAsset.toLowerCase() === underlyingAsset.toLowerCase()
   );
 
   const underlyingSymbol = poolReserve?.symbol || ''
   let walletBalance = valueToBigNumber('0').dividedBy(valueToBigNumber(10).pow(18))
 
-  if(balance && poolReserve) {
+  if (balance && poolReserve) {
     walletBalance = valueToBigNumber(balance).dividedBy(valueToBigNumber(10).pow(poolReserve.decimals))
   }
 
@@ -49,12 +49,12 @@ export default (props: any) => {
   }
 
   const userReserve = user
-        ? user.userReservesData.find((userReserve) =>
-            id
-                ? userReserve.reserve.id === id
-                : userReserve.reserve.underlyingAsset.toLowerCase() === underlyingAsset.toLowerCase()
-        )
-        : undefined;
+    ? user.userReservesData.find((userReserve) =>
+      id
+        ? userReserve.reserve.id === id
+        : userReserve.reserve.underlyingAsset.toLowerCase() === underlyingAsset.toLowerCase()
+    )
+    : undefined;
   const currentBorrows = userReserve ? valueToBigNumber(userReserve.totalBorrows).toString() : '0';
 
   return (
@@ -67,7 +67,7 @@ export default (props: any) => {
           },
           {
             title: <FormattedMessage id="pages.loan.detail.info.TotalCollateral" />,
-            value: <><Bignumber value={user?.totalCollateralUSD} maximumValueDecimals={4} /> USD</> ,
+            value: <><Bignumber value={user?.totalCollateralUSD} maximumValueDecimals={4} /> USD</>,
           },
           {
             title: <FormattedMessage id="pages.loan.detail.info.LoanValue" />,
@@ -79,13 +79,13 @@ export default (props: any) => {
           }
         ]}
       />
-      <Overview  poolReserve={poolReserve} marketRefPriceInUsd={baseCurrency.marketRefPriceInUsd} />
+      <Overview poolReserve={poolReserve} marketRefPriceInUsd={baseCurrency.marketRefPriceInUsd} />
 
       {!wallet && <WalletDisconnected />}
 
-      {/* {wallet && walletBalance.eq('0') && <WalletEmpty symbol={poolReserve?poolReserve?.symbol:''} />} */}
+      {wallet && maxAmountToBorrow.toString() == '0' && <WalletEmpty symbol={poolReserve ? poolReserve?.symbol : ''} />}
 
-      {wallet && React.cloneElement(props.children, { poolReserve, userReserve, maxAmountToBorrow: maxAmountToBorrow.toString(10) }) }
+      {wallet && maxAmountToBorrow.toString() !== '0' && React.cloneElement(props.children, { poolReserve, userReserve, maxAmountToBorrow: maxAmountToBorrow.toString(10) })}
     </GridContent>
   );
 };
