@@ -9,7 +9,7 @@ import Back from '@/components/Back';
 import styles from './confirm.less';
 const { Step } = Steps;
 
-export default ({ match: { params: { underlyingAsset, id,  status } }, }: any,) => {
+export default ({ match: { params: { underlyingAsset, id, status } }, }: any,) => {
 
     const [steps, setSteps] = useState<any>([]);
     const [current, setCurrent] = useState(0);
@@ -17,18 +17,18 @@ export default ({ match: { params: { underlyingAsset, id,  status } }, }: any,) 
     const [actionTxData, setActionTxData] = useState<any>(undefined)
     const [customGasPrice, setCustomGasPrice] = useState<string | null>(null);
     const [records, setRecords] = useState<any>([]);
-    
-    const { reserves, user, refreshPool } = useModel('pool', res=>({
+
+    const { reserves, user, refreshPool } = useModel('pool', res => ({
         reserves: res.reserves,
         user: res.user,
         refreshPool: res.refresh
     }))
-    const { wallet, refreshWallet } = useModel('wallet', res=>({
+    const { wallet, refreshWallet } = useModel('wallet', res => ({
         wallet: res.wallet,
         refreshWallet: res.refresh
     }));
     const provider = wallet?.provider
-    const { lendingPool } = useModel('lendingPool', res=>({
+    const { lendingPool } = useModel('lendingPool', res => ({
         lendingPool: res.lendingPool
     }));
     const refresh = () => {
@@ -36,10 +36,10 @@ export default ({ match: { params: { underlyingAsset, id,  status } }, }: any,) 
         refreshWallet();
     }
 
-    const poolReserve: any = reserves.find((res) => id ? res.id === id : res.underlyingAsset.toLowerCase() === underlyingAsset.toLowerCase());
+    const poolReserve: any = reserves.find((res: any) => id ? res.id === id : res.underlyingAsset.toLowerCase() === underlyingAsset.toLowerCase());
 
     const userReserve: any = user
-        ? user.userReservesData.find((userReserve) =>
+        ? user.userReservesData.find((userReserve: any) =>
             id
                 ? userReserve.reserve.id === id
                 : userReserve.reserve.underlyingAsset.toLowerCase() === underlyingAsset.toLowerCase()
@@ -75,10 +75,10 @@ export default ({ match: { params: { underlyingAsset, id,  status } }, }: any,) 
                     reserve: poolReserve.underlyingAsset,
                     usageAsCollateral: status == 1
                 });
-                
+
                 const mainTxType = ''
-                const approveTx = txs.find((tx) => tx.txType === 'ERC20_APPROVAL');
-                const actionTx = txs.find((tx) =>
+                const approveTx = txs.find((tx: any) => tx.txType === 'ERC20_APPROVAL');
+                const actionTx = txs.find((tx: any) =>
                     [
                         'DLP_ACTION',
                         'GOVERNANCE_ACTION',
@@ -88,7 +88,7 @@ export default ({ match: { params: { underlyingAsset, id,  status } }, }: any,) 
                         mainTxType,
                     ].includes(tx.txType)
                 );
-                
+
                 let approve, action: any;
                 if (approveTx) {
                     approve = {
@@ -110,8 +110,8 @@ export default ({ match: { params: { underlyingAsset, id,  status } }, }: any,) 
                     setActionTxData(action)
                 }
 
-                if((approve || approveTxData) && action){
-                    if(!approve) approve = approveTxData
+                if ((approve || approveTxData) && action) {
+                    if (!approve) approve = approveTxData
                     setSteps([
                         {
                             key: 'approve',
@@ -128,7 +128,7 @@ export default ({ match: { params: { underlyingAsset, id,  status } }, }: any,) 
                             buttonText: <FormattedMessage id="pages.deposit.collateral.confirm.steps.collateral.button" />,
                             stepText: <FormattedMessage id="pages.deposit.collateral.confirm.steps.collateral.step" />,
                             description: <FormattedMessage id="pages.deposit.collateral.confirm.steps.collateral.desc" />,
-                            loading: depositing ? true:false,
+                            loading: depositing ? true : false,
                             error: '',
                         },
                         {
@@ -141,7 +141,7 @@ export default ({ match: { params: { underlyingAsset, id,  status } }, }: any,) 
                             error: '',
                         },
                     ]);
-                }else if(action){
+                } else if (action) {
                     setSteps([
                         {
                             key: 'deposit',
@@ -149,7 +149,7 @@ export default ({ match: { params: { underlyingAsset, id,  status } }, }: any,) 
                             buttonText: <FormattedMessage id="pages.deposit.collateral.confirm.steps.collateral.button" />,
                             stepText: <FormattedMessage id="pages.deposit.collateral.confirm.steps.collateral.step" />,
                             description: <FormattedMessage id="pages.deposit.collateral.confirm.steps.collateral.desc" />,
-                            loading: depositing ? true:false,
+                            loading: depositing ? true : false,
                             error: '',
                         },
                         {
@@ -163,7 +163,7 @@ export default ({ match: { params: { underlyingAsset, id,  status } }, }: any,) 
                         },
                     ]);
                 }
-                
+
                 return true;
             } catch (e) {
                 console.log('Error on txs loading', e);
@@ -180,12 +180,12 @@ export default ({ match: { params: { underlyingAsset, id,  status } }, }: any,) 
                     setApproveTxData,
                     customGasPrice,
                     {
-                      onConfirmation: handler.approve.confirmed,
-                      onError: handler.approve.error
+                        onConfirmation: handler.approve.confirmed,
+                        onError: handler.approve.error
                     }
                 )
             },
-            confirmed(){
+            confirmed() {
                 console.log('approve confirmed----')
                 handler.loading.set('approve', false);
                 handler.records.set('approve', 'approve', 'confirmed')
@@ -218,7 +218,7 @@ export default ({ match: { params: { underlyingAsset, id,  status } }, }: any,) 
                         }
                     );
                 } else {
-                    setActionTxData((state) => ({
+                    setActionTxData((state: any) => ({
                         ...state,
                         txStatus: TxStatusType.error,
                         loading: false,
@@ -227,10 +227,10 @@ export default ({ match: { params: { underlyingAsset, id,  status } }, }: any,) 
                     handler.loading.set('deposit', false);
                 }
             },
-            executed(){
+            executed() {
                 console.log('--------deposit executed----')
             },
-            confirmed(){
+            confirmed() {
                 handler.records.set('deposit', 'deposit', 'confirmed')
                 setCurrent(current + 1);
                 handler.loading.set('deposit', false);
@@ -245,14 +245,14 @@ export default ({ match: { params: { underlyingAsset, id,  status } }, }: any,) 
             }
         },
         records: {
-            set(key: string, name: string, status: string){
-                let id = records.findIndex((item: any)=>item.key == key)
-                if(id !==  -1){
+            set(key: string, name: string, status: string) {
+                let id = records.findIndex((item: any) => item.key == key)
+                if (id !== -1) {
                     records[id] = {
                         ...records[id],
                         status
                     }
-                }else{
+                } else {
                     records.push({
                         key,
                         name,
@@ -260,13 +260,13 @@ export default ({ match: { params: { underlyingAsset, id,  status } }, }: any,) 
                     })
                 }
 
-                setRecords([ ...records ])
+                setRecords([...records])
             }
         },
         loading: {
-            set(key: string, status: boolean){
-                let list = steps.map((item: any)=>{
-                    if(item.key === key){
+            set(key: string, status: boolean) {
+                let list = steps.map((item: any) => {
+                    if (item.key === key) {
                         item.loading = status
                     }
                     return item;
@@ -276,23 +276,23 @@ export default ({ match: { params: { underlyingAsset, id,  status } }, }: any,) 
             }
         },
         error: {
-            set(key: string, error: string){
-                let id = steps.findIndex((item: any)=>item.key == key)
-                if(id !==  -1){
+            set(key: string, error: string) {
+                let id = steps.findIndex((item: any) => item.key == key)
+                if (id !== -1) {
                     steps[id] = {
                         ...steps[id],
                         error
                     }
-                    setSteps([ ...steps ])
+                    setSteps([...steps])
                 }
             }
         },
         async submit() {
-            if(approveTxData && steps[current]?.key === 'approve'){
+            if (approveTxData && steps[current]?.key === 'approve') {
                 handler.approve.submit()
-            }else if(actionTxData && steps[current]?.key === 'deposit'){
+            } else if (actionTxData && steps[current]?.key === 'deposit') {
                 handler.action.submit()
-            }else if(steps[current]?.key === 'completed'){
+            } else if (steps[current]?.key === 'completed') {
                 history.push('/control')
             }
         }
@@ -305,7 +305,7 @@ export default ({ match: { params: { underlyingAsset, id,  status } }, }: any,) 
                 <Row>
                     <Col span={12} offset={6}>
                         <div className={styles.desc}>
-                            <div className={styles.title}>{status == 1 ? 'Use':'Do not use'} {poolReserve.symbol} as collateral </div>
+                            <div className={styles.title}>{status == 1 ? 'Use' : 'Do not use'} {poolReserve.symbol} as collateral </div>
                             <div className={styles.text}>
                                 These are your transaction details. Please be sure to check whether it is
                                 correct before submitting
@@ -339,48 +339,48 @@ export default ({ match: { params: { underlyingAsset, id,  status } }, }: any,) 
                         </Col>
                     </Row>
                 </div>
-                {!steps.length && <Row><Col span={10} offset={7} style={{ marginTop: 20, textAlign:'center' }}><Spin /></Col></Row>}
+                {!steps.length && <Row><Col span={10} offset={7} style={{ marginTop: 20, textAlign: 'center' }}><Spin /></Col></Row>}
                 {steps.length > 0 &&
-                <Row>
-                    <Col span={10} offset={7} style={{ marginBottom: 20 }}>
-                        <Steps
-                            type="navigation"
-                            size="small"
-                            current={current}
-                            className="site-navigation-steps"
-                        >
-                            {steps.map((item) => (
-                                <Step title={item.title} />
-                            ))}
-                        </Steps>
-                    </Col>
-                    <Col span={7} offset={7}>
-                        <p className={styles.tip}>
-                            {current + 1}/{steps.length} {steps[current]?.stepText}
-                        </p>
+                    <Row>
+                        <Col span={10} offset={7} style={{ marginBottom: 20 }}>
+                            <Steps
+                                type="navigation"
+                                size="small"
+                                current={current}
+                                className="site-navigation-steps"
+                            >
+                                {steps.map((item: any, index: number) => (
+                                    <Step title={item.title} key={index} />
+                                ))}
+                            </Steps>
+                        </Col>
+                        <Col span={7} offset={7}>
+                            <p className={styles.tip}>
+                                {current + 1}/{steps.length} {steps[current]?.stepText}
+                            </p>
 
-                        <p className={styles.tip} style={steps[current]?.error?{ color: '#F46D6D' }:{}}>{steps[current]?.error?steps[current]?.error:steps[current]?.description}</p>
-                    </Col>
-                    <Col span={3}>
-                        <Button type="primary" shape="round" loading={steps[current]?.loading?true:false} onClick={handler.submit}>
-                            {steps[current]?.buttonText}
-                        </Button>
-                    </Col>
-                    <Col span={10} offset={7}>
-                        <Divider style={{ margin: '12px 0' }} />
-                    </Col>
-                    <Col span={10} offset={7}>
-                        <Row>
-                            {records.map((item: any) => <>
-                            <Col span={8}>{item.name}</Col>
-                            <Col span={8}>
-                                {item.status} {item.status == 'wait' ? <LoadingOutlined /> : <Badge status={item.status == 'confirmed' ? "success" : "error"} />}
-                            </Col>
-                            <Col span={8}><FormattedMessage id="pages.deposit.collateral.confirm.explorer" /></Col>
-                            </>)}
-                        </Row>
-                    </Col>
-                </Row>
+                            <p className={styles.tip} style={steps[current]?.error ? { color: '#F46D6D' } : {}}>{steps[current]?.error ? steps[current]?.error : steps[current]?.description}</p>
+                        </Col>
+                        <Col span={3}>
+                            <Button type="primary" shape="round" loading={steps[current]?.loading ? true : false} onClick={handler.submit}>
+                                {steps[current]?.buttonText}
+                            </Button>
+                        </Col>
+                        <Col span={10} offset={7}>
+                            <Divider style={{ margin: '12px 0' }} />
+                        </Col>
+                        <Col span={10} offset={7}>
+                            <Row>
+                                {records.map((item: any) => <>
+                                    <Col span={8}>{item.name}</Col>
+                                    <Col span={8}>
+                                        {item.status} {item.status == 'wait' ? <LoadingOutlined /> : <Badge status={item.status == 'confirmed' ? "success" : "error"} />}
+                                    </Col>
+                                    <Col span={8}><FormattedMessage id="pages.deposit.collateral.confirm.explorer" /></Col>
+                                </>)}
+                            </Row>
+                        </Col>
+                    </Row>
                 }
             </Card>
         </Card>

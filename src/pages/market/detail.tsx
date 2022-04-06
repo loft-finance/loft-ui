@@ -90,7 +90,8 @@ export default (props: any) => {
       const marketRefPriceInUsd = normalize(baseCurrency?.marketReferenceCurrencyPriceInUsd || '0', 8)
 
       const poolReserve = reserves.find((res: any) => res.id === id)
-
+      console.log(poolReserve)
+      console.log(userReserve)
       if (poolReserve) {
         const totalLiquidityInUsd = valueToBigNumber(poolReserve?.totalLiquidity)
           .multipliedBy(poolReserve?.priceInMarketReferenceCurrency)
@@ -225,7 +226,7 @@ export default (props: any) => {
     },
   };
 
-  console.log(data);
+  // console.log(data);
   return (
     <GridContent>
       <div className={styles.alert}>
@@ -295,13 +296,13 @@ export default (props: any) => {
                             <FormattedMessage id="pages.market.detail.config.DepositApy" />
                           </Col>
                           <Col span={12} className={styles.value}>
-                            {Number(data.supplyAPY).toFixed(4)}%
+                            {Number(data.supplyAPY).toFixed(2)}%
                           </Col>
                           <Col span={12} className={styles.label}>
                             <FormattedMessage id="pages.market.detail.config.DepositAverage" />
                           </Col>
                           <Col span={12} className={styles.value}>
-                            {Number(data.supplyAPR).toFixed(4)}
+                            {Number(data.supplyAPR).toFixed(2)}
                           </Col>
                         </Row>
                       </Card>
@@ -318,19 +319,19 @@ export default (props: any) => {
                             <FormattedMessage id="pages.market.detail.config.BorrowApy" />
                           </Col>
                           <Col span={12} className={styles.value}>
-                            {Number(data.variableAPY).toFixed(4)}%
+                            {Number(data.variableAPY).toFixed(2)}%
                           </Col>
                           <Col span={12} className={styles.label}>
                             <FormattedMessage id="pages.market.detail.config.BorrowAverage" />
                           </Col>
                           <Col span={12} className={styles.value}>
-                            {Number(data.variableAPR).toFixed(4)}
+                            {Number(data.variableAPR).toFixed(2)}
                           </Col>
                           <Col span={12} className={styles.label}>
                             <FormattedMessage id="pages.market.detail.config.BorrowPercentage" />
                           </Col>
                           <Col span={12} className={styles.value}>
-                            {Number(data.variableOverTotal || 0).toFixed(4)}%
+                            {Number(data.variableOverTotal || 0).toFixed(2)}%
                           </Col>
                         </Row>
                       </Card>
@@ -435,7 +436,7 @@ export default (props: any) => {
                           </Col>
                           <Col span={12} className={styles.label}><FormattedMessage id="pages.market.detail.your.loan.LoanAppreciation" />Loan appreciation</Col>
                           <Col span={12} className={styles.value}>
-                            {user?.currentLoanToValue || 0}%
+                            {Number(user?.currentLoanToValue || 0).toFixed(2)}%
                           </Col>
                           <Col span={12} className={styles.label}><FormattedMessage id="pages.market.detail.your.loan.available" /></Col>
                           <Col span={12} className={styles.value}>

@@ -226,7 +226,7 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, match: { params:
                         }
                     );
                 } else {
-                    setActionTxData((state) => ({
+                    setActionTxData((state: any) => ({
                         ...state,
                         txStatus: TxStatusType.error,
                         loading: false,

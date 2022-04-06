@@ -58,15 +58,15 @@ export async function sendEthTransaction(
   try {
     extendedTxData = await txGetter();
     if (customGasPrice) extendedTxData.gasPrice = BigNumber.from(customGasPrice);
-  } catch (e) {
+  } catch (e: any) {
     console.log('tx building error', e);
     stateSetter((state) => ({
       ...state,
       loading: false,
       error: e.message.toString(),
     }));
-    if(callbacks?.onError){
-      callbacks.onError({message: 'tx building error'});
+    if (callbacks?.onError) {
+      callbacks.onError({ message: e });
     }
     return;
   }
@@ -80,7 +80,7 @@ export async function sendEthTransaction(
       value: txData.value ? BigNumber.from(txData.value) : undefined,
     });
     console.log('txResponse:', txResponse)
-  } catch (e) {
+  } catch (e: any) {
     console.error('send-ethereum-tx', e);
 
     stateSetter((state) => ({
@@ -88,7 +88,7 @@ export async function sendEthTransaction(
       loading: false,
       error: e.message.toString(),
     }));
-    if(callbacks?.onError){
+    if (callbacks?.onError) {
       callbacks.onError(e);
     }
     return;
@@ -138,6 +138,9 @@ export async function sendEthTransaction(
       error = hexToAscii(code.substr(138));
     } catch (e) {
       console.log('network error', e);
+      if (callbacks?.onError) {
+        callbacks.onError(e);
+      }
     }
 
     stateSetter((state) => ({
