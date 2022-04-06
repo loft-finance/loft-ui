@@ -16,7 +16,7 @@ export default () => {
   const [searchValue, setSearchValue] = useState('');
   const [showOnlyStableCoins, setShowOnlyStableCoins] = useState(false);
 
-  const { reserves, baseCurrency, user } = useModel('pool', res=>({
+  const { reserves, baseCurrency, user } = useModel('pool', res => ({
     reserves: res.reserves,
     baseCurrency: res.baseCurrency,
     user: res.user
@@ -29,7 +29,7 @@ export default () => {
   }))
 
 
-  const { reserveIncentives } = useModel('incentives', res=>({
+  const { reserveIncentives } = useModel('incentives', res => ({
     reserveIncentives: res.reserveIncentives
   }))
 
@@ -110,6 +110,9 @@ export default () => {
     },
     search(value: string) {
       setSearchValue(value)
+    },
+    marketDetail(record: any){
+      history.push(`/market/detail/${record.underlyingAsset}/${record.id}`);
     }
   };
 
@@ -154,7 +157,7 @@ export default () => {
                 <FormattedMessage id="pages.deposit.index.filter.all" />
               </Radio.Button>
               <Radio.Button value="stable">
-                <FormattedMessage id="pages.deposit.index.filter.stable" /> 
+                <FormattedMessage id="pages.deposit.index.filter.stable" />
               </Radio.Button>
             </Radio.Group>
           </Col>
@@ -184,7 +187,7 @@ export default () => {
               </Menu.Item>
               {list(false).map((item: any, index: number) =>
                 item.underlyingBalance.toString() > '0' &&
-                <Menu.Item key={index}>
+                <Menu.Item key={index} onClick={()=>{handler.marketDetail(item)}}>
                   <Row>
                     <Col span={12}>
                       <TokenIcon

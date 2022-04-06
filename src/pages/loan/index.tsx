@@ -17,15 +17,15 @@ export default () => {
   const [sortName, setSortName] = useState('');
   const [sortDesc, setSortDesc] = useState(false);
 
-  const { reserves, baseCurrency, user } = useModel('pool', res=>({
+  const { reserves, baseCurrency, user } = useModel('pool', res => ({
     reserves: res.reserves,
     baseCurrency: res.baseCurrency,
     user: res.user
   }))
-  console.log(reserves, baseCurrency, user )
+  console.log(reserves, baseCurrency, user)
   const marketRefPriceInUsd = baseCurrency.marketRefPriceInUsd
 
-  const { reserveIncentives } = useModel('incentives', res=>({
+  const { reserveIncentives } = useModel('incentives', res => ({
     reserveIncentives: res.reserveIncentives
   }))
 
@@ -66,10 +66,10 @@ export default () => {
         return {
           ...reserve,
           currentBorrows:
-            wallet&&user?.userReservesData.find((userReserve:any) => userReserve.reserve.id === reserve.id)
+            wallet && user?.userReservesData.find((userReserve: any) => userReserve.reserve.id === reserve.id)
               ?.totalBorrows || '0',
           currentBorrowsInUSD:
-            wallet&&user?.userReservesData.find((userReserve:any) => userReserve.reserve.id === reserve.id)
+            wallet && user?.userReservesData.find((userReserve: any) => userReserve.reserve.id === reserve.id)
               ?.totalBorrowsUSD || '0',
           availableBorrows,
           availableBorrowsInUSD,
@@ -106,49 +106,52 @@ export default () => {
   };;
 
   const handler = {
-    detail(record) {
+    detail(record: any) {
       history.push(`/loan/detail/${record.underlyingAsset}/${record.id}`);
     },
-    data() {
-      reserves.map((reserve) => {
-        const userReserve = user?.userReservesData.find(
-          (userRes) => userRes.reserve.symbol === reserve.symbol
-        );
-        const walletBalance =
-          walletData[reserve.underlyingAsset] === '0'
-            ? valueToBigNumber('0')
-            : valueToBigNumber(walletData[reserve.underlyingAsset] || '0').dividedBy(
-              valueToBigNumber('10').pow(reserve.decimals)
-            );
-        const walletBalanceInUSD = walletBalance
-          .multipliedBy(reserve.priceInMarketReferenceCurrency)
-          .multipliedBy(marketRefPriceInUsd)
-          .toString();
-        const reserveIncentiveData = reserveIncentives[reserve.underlyingAsset.toLowerCase()];
-        return {
-          ...reserve,
-          walletBalance,
-          walletBalanceInUSD,
-          underlyingBalance: userReserve ? userReserve.underlyingBalance : '0',
-          underlyingBalanceInUSD: userReserve ? userReserve.underlyingBalanceUSD : '0',
-          liquidityRate: reserve.supplyAPY,
-          avg30DaysLiquidityRate: Number(reserve.avg30DaysLiquidityRate),
-          borrowingEnabled: reserve.borrowingEnabled,
-          interestHistory: [],
-          aincentivesAPR: reserveIncentiveData
-            ? reserveIncentiveData.aIncentives.incentiveAPR
-            : '0',
-          vincentivesAPR: reserveIncentiveData
-            ? reserveIncentiveData.vIncentives.incentiveAPR
-            : '0',
-          sincentivesAPR: reserveIncentiveData
-            ? reserveIncentiveData.sIncentives.incentiveAPR
-            : '0',
-        };
-      });
-    },
+    // data() {
+    //   reserves.map((reserve: any) => {
+    //     const userReserve = user?.userReservesData.find(
+    //       (userRes: any) => userRes.reserve.symbol === reserve.symbol
+    //     );
+    //     const walletBalance =
+    //       walletData[reserve.underlyingAsset] === '0'
+    //         ? valueToBigNumber('0')
+    //         : valueToBigNumber(walletData[reserve.underlyingAsset] || '0').dividedBy(
+    //           valueToBigNumber('10').pow(reserve.decimals)
+    //         );
+    //     const walletBalanceInUSD = walletBalance
+    //       .multipliedBy(reserve.priceInMarketReferenceCurrency)
+    //       .multipliedBy(marketRefPriceInUsd)
+    //       .toString();
+    //     const reserveIncentiveData = reserveIncentives[reserve.underlyingAsset.toLowerCase()];
+    //     return {
+    //       ...reserve,
+    //       walletBalance,
+    //       walletBalanceInUSD,
+    //       underlyingBalance: userReserve ? userReserve.underlyingBalance : '0',
+    //       underlyingBalanceInUSD: userReserve ? userReserve.underlyingBalanceUSD : '0',
+    //       liquidityRate: reserve.supplyAPY,
+    //       avg30DaysLiquidityRate: Number(reserve.avg30DaysLiquidityRate),
+    //       borrowingEnabled: reserve.borrowingEnabled,
+    //       interestHistory: [],
+    //       aincentivesAPR: reserveIncentiveData
+    //         ? reserveIncentiveData.aIncentives.incentiveAPR
+    //         : '0',
+    //       vincentivesAPR: reserveIncentiveData
+    //         ? reserveIncentiveData.vIncentives.incentiveAPR
+    //         : '0',
+    //       sincentivesAPR: reserveIncentiveData
+    //         ? reserveIncentiveData.sIncentives.incentiveAPR
+    //         : '0',
+    //     };
+    //   });
+    // },
     search(value: string) {
       setSearchValue(value)
+    },
+    marketDetail(record: any) {
+      history.push(`/market/detail/${record.underlyingAsset}/${record.id}`);
     }
   };
 
@@ -220,7 +223,7 @@ export default () => {
               </Menu.Item>
               {list(false).map((item: any, index: number) =>
                 item.currentBorrows.toString() > '0' &&
-                <Menu.Item key={index}>
+                <Menu.Item key={index} onClick={() => { handler.marketDetail(item) }}>
                   <Row>
                     <Col span={12}>
                       <TokenIcon

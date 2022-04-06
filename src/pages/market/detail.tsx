@@ -420,8 +420,11 @@ export default (props: any) => {
                         <Row>
                           <Col span={6}><FormattedMessage id="pages.market.detail.your.loan" /></Col>
                           <Col span={18} style={{ textAlign: 'right' }}>
-                            <Button size="small" type="primary" shape="round">
-                              <FormattedMessage id="pages.market.detail.your.loan.button.loan" />
+                            <Button size="small" type="primary" shape="round" onClick={handler.loan}>
+                              <FormattedMessage id="pages.market.detail.your.loan.record.button.loan" />
+                            </Button>
+                            <Button size="small" shape="round" style={{ marginLeft: 8 }} onClick={handler.repay}>
+                              <FormattedMessage id="pages.market.detail.your.loan.record.button.repay" />
                             </Button>
                           </Col>
                         </Row>
@@ -447,7 +450,7 @@ export default (props: any) => {
                     </Row>
                   </Card>
                 </Col>
-                {!!totalBorrows && <Col span={24}>
+                {/* {!!totalBorrows && <Col span={24}>
                   <Row style={{ marginTop: 15, padding: '0 24px' }}>
                     <Col span={8}><FormattedMessage id="pages.market.detail.your.loan.record.loan" /></Col>
                     <Col span={8}><FormattedMessage id="pages.market.detail.your.loan.record.borrowed" /></Col>
@@ -481,7 +484,7 @@ export default (props: any) => {
                       </Col>
                     </Row>
                   </Card>
-                </Col>}
+                </Col>} */}
               </Row>
             </Spin>
           )}
