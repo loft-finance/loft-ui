@@ -5,9 +5,9 @@ export const networks = {
     name: 'Kovan',
     publicJsonRPCUrl: ['https://eth-kovan.alchemyapi.io/v2/demo', 'https://kovan.poa.network'],
     addresses: {
-      walletBalanceProvider: '0x07DC923859b68e9399d787bf52c4Aa9eBe3490aF',
-      uiPoolDataProvider: '0x6062ad399E47BF75AEa0b3c5BE7077c1E8664Dcb',
-      uiIncentiveDataProvider: '0x9842E5B7b7C6cEDfB1952a388e050582Ff95645b',
+      walletBalanceProvider: '0x70F0DF55A149CfE9E0B2731E9Eb0cf1AB05C3AF5',
+      uiPoolDataProvider: '0xd2D1BD0F44ed8f0B681FBB86BFf232E7a603ac0F',
+      uiIncentiveDataProvider: '0xcddF8281621708e6aEa71f842e8B31646c6BFea0',
       chainlinkFeedRegistry: '0xAa7F6f7f507457a1EE157fE97F6c7DB2BEec5cD0',
     },
     protocolDataUrl: 'https://api.thegraph.com/subgraphs/name/aave/protocol-v2-kovan',
@@ -48,5 +48,5 @@ export const networks = {
     rewardTokenDecimals: 18,
     explorerLink: 'https://etherscan.io',
     rpcOnly: false,
-  }
+  },
 };
