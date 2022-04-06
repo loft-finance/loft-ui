@@ -68,6 +68,7 @@ export default (props: any) => {
         : userReserve.reserve.underlyingAsset.toLowerCase() === underlyingAsset.toLowerCase()
     )
     : undefined;
+  console.log(userReserve);
   const totalBorrows = valueToBigNumber(userReserve?.totalBorrows || '0').toNumber();
   const underlyingBalance = valueToBigNumber(userReserve?.underlyingBalance || '0').toNumber();
 
@@ -153,7 +154,7 @@ export default (props: any) => {
     collateral() {
       const { id, underlyingAsset } = poolReserve
       const { usageAsCollateralEnabledOnUser, usageAsCollateralEnabledOnThePool } = userReserve
-      history.push(`/deposit/collateral/${underlyingAsset}/${id}/confirm/${usageAsCollateralEnabledOnUser && usageAsCollateralEnabledOnThePool ? 0 : 1}`);
+      history.push(`/deposit/collateral/${underlyingAsset}/${id}/confirm/${usageAsCollateralEnabledOnUser ? 0 : 1}`);
     },
     loan() {
       const { id, underlyingAsset } = poolReserve
@@ -330,7 +331,7 @@ export default (props: any) => {
                             <FormattedMessage id="pages.market.detail.config.BorrowPercentage" />
                           </Col>
                           <Col span={12} className={styles.value}>
-                            {Number(data.variableOverTotal).toFixed(4)}%
+                            {Number(data.variableOverTotal || 0).toFixed(4)}%
                           </Col>
                         </Row>
                       </Card>
@@ -405,8 +406,7 @@ export default (props: any) => {
                             <FormattedMessage id="pages.market.detail.your.deposit.collateral" />
                           </Col>
                           <Col span={12} className={styles.value}>
-                            No <Switch onClick={handler.collateral} checked={userReserve?.usageAsCollateralEnabledOnUser &&
-                              poolReserve?.usageAsCollateralEnabled} />
+                            <Switch onClick={handler.collateral} checked={userReserve?.usageAsCollateralEnabledOnUser} checkedChildren="yes" unCheckedChildren="no" disabled={!poolReserve?.usageAsCollateralEnabled} />
                           </Col>
                         </Row>
                       </Col>
