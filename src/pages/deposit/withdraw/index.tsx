@@ -20,10 +20,12 @@ export default (props: any) => {
         user: res.user
     }))
 
-    const underlyingSymbol = poolReserve?.symbol || ''
+
     const balance = balances ? balances[underlyingAsset] : '0'
 
-    const poolReserve = reserves.find((res) => id ? res.id === id : res.underlyingAsset.toLowerCase() === underlyingAsset.toLowerCase());
+    const poolReserve = reserves.find((res: any) => id ? res.id === id : res.underlyingAsset.toLowerCase() === underlyingAsset.toLowerCase());
+
+    const underlyingSymbol = poolReserve?.symbol || '';
 
     let walletBalance = valueToBigNumber('0').dividedBy(valueToBigNumber(10).pow(18))
 
@@ -32,7 +34,7 @@ export default (props: any) => {
     }
 
     const userReserve = user
-        ? user.userReservesData.find((userReserve) =>
+        ? user.userReservesData.find((userReserve: any) =>
             id
                 ? userReserve.reserve.id === id
                 : userReserve.reserve.underlyingAsset.toLowerCase() === underlyingAsset.toLowerCase()

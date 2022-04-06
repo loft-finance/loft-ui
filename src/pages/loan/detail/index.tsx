@@ -49,7 +49,7 @@ export default (props: any) => {
   }
 
   const userReserve = user
-    ? user.userReservesData.find((userReserve) =>
+    ? user.userReservesData.find((userReserve:any) =>
       id
         ? userReserve.reserve.id === id
         : userReserve.reserve.underlyingAsset.toLowerCase() === underlyingAsset.toLowerCase()

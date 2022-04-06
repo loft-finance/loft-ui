@@ -10,10 +10,11 @@ const {
     useIsActive,
     useAccounts,
     useProvider,
-    // useChainId, 
+    useChainId,
     // useError,
     // useENSNames 
 } = hooks
+console.log(hooks)
 
 const isMetaMaskReady = () => window.ethereum && typeof window.ethereum === 'object';
 
@@ -32,11 +33,14 @@ export default () => {
     const walletRef = useRef<any>();
 
     const metamask = {
+        chainId: useChainId(),
         isActivating: useIsActivating(),
         isActive: useIsActive(),
         accounts: useAccounts(),
         provider: useProvider()
     }
+
+    const chainId = useChainId();
 
     useEffect(() => {
         if (current == 'MetaMask') {
@@ -112,7 +116,8 @@ export default () => {
                     current,
                     currentAccount,
                     balances,
-                    provider: metamask.provider
+                    provider: metamask.provider,
+                    chainId
                 })
             }
         }
@@ -128,6 +133,6 @@ export default () => {
             setBalances({})
         }
     }, [currentAccount])
-
+    console.log(wallet)
     return { connect, disconnect, status, wallet, balances, refresh }
 }

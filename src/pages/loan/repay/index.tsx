@@ -9,7 +9,7 @@ import { normalize } from '@aave/math-utils';
 import { getNetwork } from '@/lib/helpers/provider';
 import Bignumber from '@/components/Bignumber';
 
-export default (props) => {
+export default (props: any) => {
     const { match: { params: { underlyingAsset, id } } } = props
 
     const { wallet, balances } = useModel('wallet', res => ({
@@ -31,7 +31,7 @@ export default (props) => {
 
     const balance = balances ? balances[underlyingAsset] : '0'
 
-    const poolReserve = reserves.find((res) => id ? res.id === id : res.underlyingAsset.toLowerCase() === underlyingAsset.toLowerCase());
+    const poolReserve = reserves.find((res: any) => id ? res.id === id : res.underlyingAsset.toLowerCase() === underlyingAsset.toLowerCase());
 
     let walletBalance = valueToBigNumber('0').dividedBy(valueToBigNumber(10).pow(18))
 
@@ -48,13 +48,13 @@ export default (props) => {
 
 
     const userReserve = user
-        ? user.userReservesData.find((userReserve) =>
+        ? user.userReservesData.find((userReserve: any) =>
             id
                 ? userReserve.reserve.id === id
                 : userReserve.reserve.underlyingAsset.toLowerCase() === underlyingAsset.toLowerCase()
         )
         : undefined;
-
+    console.log(userReserve)
     const normalizedWalletBalance = walletBalance.minus(
         userReserve?.reserve.symbol.toUpperCase() === networkConfig.baseAsset ? '0.004' : '0'
     );
@@ -70,7 +70,7 @@ export default (props) => {
                 items={[
                     {
                         title: <FormattedMessage id="pages.loan.repay.info.balance" />,
-                        value: <Bignumber value={userReserve?.totalBorrows || '0'} />,
+                        value: userReserve?.totalBorrows,
                         tag: <>(<Bignumber value={userReserve?.totalBorrowsUSD || '0'} />)</>,
                         span: 8,
                     },

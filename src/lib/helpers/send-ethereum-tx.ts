@@ -66,7 +66,7 @@ export async function sendEthTransaction(
       error: e.message.toString(),
     }));
     if (callbacks?.onError) {
-      callbacks.onError({ message: e });
+      callbacks.onError(e);
     }
     return;
   }

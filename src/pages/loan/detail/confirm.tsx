@@ -394,8 +394,8 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, location:{ query
                             current={current}
                             className="site-navigation-steps"
                         >
-                            {steps.map((item) => (
-                                <Step title={item.title} />
+                            {steps.map((item:any, index: number) => (
+                                <Step title={item.title} key={index} />
                             ))}
                         </Steps>
                     </Col>

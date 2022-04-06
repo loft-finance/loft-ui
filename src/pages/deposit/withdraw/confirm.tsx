@@ -119,13 +119,13 @@ export default ({ poolReserve, user, userReserve,  maxAmountToDeposit, match: { 
         );
     
         if (healthFactorAfterWithdraw.lt('1') && user.totalBorrowsMarketReferenceCurrency !== '0') {
-        blockingError = intl.formatMessage(messages.errorCanNotWithdrawThisAmount);
+        // blockingError = intl.formatMessage(messages.errorCanNotWithdrawThisAmount);
         }
     }
 
-    const isHealthFactorDangerous =
-    user.totalBorrowsMarketReferenceCurrency !== '0' &&
-    healthFactorAfterWithdraw.toNumber() <= 1.05;
+    // const isHealthFactorDangerous =
+    // user.totalBorrowsMarketReferenceCurrency !== '0' &&
+    // healthFactorAfterWithdraw.toNumber() <= 1.05;
 
     useEffect(() => {
         if (wallet) {
@@ -142,7 +142,6 @@ export default ({ poolReserve, user, userReserve,  maxAmountToDeposit, match: { 
                     amount: amountToWithdraw.toString(),
                     aTokenAddress: poolReserve.aTokenAddress,
                 });
-                console.log('txs', txs)
                 const mainTxType = ''
                 const approvalTx = txs.find((tx) => tx.txType === 'ERC20_APPROVAL');
                 const actionTx = txs.find((tx) =>
@@ -277,7 +276,7 @@ export default ({ poolReserve, user, userReserve,  maxAmountToDeposit, match: { 
                         }
                     );
                 } else {
-                    setActionTxData((state) => ({
+                    setActionTxData((state:any) => ({
                         ...state,
                         txStatus: TxStatusType.error,
                         loading: false,
@@ -296,11 +295,11 @@ export default ({ poolReserve, user, userReserve,  maxAmountToDeposit, match: { 
                 refresh();
             },
             error(e: any) {
-                console.log('confirm error:', e)
-                const key = 'deposit'
+                console.log('confirm error:', e.message)
+                const key = 'withdraw'
                 handler.error.set(key, e.message)
                 handler.loading.set(key, false);
-                handler.records.set(key, 'deposit', 'error')
+                handler.records.set(key, 'withdraw', 'error')
             }
         },
         records: {
@@ -420,8 +419,8 @@ export default ({ poolReserve, user, userReserve,  maxAmountToDeposit, match: { 
                             current={current}
                             className="site-navigation-steps"
                         >
-                            {steps.map((item) => (
-                                <Step title={item.title} />
+                            {steps.map((item:any, index: number) => (
+                                <Step title={item.title} key={index} />
                             ))}
                         </Steps>
                     </Col>
