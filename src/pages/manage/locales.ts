@@ -4,8 +4,8 @@ export default {
     'pages.manage.info.fluidity':'Fluidity',
     'pages.manage.info.market':'Market value',
     
-    'pages.manage.stake.title':'Stake GEIST',
-    'pages.manage.stake.desc':'Stake GEIST and earn platform fees with no lockup period.',
+    'pages.manage.stake.title':'Stake LOFT',
+    'pages.manage.stake.desc':'Stake LOFT and earn platform fees with no lockup period.',
     'pages.manage.stake.balance':'Wallet Balance:',
     'pages.manage.stake.max':'Max',
     'pages.manage.stake.button.stake':'Stake',
@@ -16,7 +16,7 @@ export default {
     'pages.manage.help.desc':'Looking for some help?Visit our docs or join our Telegram.',
     'pages.manage.help.button':'Docs',
 
-    'pages.manage.unlocked.title':'Unlocked GEIST',
-    'pages.manage.unlocked.desc':'Staked GEIST and expired GEIST vests',
-    'pages.manage.unlocked.button':'Claim GEIST',
+    'pages.manage.unlocked.title':'Unlocked LOFT',
+    'pages.manage.unlocked.desc':'Staked LOFT and expired LOFT vests',
+    'pages.manage.unlocked.button':'Claim LOFT',
 };

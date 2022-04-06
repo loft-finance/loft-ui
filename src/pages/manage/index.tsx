@@ -92,7 +92,7 @@ export default () => {
         amount(){
           const txt = {
             title: 'How much do you want to unstake?',
-            desc: 'Provide GEIST/FTM liquidity on SpookySwap and stake the LP token here to earn more GEIST',
+            desc: 'Provide LOFT/FTM liquidity on SpookySwap and stake the LP token here to earn more LOFT',
             available: 'Can be pledge',
             max: 'Max',
             validate: 'Please input quantity!',
@@ -317,21 +317,21 @@ export default () => {
                 </Row>
                 <Divider style={{ margin: 5 }} />
                 <Row className={styles.row}>
-                  <Col span={8}> GEIST</Col>
+                  <Col span={8}> LOFT</Col>
                   <Col span={8}>1.40029</Col>
                   <Col span={8} className={styles.tag}>
                     $0 USD
                   </Col>
                 </Row>
                 <Row className={styles.row}>
-                  <Col span={8}> GEIST</Col>
+                  <Col span={8}> LOFT</Col>
                   <Col span={8}>1.40029</Col>
                   <Col span={8} className={styles.tag}>
                     $0 USD
                   </Col>
                 </Row>
                 <Row className={styles.row}>
-                  <Col span={8}> GEIST</Col>
+                  <Col span={8}> LOFT</Col>
                   <Col span={8}>1.40029</Col>
                   <Col span={8} className={styles.tag}>
                     $0 USD
