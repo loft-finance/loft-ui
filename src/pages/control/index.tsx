@@ -350,7 +350,7 @@ export default () => {
             </Col>
             <Col span={24} style={{ marginTop: 15 }} className={styles.statistic}>
               <Row style={{ padding: 12 }}>
-                <Col span={5}>Lend borrow to earn GEIST rewards</Col>
+                <Col span={5}>Lend borrow to earn LOFT rewards</Col>
                 <Col span={3}>Earned</Col>
                 <Col span={3}>APY</Col>
                 <Col span={4}>Your stacked balance</Col>
@@ -396,7 +396,7 @@ export default () => {
                       </Col> */}
                       <Col span={3} className={styles.single}>
                         <Button size="small" type="primary" shape="round">
-                          To trade coins
+                          To trade loft
                         </Button>
                       </Col>
                     </Row>
@@ -406,13 +406,13 @@ export default () => {
             </Col>
             <Col span={24} style={{ marginTop: 5 }} className={styles.statistic}>
               <Row style={{ padding: 12 }}>
-                <Col span={12}>Stake Spookyswap LP tokens to earn GEIST rewards</Col>
+                <Col span={12}>Stake Uniswap LP tokens to earn LOFT rewards</Col>
               </Row>
               <Row>
                 <Col span={24}>
                   <Card bordered={false} bodyStyle={{ padding: '6px 12px' }}>
                     <Row>
-                      <Col span={5} className={styles.single}> LP</Col>
+                      <Col span={5} className={styles.single}>Uniswap LP</Col>
                       <Col span={3}>
                         <div className={styles.multi}>
                           <Bignumber value={earnedLp} />
@@ -427,6 +427,11 @@ export default () => {
                           <Bignumber value={depositedLp} />
                           <div className={styles.tag}>$<Bignumber value={lpToUsd(depositedLp)} /></div>
                         </div>
+                      </Col>
+                      <Col span={3} className={styles.single}>
+                        <Button size="small" type="primary" shape="round">
+                          To provide liquidity
+                        </Button>
                       </Col>
                     </Row>
                   </Card>

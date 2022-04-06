@@ -85,7 +85,7 @@ export default () => {
         amount(){
           const txt = {
             title: 'How much do you want to unstake?',
-            desc: 'Provide GEIST/FTM liquidity on SpookySwap and stake the LP token here to earn more GEIST',
+            desc: 'Provide LOFT/FTM liquidity on SpookySwap and stake the LP token here to earn more LOFT',
             available: 'Can be pledge',
             max: 'Max',
             validate: 'Please input quantity!',
@@ -274,7 +274,7 @@ export default () => {
               </Card>
               <Card bordered={false} className={styles.view} bodyStyle={{padding:'10px 20px'}}>
                 <Row>
-                  <Col span={14} className={styles.label}><FormattedMessage id="pages.pledge.view.geist" /></Col>
+                  <Col span={14} className={styles.label}><FormattedMessage id="pages.pledge.view.loft" /></Col>
                   <Col span={10} className={styles.value}><Bignumber value={lpRewardPerYear.div(12)} /></Col>
                   <Col span={14} className={styles.label}><FormattedMessage id="pages.pledge.view.annualization" /></Col>
                   <Col span={10} className={styles.value}><Bignumber value={lpApy} />%</Col>
