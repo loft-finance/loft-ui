@@ -19,15 +19,16 @@ export enum BorrowRateMode {
 export default (props: any) => {
   const { match: { params: { underlyingAsset, id } } } = props
 
-  const { wallet, balances } = useModel('wallet', res=>({
+  const { wallet, balances } = useModel('wallet', res => ({
     wallet: res.wallet,
     balances: res.balances
   }))
-  const { reserves, user, baseCurrency } = useModel('pool', res=>({
+  const { reserves, user, baseCurrency } = useModel('pool', res => ({
     reserves: res.reserves,
     user: res.user,
     baseCurrency: res.baseCurrency
   }))
+  console.log(reserves, user);
 
   const balance = balances ? balances[underlyingAsset] : '0'
 
@@ -35,40 +36,39 @@ export default (props: any) => {
     history.push('/market')
   }
 
-  const poolReserve: any = reserves.find((res) =>
+  const poolReserve: any = reserves.find((res: any) =>
     id ? res.id === id : res.underlyingAsset.toLowerCase() === underlyingAsset.toLowerCase()
   );
-  console.log(poolReserve)
 
-  const marketRefPriceInUsd = normalize(baseCurrency?.marketReferenceCurrencyPriceInUsd || '0', 8)
-  
-  const totalLiquidityInUsd = valueToBigNumber(poolReserve?.totalLiquidity)
-    .multipliedBy(poolReserve?.priceInMarketReferenceCurrency)
-    .multipliedBy(marketRefPriceInUsd)
-    .toString();
-  const totalBorrowsInUsd = valueToBigNumber(poolReserve?.totalDebt)
-    .multipliedBy(poolReserve?.priceInMarketReferenceCurrency)
-    .multipliedBy(marketRefPriceInUsd)
-    .toString();
-  const availableLiquidityInUsd = valueToBigNumber(poolReserve?.availableLiquidity)
-    .multipliedBy(poolReserve?.priceInMarketReferenceCurrency)
-    .multipliedBy(marketRefPriceInUsd)
-    .toString();
+  // const marketRefPriceInUsd = normalize(baseCurrency?.marketReferenceCurrencyPriceInUsd || '0', 8)
+
+  // const totalLiquidityInUsd = valueToBigNumber(poolReserve?.totalLiquidity)
+  //   .multipliedBy(poolReserve?.priceInMarketReferenceCurrency)
+  //   .multipliedBy(marketRefPriceInUsd)
+  //   .toString();
+  // const totalBorrowsInUsd = valueToBigNumber(poolReserve?.totalDebt)
+  //   .multipliedBy(poolReserve?.priceInMarketReferenceCurrency)
+  //   .multipliedBy(marketRefPriceInUsd)
+  //   .toString();
+  // const availableLiquidityInUsd = valueToBigNumber(poolReserve?.availableLiquidity)
+  //   .multipliedBy(poolReserve?.priceInMarketReferenceCurrency)
+  //   .multipliedBy(marketRefPriceInUsd)
+  //   .toString();
 
   let walletBalance = valueToBigNumber('0').dividedBy(valueToBigNumber(10).pow(18))
 
-  if(balance && poolReserve) {
+  if (balance && poolReserve) {
     walletBalance = valueToBigNumber(balance).dividedBy(valueToBigNumber(10).pow(poolReserve.decimals))
   }
-  
+
   const userReserve = user
-    ? user.userReservesData.find((userReserve) =>
+    ? user.userReservesData.find((userReserve: any) =>
       id
         ? userReserve.reserve.id === id
         : userReserve.reserve.underlyingAsset.toLowerCase() === underlyingAsset.toLowerCase()
     )
     : undefined;
-  console.log(userReserve);
+
   const totalBorrows = valueToBigNumber(userReserve?.totalBorrows || '0').toNumber();
   const underlyingBalance = valueToBigNumber(userReserve?.underlyingBalance || '0').toNumber();
 
@@ -153,7 +153,7 @@ export default (props: any) => {
     },
     collateral() {
       const { id, underlyingAsset } = poolReserve
-      const { usageAsCollateralEnabledOnUser, usageAsCollateralEnabledOnThePool } = userReserve
+      const { usageAsCollateralEnabledOnUser } = userReserve
       history.push(`/deposit/collateral/${underlyingAsset}/${id}/confirm/${usageAsCollateralEnabledOnUser ? 0 : 1}`);
     },
     loan() {
@@ -204,7 +204,7 @@ export default (props: any) => {
     statistic: {
       title: false,
       content: {
-        customHtml: (container, view, datum, data) => {
+        customHtml: (container: any, view, datum, data) => {
           const { width } = container.getBoundingClientRect();
           return ``;
         },
@@ -316,7 +316,7 @@ export default (props: any) => {
                       >
                         <Row className={styles.CardInfo}>
                           <Col span={12} className={styles.label}>
-                          <FormattedMessage id="pages.market.detail.config.BorrowApy" />
+                            <FormattedMessage id="pages.market.detail.config.BorrowApy" />
                           </Col>
                           <Col span={12} className={styles.value}>
                             {Number(data.variableAPY).toFixed(4)}%
@@ -459,7 +459,7 @@ export default (props: any) => {
                   >
                     <Row className={styles.loan}>
                       <Col span={8} className={styles.label}>
-                        <TokenIcon 
+                        <TokenIcon
                           tokenSymbol={poolReserve.symbol}
                           height={35}
                           width={35}
