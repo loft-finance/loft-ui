@@ -22,6 +22,7 @@ export default () => {
     baseCurrency: res.baseCurrency,
     user: res.user
   }))
+  console.log(reserves, baseCurrency, user )
   const marketRefPriceInUsd = baseCurrency.marketRefPriceInUsd
 
   const { reserveIncentives } = useModel('incentives', res=>({
@@ -65,10 +66,10 @@ export default () => {
         return {
           ...reserve,
           currentBorrows:
-            wallet&&user?.userReservesData.find((userReserve) => userReserve.reserve.id === reserve.id)
+            wallet&&user?.userReservesData.find((userReserve:any) => userReserve.reserve.id === reserve.id)
               ?.totalBorrows || '0',
           currentBorrowsInUSD:
-            wallet&&user?.userReservesData.find((userReserve) => userReserve.reserve.id === reserve.id)
+            wallet&&user?.userReservesData.find((userReserve:any) => userReserve.reserve.id === reserve.id)
               ?.totalBorrowsUSD || '0',
           availableBorrows,
           availableBorrowsInUSD,
