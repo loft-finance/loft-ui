@@ -38,6 +38,7 @@ export default (props: any) => {
   const poolReserve: any = reserves.find((res) =>
     id ? res.id === id : res.underlyingAsset.toLowerCase() === underlyingAsset.toLowerCase()
   );
+  console.log(poolReserve)
 
   const marketRefPriceInUsd = normalize(baseCurrency?.marketReferenceCurrencyPriceInUsd || '0', 8)
   
@@ -392,13 +393,13 @@ export default (props: any) => {
                             <FormattedMessage id="pages.market.detail.your.deposit.balance" />
                           </Col>
                           <Col span={12} className={styles.value}>
-                            <Bignumber value={walletBalance} /> USDT
+                            <Bignumber value={walletBalance} /> {poolReserve.symbol}
                           </Col>
                           <Col span={12} className={styles.label}>
                             <FormattedMessage id="pages.market.detail.your.deposit.deposited" />
                           </Col>
                           <Col span={12} className={styles.value}>
-                            {Number(underlyingBalance).toFixed(2)} USDT
+                            {Number(underlyingBalance).toFixed(2)} {poolReserve.symbol}
                           </Col>
                           <Col span={12} className={styles.label}>
                             <FormattedMessage id="pages.market.detail.your.deposit.collateral" />
@@ -427,7 +428,7 @@ export default (props: any) => {
                         <Row className={styles.msg}>
                           <Col span={12} className={styles.label}><FormattedMessage id="pages.market.detail.your.loan.borrowed" /></Col>
                           <Col span={12} className={styles.value}>
-                            {Number(totalBorrows || 0).toFixed(2)} USDT
+                            {Number(totalBorrows || 0).toFixed(2)} {poolReserve.symbol}
                           </Col>
                           <Col span={12} className={styles.label}><FormattedMessage id="pages.market.detail.your.loan.FitnessFactor" /></Col>
                           <Col span={12} className={styles.value}>
@@ -439,7 +440,7 @@ export default (props: any) => {
                           </Col>
                           <Col span={12} className={styles.label}><FormattedMessage id="pages.market.detail.your.loan.available" /></Col>
                           <Col span={12} className={styles.value}>
-                            {Number(availableBorrows).toFixed(2)} USDT
+                            {Number(availableBorrows).toFixed(2)} {poolReserve.symbol}
                           </Col>
                         </Row>
                       </Col>
