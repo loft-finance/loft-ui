@@ -8,6 +8,7 @@ import { TokenIcon } from '@aave/aave-ui-kit';
 import { normalize } from '@aave/math-utils';
 
 import styles from './style.less';
+import { fixedToValue } from '@/utils';
 
 const { Search } = Input;
 
@@ -38,17 +39,17 @@ export default () => {
 
 
   const filteredReserves = reserves.filter(
-    (reserve) =>
+    (reserve: any) =>
       reserve.symbol.toLowerCase().includes(searchValue.toLowerCase()) &&
       reserve.isActive &&
       (!showOnlyStableCoins || isAssetStable(reserve.symbol))
   );
 
   const list = (withFilter: boolean) => {
-    const data = (reserves) =>
+    const data = (reserves: any[]) =>
       reserves.map((reserve) => {
         const userReserve = user?.userReservesData.find(
-          (userRes) => userRes.reserve.symbol === reserve.symbol
+          (userRes: any) => userRes.reserve.symbol === reserve.symbol
         );
         const walletBalance =
           !wallet || balances[reserve.underlyingAsset] === '0'
@@ -61,6 +62,7 @@ export default () => {
           .multipliedBy(marketRefPriceInUsd)
           .toString();
         const reserveIncentiveData = reserveIncentives[reserve.underlyingAsset.toLowerCase()];
+
         return {
           ...reserve,
           walletBalance,
@@ -111,7 +113,7 @@ export default () => {
     search(value: string) {
       setSearchValue(value)
     },
-    marketDetail(record: any){
+    marketDetail(record: any) {
       history.push(`/market/detail/${record.underlyingAsset}/${record.id}`);
     }
   };
@@ -134,7 +136,7 @@ export default () => {
       title: <FormattedMessage id="pages.deposit.index.table.col.balance" />,
       dataIndex: 'walletBalance',
       render: (text: any) => {
-        return Number(text).toFixed(2)
+        return fixedToValue(text.toString())
       }
     },
     {
@@ -147,6 +149,7 @@ export default () => {
   ];
 
   const totalValue = list(false).reduce((a, b) => a + (+b['underlyingBalanceInUSD'] || 0), 0)
+  console.log(list(true))
   return (
     <Spin spinning={!reserves || !reserves.length}>
       <GridContent>
@@ -187,7 +190,7 @@ export default () => {
               </Menu.Item>
               {list(false).map((item: any, index: number) =>
                 item.underlyingBalance.toString() > '0' &&
-                <Menu.Item key={index} onClick={()=>{handler.marketDetail(item)}}>
+                <Menu.Item key={index} onClick={() => { handler.marketDetail(item) }}>
                   <Row>
                     <Col span={12}>
                       <TokenIcon
@@ -199,7 +202,7 @@ export default () => {
                       />
                     </Col>
                     <Col span={12}>
-                      <span className={styles.value}>{Number(item.underlyingBalance.toString()).toFixed(2)}</span>
+                      <span className={styles.value}>{fixedToValue(item.underlyingBalance.toString())}</span>
                     </Col>
                   </Row>
                 </Menu.Item>
@@ -207,7 +210,7 @@ export default () => {
               {totalValue > 0 && <Menu.Divider />}
               <Menu.Item key="total">
                 <FormattedMessage id="pages.deposit.index.my.total" />
-                <span className={styles.value}>{Number(totalValue).toFixed(2)}</span>
+                <span className={styles.value}>{fixedToValue(totalValue)}</span>
               </Menu.Item>
             </Menu>
           </Col>

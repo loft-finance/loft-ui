@@ -9,6 +9,7 @@ import WalletEmpty from '@/components/Wallet/Empty';
 import { BigNumber, valueToBigNumber } from '@aave/protocol-js';
 import { getAssetInfo } from '@/lib/config/assets'
 import { getNetwork } from '@/lib/helpers/provider';
+import { fixedToValue } from '@/utils';
 
 
 export default (props) => {
@@ -70,7 +71,7 @@ export default (props) => {
         items={[
           {
             title: <FormattedMessage id="pages.deposit.detail.info.balance" />,
-            value: <Bignumber value={userReserve?.underlyingBalance || '0'} />,
+            value: <>{fixedToValue(userReserve?.underlyingBalance)}</>,
           },
           {
             title: <FormattedMessage id="pages.deposit.detail.info.WalletBalance" />,

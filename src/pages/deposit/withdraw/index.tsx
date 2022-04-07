@@ -7,6 +7,7 @@ import Bignumber from '@/components/Bignumber';
 import WalletDisconnected from '@/components/Wallet/Disconnected';
 import WalletEmpty from '@/components/Wallet/Empty';
 import { BigNumber, valueToBigNumber } from '@aave/protocol-js';
+import { fixedToValue } from '@/utils';
 
 export default (props: any) => {
     const { match: { params: { underlyingAsset, id } } } = props
@@ -76,7 +77,7 @@ export default (props: any) => {
                 items={[
                     {
                         title: <FormattedMessage id="pages.deposit.withdraw.info.balance" />,
-                        value: <><Bignumber value={userReserve?.underlyingBalance || '0'} /> {underlyingSymbol}</>,
+                        value: <>{fixedToValue(userReserve?.underlyingBalance)} {underlyingSymbol}</>,
                     },
                     {
                         title: <FormattedMessage id="pages.deposit.withdraw.info.FitnessFactor" />,

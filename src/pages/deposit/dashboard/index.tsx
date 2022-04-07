@@ -2,8 +2,9 @@ import { Row, Col, Button, Switch, Empty } from 'antd';
 import { history, FormattedMessage } from 'umi';
 import { TokenIcon } from '@aave/aave-ui-kit';
 import styles from './index.less';
+import { fixedToValue } from '@/utils';
+
 export default ({ depositedPositions }: any) => {
-  console.log(depositedPositions);
   const handler = {
     deposit(record: any) {
       const { id, underlyingAsset } = record.reserve
@@ -36,8 +37,8 @@ export default ({ depositedPositions }: any) => {
         </Col>
         <Col span={5}>
           <div className={styles.multi}>
-            {Number(item.underlyingBalance).toFixed(2)}
-            <div className={styles.tag}>${Number(item.underlyingBalanceUSD).toFixed(2)}</div>
+            {fixedToValue(item.underlyingBalance)}
+            <div className={styles.tag}>$ {fixedToValue(item.underlyingBalanceUSD)}</div>
           </div>
         </Col>
         <Col span={7} className={styles.single}>

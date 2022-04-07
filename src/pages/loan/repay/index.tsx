@@ -8,6 +8,7 @@ import { BigNumber, valueToBigNumber, InterestRate } from '@aave/protocol-js';
 import { normalize } from '@aave/math-utils';
 import { getNetwork } from '@/lib/helpers/provider';
 import Bignumber from '@/components/Bignumber';
+import { fixedToValue } from '@/utils';
 
 export default (props: any) => {
     const { match: { params: { underlyingAsset, id } } } = props
@@ -70,8 +71,8 @@ export default (props: any) => {
                 items={[
                     {
                         title: <FormattedMessage id="pages.loan.repay.info.balance" />,
-                        value: userReserve?.totalBorrows,
-                        tag: <>(<Bignumber value={userReserve?.totalBorrowsUSD || '0'} />)</>,
+                        value: fixedToValue(userReserve?.totalBorrows),
+                        tag: <>({fixedToValue(userReserve?.totalBorrowsUSD)})</>,
                         span: 8,
                     },
                     {

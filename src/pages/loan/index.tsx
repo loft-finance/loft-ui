@@ -7,6 +7,7 @@ import { isAssetStable } from '@/lib/config/assets'
 import { TokenIcon } from '@aave/aave-ui-kit';
 
 import styles from './style.less';
+import { fixedToValue } from '@/utils';
 
 const { Search } = Input;
 
@@ -173,7 +174,7 @@ export default () => {
       title: <FormattedMessage id="pages.loan.index.table.col.available" />,
       dataIndex: 'availableBorrows',
       render: (text: any) => {
-        return Number(text).toFixed(2)
+        return fixedToValue(text)
       }
     },
     {
@@ -185,7 +186,7 @@ export default () => {
     },
   ];
 
-  const totalValue = list(false).reduce((a, b) => a + (+b['currentBorrowsInUSD'] || 0), 0)
+  const totalValue = list(false).reduce((a: any, b: any) => a + (+b['currentBorrowsInUSD'] || 0), 0)
 
   return (
     <Spin spinning={!reserves || !reserves.length}>
@@ -235,7 +236,7 @@ export default () => {
                       />
                     </Col>
                     <Col span={12}>
-                      <span className={styles.value}>{Number(item.currentBorrows.toString()).toFixed(2)}</span>
+                      <span className={styles.value}>{fixedToValue(item.currentBorrows.toString())}</span>
                     </Col>
                   </Row>
                 </Menu.Item>
@@ -243,7 +244,7 @@ export default () => {
               {totalValue > 0 && <Menu.Divider />}
               <Menu.Item key="total">
                 <FormattedMessage id="pages.loan.index.my.total" />
-                <span className={styles.value}>{Number(totalValue).toFixed(2)}</span>
+                <span className={styles.value}>{fixedToValue(totalValue)}</span>
               </Menu.Item>
             </Menu>
           </Col>

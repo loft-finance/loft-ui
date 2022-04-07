@@ -416,7 +416,7 @@ export default () => {
                       <Col span={3}>
                         <div className={styles.multi}>
                           <Bignumber value={earnedLp} />
-                          <div className={styles.tag}>$<Bignumber value={lpToUsd(earnedLp)} /></div>
+                          <div className={styles.tag}>$ <Bignumber value={lpToUsd(earnedLp)} /></div>
                         </div>
                       </Col>
                       <Col span={3} className={styles.single}>

@@ -2,13 +2,13 @@ import { Row, Col, Button, Switch, Empty } from 'antd';
 import { history, FormattedMessage } from 'umi';
 import { TokenIcon } from '@aave/aave-ui-kit';
 import styles from './index.less';
+import { fixedToValue } from '@/utils';
 export enum BorrowRateMode {
   None = 'None',
   Stable = 'Stable',
   Variable = 'Variable',
 }
 export default ({ borrowedPositions }: any) => {
-  console.log(borrowedPositions)
   const handler = {
     loan(record: any) {
       const { id, underlyingAsset } = record.reserve
@@ -41,8 +41,8 @@ export default ({ borrowedPositions }: any) => {
         </Col>
         <Col span={5}>
           <div className={styles.multi}>
-            {item.currentBorrows}
-            <div className={styles.tag}>${Number(item.currentBorrowsUSD).toFixed(2)}</div>
+            {fixedToValue(item.currentBorrows)}
+            <div className={styles.tag}>${fixedToValue(item.currentBorrowsUSD)}</div>
           </div>
         </Col>
         <Col span={7} className={styles.single}>
