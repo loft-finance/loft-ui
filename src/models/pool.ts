@@ -198,18 +198,24 @@ export default () => {
 
     useEffect(() => {
         fetchReserves()
+        IntervalIdReserves = setInterval(() => {
+            fetchReserves()
+        }, 30 * 1000)
         if(wallet){
             fetchUserReserves()
-            // IntervalIdUserReserves = setInterval(() => {
-            //     getUserReserves()
-            // }, 30 * 1000)
+            IntervalIdUserReserves = setInterval(() => {
+                getUserReserves()
+            }, 30 * 1000)
         }else{
-            // if(IntervalIdUserReserves) clearInterval(IntervalIdUserReserves)
+            if(IntervalIdUserReserves) clearInterval(IntervalIdUserReserves)
         }
+
     },[wallet])
 
     const reserves = getReserves()
     const user = getUserReserves()
+
+    // console.log('user', user)
 
     return { loading: loadingReverse||loadingUserReverse?true:false , baseCurrency, reserves, user, userReservesFixUnderlying, refresh };
 };

@@ -90,8 +90,7 @@ export default (props: any) => {
       const marketRefPriceInUsd = normalize(baseCurrency?.marketReferenceCurrencyPriceInUsd || '0', 8)
 
       const poolReserve = reserves.find((res: any) => res.id === id)
-      console.log(poolReserve)
-      console.log(userReserve)
+
       if (poolReserve) {
         const totalLiquidityInUsd = valueToBigNumber(poolReserve?.totalLiquidity)
           .multipliedBy(poolReserve?.priceInMarketReferenceCurrency)
@@ -229,10 +228,6 @@ export default (props: any) => {
   // console.log(data);
   return (
     <GridContent>
-      <div className={styles.alert}>
-        <FormattedMessage id="pages.market.detail.alert" />
-      </div>
-
       <Row>
         {!!poolReserve &&
           <Col span={16} style={{ paddingRight: 10 }}>

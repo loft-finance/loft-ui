@@ -32,6 +32,7 @@ export default {
     'pages.market.detail.your.deposit':'deposit',
     'pages.market.detail.your.deposit.button.deposit':'deposit',
     'pages.market.detail.your.deposit.button.withdraw':'withdraw',
+    'pages.market.detail.your.deposit.balance':'Your wallet balance',
     'pages.market.detail.your.deposit.deposited':'You have deposited',
     'pages.market.detail.your.deposit.collateral':'Used as collateral',
     'pages.market.detail.your.loan':'loan',
