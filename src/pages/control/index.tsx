@@ -181,14 +181,14 @@ export default () => {
   });
 
   const data = [
-    {
-      type: 'Total borrowings',
-      value: 14,
-    },
-    {
-      type: 'Total',
-      value: 74,
-    },
+    // {
+    //   type: 'Total borrowings',
+    //   value: 14,
+    // },
+    // {
+    //   type: 'Total',
+    //   value: 74,
+    // },
   ];
   const config = {
     appendPadding: 10,

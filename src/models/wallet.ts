@@ -133,6 +133,6 @@ export default () => {
             setBalances({})
         }
     }, [currentAccount])
-    console.log(wallet)
+
     return { connect, disconnect, status, wallet, balances, refresh }
 }
