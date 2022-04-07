@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useModel, history, FormattedMessage } from 'umi';
 import { Card, Row, Col, Button, Descriptions, Steps, Divider, Badge, Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons'
@@ -12,10 +12,10 @@ import styles from './confirm.less';
 const { Step } = Steps;
 
 export default ({ poolReserve, user, userReserve, maxAmountToRepay, debtType, walletBalance, networkConfig, match: { params: { amount: amount0 } }, }: any,) => {
-    if(!poolReserve || !userReserve) {
+    if (!poolReserve || !userReserve) {
         // return <div style={{textAlign:'center'}}><Spin /></div>
     }
-    
+
     const amount = valueToBigNumber(amount0);
 
     const [steps, setSteps] = useState<any>([]);
@@ -25,16 +25,16 @@ export default ({ poolReserve, user, userReserve, maxAmountToRepay, debtType, wa
     const [customGasPrice, setCustomGasPrice] = useState<string | null>(null);
     const [records, setRecords] = useState<any>([]);
 
-    const { baseCurrency, refreshPool } = useModel('pool', res=>({
+    const { baseCurrency, refreshPool } = useModel('pool', res => ({
         baseCurrency: res.baseCurrency,
         refreshPool: res.refresh
     }))
-    const { wallet, refreshWallet } = useModel('wallet', res=>({
+    const { wallet, refreshWallet } = useModel('wallet', res => ({
         wallet: res.wallet,
         refreshWallet: res.refresh
     }));
     const provider = wallet?.provider
-    const { lendingPool } = useModel('lendingPool', res=> ({
+    const { lendingPool } = useModel('lendingPool', res => ({
         lendingPool: res.lendingPool
     }));
     const refresh = () => {
@@ -296,14 +296,14 @@ export default ({ poolReserve, user, userReserve, maxAmountToRepay, debtType, wa
             }
         },
         error: {
-            set(key: string, error: string){
-                let id = steps.findIndex((item: any)=>item.key == key)
-                if(id !==  -1){
+            set(key: string, error: string) {
+                let id = steps.findIndex((item: any) => item.key == key)
+                if (id !== -1) {
                     steps[id] = {
                         ...steps[id],
                         error
                     }
-                    setSteps([ ...steps ])
+                    setSteps([...steps])
                 }
             }
         },
@@ -381,8 +381,8 @@ export default ({ poolReserve, user, userReserve, maxAmountToRepay, debtType, wa
                                 current={current}
                                 className="site-navigation-steps"
                             >
-                                {steps.map((item) => (
-                                    <Step title={item.title} />
+                                {steps.map((item: any, index: number) => (
+                                    <Step title={item.title} key={index} />
                                 ))}
                             </Steps>
                         </Col>
@@ -403,13 +403,13 @@ export default ({ poolReserve, user, userReserve, maxAmountToRepay, debtType, wa
                         </Col>
                         <Col span={10} offset={7}>
                             <Row>
-                                {records.map((item: any) => <>
+                                {records.map((item: any, index: number) => <React.Fragment key={index}>
                                     <Col span={8}>{item.name}</Col>
                                     <Col span={8}>
-                                    {item.status} {item.status == 'wait' ? <LoadingOutlined /> : <Badge status={item.status == 'confirmed' ? "success" : "error"} />}
+                                        {item.status} {item.status == 'wait' ? <LoadingOutlined /> : <Badge status={item.status == 'confirmed' ? "success" : "error"} />}
                                     </Col>
                                     <Col span={8}><FormattedMessage id="pages.loan.repay.confirm.explorer" /></Col>
-                                </>)}
+                                </React.Fragment >)}
                             </Row>
                         </Col>
                     </Row>

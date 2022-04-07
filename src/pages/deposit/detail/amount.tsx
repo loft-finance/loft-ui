@@ -32,8 +32,6 @@ export default ({ poolReserve, maxAmountToDeposit }: any) => {
     }
   };
 
-  
-
   return (
     <Card bordered={false}>
       <Back />
@@ -78,7 +76,7 @@ export default ({ poolReserve, maxAmountToDeposit }: any) => {
                   </Form.Item>
 
                   <Form.Item wrapperCol={{ offset: 2, span: 20 }}>
-                    <Button block type="primary" htmlType="submit">
+                    <Button block type="primary" htmlType="submit" disabled={maxAmountToDeposit == '0'}>
                       <FormattedMessage id="pages.deposit.detail.amount.button" />
                     </Button>
                   </Form.Item>

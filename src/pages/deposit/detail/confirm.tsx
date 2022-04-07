@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useModel, history, FormattedMessage } from 'umi';
 import { Card, Row, Col, Button, Descriptions, Steps, Divider, Badge, Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons'
@@ -392,13 +392,17 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, match: { params:
                         </Col>
                         <Col span={10} offset={7}>
                             <Row>
-                                {records.map((item: any) => <>
-                                    <Col span={8}>{item.name}</Col>
-                                    <Col span={8}>
-                                        {item.status} {item.status == 'wait' ? <LoadingOutlined /> : <Badge status={item.status == 'confirmed' ? "success" : "error"} />}
-                                    </Col>
-                                    <Col span={8}><FormattedMessage id="pages.deposit.detail.confirm.explorer" /></Col>
-                                </>)}
+                                {
+                                    records.map((item: any, index: number) =>
+                                        <React.Fragment key={item.id}>
+                                            <Col span={8}>{item.name}</Col>
+                                            <Col span={8}>
+                                                {item.status} {item.status == 'wait' ? <LoadingOutlined /> : <Badge status={item.status == 'confirmed' ? "success" : "error"} />}
+                                            </Col>
+                                            <Col span={8}><FormattedMessage id="pages.deposit.detail.confirm.explorer" /></Col>
+                                        </React.Fragment>)
+
+                                }
                             </Row>
                         </Col>
                     </Row>

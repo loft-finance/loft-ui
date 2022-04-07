@@ -30,11 +30,12 @@ export default (props) => {
   }));
 
   const balance = balances ? balances[underlyingAsset] : '0'
-  const underlyingSymbol = poolReserve?.symbol || ''
 
-  const poolReserve = reserves.find((res) =>
+
+  const poolReserve = reserves.find((res: any) =>
     id ? res.id === id : res.underlyingAsset.toLowerCase() === underlyingAsset.toLowerCase()
   );
+  const underlyingSymbol = poolReserve?.symbol || ''
   const asset = getAssetInfo(id);
 
   const chainId = currentMarket.chainId
@@ -56,13 +57,13 @@ export default (props) => {
   }
 
   const userReserve = user
-    ? user.userReservesData.find((userReserve) =>
+    ? user.userReservesData.find((userReserve: any) =>
       id
         ? userReserve.reserve.id === id
         : userReserve.reserve.underlyingAsset.toLowerCase() === underlyingAsset.toLowerCase()
     )
     : undefined;
-    
+
   return (
     <GridContent>
       <Info
@@ -85,9 +86,9 @@ export default (props) => {
 
       {!wallet && <WalletDisconnected />}
 
-      {wallet && maxAmountToDeposit.toString() == '0' && walletBalance.eq('0') && <WalletEmpty symbol={poolReserve ? poolReserve?.symbol : ''} />}
+      {/* {wallet && maxAmountToDeposit.toString() == '0' && walletBalance.eq('0') && <WalletEmpty symbol={poolReserve ? poolReserve?.symbol : ''} />} */}
 
-      {wallet && maxAmountToDeposit.toString() !== '0' && React.cloneElement(props.children, { poolReserve, userReserve, maxAmountToDeposit: maxAmountToDeposit.toString(10) })}
+      {wallet && React.cloneElement(props.children, { poolReserve, userReserve, maxAmountToDeposit: maxAmountToDeposit.toString(10) })}
     </GridContent>
   );
 };

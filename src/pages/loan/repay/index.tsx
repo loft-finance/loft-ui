@@ -106,9 +106,9 @@ export default (props: any) => {
 
             {!wallet && <WalletDisconnected />}
 
-            {wallet && maxAmountToRepay.toString() == '0' && walletBalance.eq('0') && <WalletEmpty symbol={poolReserve ? poolReserve?.symbol : ''} />}
+            {/* {wallet && maxAmountToRepay.toString() == '0' && walletBalance.eq('0') && <WalletEmpty symbol={poolReserve ? poolReserve?.symbol : ''} />} */}
 
-            {wallet && maxAmountToRepay.toString() !== '0' && React.cloneElement(props.children, { poolReserve, user, userReserve, maxAmountToRepay, walletBalance, networkConfig, debtType })}
+            {wallet && React.cloneElement(props.children, { poolReserve, user, userReserve, maxAmountToRepay, walletBalance, networkConfig, debtType })}
         </GridContent>
     );
 };

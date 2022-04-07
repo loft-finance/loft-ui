@@ -76,7 +76,7 @@ export default ({ poolReserve, maxAmountToRepay }: any) => {
                 </Form.Item>
 
                 <Form.Item wrapperCol={{ offset: 2, span: 20 }}>
-                  <Button block type="primary" htmlType="submit">
+                  <Button block type="primary" htmlType="submit" disabled={maxAmountToRepay == '0'}>
                     <FormattedMessage id="pages.loan.repay.amount.button" />
                   </Button>
                 </Form.Item>
