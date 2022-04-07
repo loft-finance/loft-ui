@@ -211,5 +211,7 @@ export default () => {
     const reserves = getReserves()
     const user = getUserReserves()
 
+    console.log('user', user)
+
     return { loading: loadingReverse||loadingUserReverse?true:false , baseCurrency, reserves, user, userReservesFixUnderlying, refresh };
 };

@@ -23,7 +23,7 @@ export default () => {
     baseCurrency: res.baseCurrency,
     user: res.user
   }))
-  console.log(reserves, baseCurrency, user)
+
   const marketRefPriceInUsd = baseCurrency.marketRefPriceInUsd
 
   const { reserveIncentives } = useModel('incentives', res => ({

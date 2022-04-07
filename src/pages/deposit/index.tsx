@@ -149,7 +149,7 @@ export default () => {
   ];
 
   const totalValue = list(false).reduce((a, b) => a + (+b['underlyingBalanceInUSD'] || 0), 0)
-  console.log(list(true))
+
   return (
     <Spin spinning={!reserves || !reserves.length}>
       <GridContent>

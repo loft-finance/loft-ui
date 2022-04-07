@@ -11,12 +11,13 @@ import DepositDashbord from '@/pages/deposit/dashboard'
 import LoanDashboard from '@/pages/loan/dashboard'
 import { loftToUsd, lpToUsd } from '@/lib/helpers/utils';
 import Bignumber from '@/components/Bignumber';
+import BigNumber from 'bignumber.js';
 
 export default () => {
   const { wallet } = useModel('wallet', res => ({
     wallet: res.wallet
   }));
-  const { reserves, user } = useModel('pool', res=>({
+  const { reserves, user, baseCurrency } = useModel('pool', res=>({
     reserves: res.reserves,
     user: res.user
   }))
@@ -36,6 +37,8 @@ export default () => {
     depositedLoft: res.depositedLoft,
     earnedLoft: res.earnedLoft,
   }))
+
+  const totalCollateralMarketReferenceCurrency = user?.totalCollateralMarketReferenceCurrency || '1'
 
   const [isLTVModalVisible, setLTVModalVisible] = useState(false);
   const [isBorrow, setIsBorrow] = useState(false);
@@ -177,7 +180,6 @@ export default () => {
     }
   });
 
-
   const data = [
     {
       type: 'Total borrowings',
@@ -235,37 +237,49 @@ export default () => {
     },
   };
 
-  const config3 = {
-    ...config,
-    data: [
-      {
-        type: 'Total',
-        value: 14,
-      },
-      {
-        type: 'Total 1',
-        value: 12,
-      },
-      {
-        type: 'Total 2',
-        value: 67,
-      },
-    ],
-    theme: {
-      colors10: [
-        '#C54F01',
-        '#FFD942',
-        '#F68F33',
-        '#9FB40F',
-        '#76523B',
-        '#DAD5B5',
-        '#0E8E89',
-        '#E19348',
-        '#F383A2',
-        '#247FEA',
-      ],
-    },
-  };
+  const depositeComposition = user?.userReservesData
+    .filter((userReserve) => userReserve.underlyingBalance !== '0')
+    .map((userReserve) => ({
+      value: valueToBigNumber(userReserve.underlyingBalanceUSD)
+        .div(user.totalLiquidityUSD)
+        .multipliedBy(100)
+        .precision(20, BigNumber.ROUND_UP)
+        .toNumber(),
+      type: userReserve.reserve.symbol || '',
+  })) || data;
+
+  const collateralComposition = user?.userReservesData
+    ?.filter((userReserve) => {
+      const poolReserve = reserves.find((res) => res.symbol === userReserve.reserve.symbol);
+      return (
+        userReserve.usageAsCollateralEnabledOnUser &&
+        poolReserve &&
+        poolReserve.usageAsCollateralEnabled &&
+        userReserve.underlyingBalance !== '0'
+      );
+    })
+    ?.map((userReserve) => ({
+      type: userReserve.reserve.symbol || '',
+      value: valueToBigNumber(userReserve.underlyingBalanceMarketReferenceCurrency)
+        .div(totalCollateralMarketReferenceCurrency)
+        .multipliedBy(100)
+        .precision(20, BigNumber.ROUND_UP)
+        .toNumber(),
+    })) || data;
+  
+  const borrowComposition = user?.userReservesData
+    ?.filter((reserve) => reserve.totalBorrows !== '0')
+    ?.map((userReserve) => ({
+      type: userReserve?.reserve?.symbol || '',
+      value: new BigNumber(userReserve.totalBorrowsMarketReferenceCurrency)
+        .div(maxBorrowAmount)
+        .multipliedBy(100)
+        .precision(20, BigNumber.ROUND_UP)
+        .toNumber(),
+    })) || data;
+
+  
+
 
   return (
     <Spin spinning={!reserves || !reserves.length}>
@@ -289,7 +303,7 @@ export default () => {
                     </div>
                   </Col>
                   <Col span={12}>
-                    <Pie {...config} />
+                    <Pie {...{...config, data: depositeComposition}} />
                     <div className={styles.tip} style={{ textAlign: 'center', fontSize: 10 }}>
                       <FormattedMessage id="pages.info.deposit.composition" />
                     </div>
@@ -320,13 +334,13 @@ export default () => {
                   <Col span={12}>
                     <Row style={{ marginTop: -10 }}>
                       <Col span={12}>
-                        <Pie {...config} />
+                        <Pie {...{...config, data: collateralComposition}} />
                         <div className={styles.tip} style={{ textAlign: 'center', fontSize: 10 }}>
                           <FormattedMessage id="pages.info.loan.composition" />
                         </div>
                       </Col>
                       <Col span={12}>
-                        <Pie {...config3} />
+                        <Pie {...{...config, data: borrowComposition}} />
                         <div className={styles.tip} style={{ textAlign: 'center', fontSize: 10 }}>
                           <FormattedMessage id="pages.info.loan.CollateralComposition" />
                         </div>
