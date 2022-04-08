@@ -12,14 +12,12 @@ const {
     useProvider,
     useChainId,
     // useError,
-    // useENSNames 
+    // useENSNames
 } = hooks
-console.log(hooks)
 
 const isMetaMaskReady = () => window.ethereum && typeof window.ethereum === 'object';
 
 export default () => {
-
     const { currentMarket } = useModel('market', res => ({
         currentMarket: res.current
     }));
@@ -27,38 +25,53 @@ export default () => {
     const [current, setCurrent] = useState('');
     const [status, setStatus] = useState('unconnect');
     const [currentAccount, setCurrentAccount] = useState('');
+    const [currentChainId, setCurrentChainId] = useState<number | undefined>(undefined);
+    const [currentProvider, setCurrentProvider] = useState<any>(undefined);
     const [balances, setBalances] = useState({});
     const [wallet, setWallet] = useState<any>(undefined);
 
+    const [isConnect, setIsConnect] = useState(false);
     const walletRef = useRef<any>();
 
-    const metamask = {
-        chainId: useChainId(),
-        isActivating: useIsActivating(),
-        isActive: useIsActive(),
-        accounts: useAccounts(),
-        provider: useProvider()
-    }
-
     const chainId = useChainId();
+    const isActivating = useIsActivating();
+    const isActive = useIsActive();
+    const accounts = useAccounts();
+    const provider = useProvider();
+    // const error = useError();
+    console.log(isActivating, isActive, accounts, chainId);
 
     useEffect(() => {
         if (current == 'MetaMask') {
-            if (metamask.isActivating && !metamask.isActive) {
+            if (isActivating && !isActive) {
                 setStatus('connecting')
-            } else if (metamask.isActive) {
+            } else if (isActive) {
                 setStatus('connected')
-                if (metamask?.accounts) {
-                    setCurrentAccount(metamask.accounts[0])
-                }
-                localStorage.setItem('wallet', current)
+                accounts && setCurrentAccount(accounts[0]);
+                setCurrentChainId(chainId);
+                setCurrentProvider(provider);
+
+                setWallet({
+                    current,
+                    currentAccount: accounts && accounts[0],
+                    provider: provider,
+                    chainId: chainId
+                });
+
+                localStorage.setItem('wallet', current);
             } else {
-                setCurrent('')
-                setStatus('unconnect');
-                setCurrentAccount('')
+                if(!isConnect){
+                    setCurrent('')
+                    setStatus('unconnect');
+                    setCurrentAccount('')
+                    setCurrentChainId(undefined);
+                    setCurrentProvider(undefined);
+                }
+               
             }
+
         }
-    }, [metamask])
+    }, [isActivating, isActive, accounts, chainId]);
 
     const connect = async (type: string) => {
         if (current) return;
@@ -72,11 +85,14 @@ export default () => {
             walletRef.current = metaMask
         }
 
-        walletRef.current.activate()
+        walletRef.current.activate();
+        setIsConnect(true);
     }
     const disconnect = () => {
-        walletRef.current.deactivate()
-        localStorage.removeItem('wallet')
+        walletRef.current.deactivate();
+        setIsConnect(false);
+        localStorage.removeItem('wallet');
+        
     }
 
     const getBalance = async () => {
@@ -110,23 +126,6 @@ export default () => {
     }
 
     useEffect(() => {
-        if (status === 'connected') {
-            if (current === 'MetaMask') {
-                setWallet({
-                    current,
-                    currentAccount,
-                    balances,
-                    provider: metamask.provider,
-                    chainId
-                })
-            }
-        }
-        else {
-            setWallet(undefined);
-        }
-    }, [status]);
-
-    useEffect(() => {
         if (currentAccount) {
             getBalance();
         } else {
@@ -134,5 +133,5 @@ export default () => {
         }
     }, [currentAccount])
 
-    return { connect, disconnect, status, wallet, balances, refresh }
+    return { connect, disconnect, status, wallet, balances, refresh, currentChainId, currentProvider }
 }
