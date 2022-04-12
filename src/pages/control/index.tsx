@@ -350,7 +350,7 @@ export default () => {
                       <Col span={24} style={{ marginTop: 15 }}>
                         <div className={styles.label}><FormattedMessage id="pages.info.loan.FitnessFactor" /></div>
                         <div className={styles.value} style={{ color: '#37A967' }}>
-                          {user?.healthFactor ? Number(user?.healthFactor).toFixed(2) : '-1'}
+                          {user?.healthFactor ? Number(user?.healthFactor).toFixed(2) : '--'}
                         </div>
                       </Col>
                       <Col span={24} style={{ marginTop: 15 }}>
