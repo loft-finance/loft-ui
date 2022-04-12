@@ -327,7 +327,7 @@ export default () => {
                       </Col>
                       <Col span={24} style={{ marginTop: 15 }}>
                         <div className={styles.label}><FormattedMessage id="pages.info.loan.ltv" /></div>
-                        <div className={styles.value}>5.41%</div>
+                        <div className={styles.value}><Bignumber value={loanToValue} />%</div>
                       </Col>
                     </Row>
                   </Col>
@@ -355,7 +355,7 @@ export default () => {
                       </Col>
                       <Col span={24} style={{ marginTop: 15 }}>
                         <div className={styles.label}><FormattedMessage id="pages.info.loan.capacity" /></div>
-                        <div className={styles.value}>10.23%</div>
+                        <div className={styles.value}><Bignumber value={collateralUsagePercent} />%</div>
                       </Col>
                     </Row>
                   </Col>
