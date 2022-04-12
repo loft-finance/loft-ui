@@ -79,7 +79,7 @@ export default (props) => {
           },
           {
             title: <FormattedMessage id="pages.deposit.detail.info.FitnessFactor" />,
-            value: <Bignumber value={user?.healthFactor || '-1'} />,
+            value: <Bignumber value={user?.healthFactor || '--'} />,
           },
         ]}
       />

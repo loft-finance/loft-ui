@@ -430,7 +430,7 @@ export default (props: any) => {
                           </Col>
                           <Col span={12} className={styles.label}><FormattedMessage id="pages.market.detail.your.loan.FitnessFactor" /></Col>
                           <Col span={12} className={styles.value}>
-                            {Number(user?.healthFactor || '-1').toFixed(2)}
+                            {Number(user?.healthFactor || '--').toFixed(2)}
                           </Col>
                           <Col span={12} className={styles.label}><FormattedMessage id="pages.market.detail.your.loan.LoanAppreciation" />Loan appreciation</Col>
                           <Col span={12} className={styles.value}>
