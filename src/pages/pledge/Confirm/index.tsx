@@ -6,6 +6,7 @@ import { valueToBigNumber } from '@aave/protocol-js';
 import Bignumber from '@/components/Bignumber';
 
 import styles from './index.less';
+import React from 'react';
 const { Step } = Steps;
 
 export default ({ refs }: any) => {
@@ -287,13 +288,13 @@ export default ({ refs }: any) => {
                         </Col>
                         <Col span={24}>
                             <Row>
-                                {records.map((item: any) => <>
+                                {records.map((item: any, index: number) => <React.Fragment key={index}>
                                     <Col span={8}>{item.name}</Col>
                                     <Col span={8}>
                                         {item.status} {item.status == 'wait' ? <LoadingOutlined /> : <Badge status={item.status == 'confirmed' ? "success" : "error"} />}
                                     </Col>
                                     <Col span={8}><FormattedMessage id="pages.deposit.detail.confirm.explorer" /></Col>
-                                </>)}
+                                </React.Fragment>)}
                             </Row>
                         </Col>
                     </Row>

@@ -55,7 +55,6 @@ export default (props: any) => {
                 : userReserve.reserve.underlyingAsset.toLowerCase() === underlyingAsset.toLowerCase()
         )
         : undefined;
-    console.log(userReserve)
     const normalizedWalletBalance = walletBalance.minus(
         userReserve?.reserve.symbol.toUpperCase() === networkConfig.baseAsset ? '0.004' : '0'
     );
@@ -83,7 +82,7 @@ export default (props: any) => {
                     },
                     {
                         title: <FormattedMessage id="pages.loan.repay.info.FitnessFactor" />,
-                        value: <Bignumber value={userReserve?.healthFactor || '0'} />,
+                        value: user?.healthFactor && Number(user?.healthFactor).toFixed(2) || '0',
                         span: 8,
                     },
                     {
