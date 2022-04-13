@@ -12,12 +12,13 @@ export default defineConfig({
   dva: {
     hmr: true,
   },
-  layout: {
-    // https://umijs.org/zh-CN/plugins/plugin-layout
-    locale: true,
-    siderWidth: 208,
-    ...defaultSettings,
-  },
+  // layout: {
+  //   // https://umijs.org/zh-CN/plugins/plugin-layout
+  //   locale: true,
+  //   siderWidth: 208,
+  //   ...defaultSettings,
+  // },
+  layout: false,
   // https://umijs.org/zh-CN/plugins/plugin-locale
   locale: {
     // default en-US
@@ -35,246 +36,255 @@ export default defineConfig({
   // umi routes: https://umijs.org/docs/routing
   routes: [
     {
-      path: '/market',
-      name: 'market',
-      icon: 'icon-ic_market',
+      path: '/',
+      component: '../layout/index',
+      menu: {
+        flatMenu: true,
+      },
       routes: [
         {
           path: '/market',
-          redirect: '/market/index',
-        },
-        {
-          path: '/market/index',
-          name: 'index',
-          component: './market/index',
-          wrappers: [
-            '@/pages/wrappers/index',
+          name: 'market',
+          icon: 'icon-ic_market',
+          routes: [
+            {
+              path: '/market',
+              redirect: '/market/index',
+            },
+            {
+              path: '/market/index',
+              name: 'index',
+              component: './market/index',
+              wrappers: [
+                '@/pages/wrappers/index',
+              ],
+              hideInMenu: true,
+            },
+            {
+              path: '/market/detail/:underlyingAsset/:id',
+              name: 'detail',
+              component: './market/detail',
+              hideInMenu: true,
+              wrappers: [
+                '@/pages/wrappers/index',
+              ],
+            },
           ],
-          hideInMenu: true,
         },
-        {
-          path: '/market/detail/:underlyingAsset/:id',
-          name: 'detail',
-          component: './market/detail',
-          hideInMenu: true,
-          wrappers: [
-            '@/pages/wrappers/index',
-          ],
-        },
-      ],
-    },
-    {
-      path: '/deposit',
-      name: 'deposit',
-      icon: 'icon-ic_deposit',
-      routes: [
         {
           path: '/deposit',
-          redirect: '/deposit/index',
-        },
-        {
-          path: '/deposit/index',
-          name: 'index',
-          component: './deposit/index',
-          hideInMenu: true,
-          wrappers: [
-            '@/pages/wrappers/index',
-          ],
-        },
-        {
-          path: '/deposit/detail/:underlyingAsset/:id',
-          name: 'detail',
-          hideInMenu: true,
+          name: 'deposit',
+          icon: 'icon-ic_deposit',
           routes: [
+            {
+              path: '/deposit',
+              redirect: '/deposit/index',
+            },
+            {
+              path: '/deposit/index',
+              name: 'index',
+              component: './deposit/index',
+              hideInMenu: true,
+              wrappers: [
+                '@/pages/wrappers/index',
+              ],
+            },
             {
               path: '/deposit/detail/:underlyingAsset/:id',
-              redirect: '/deposit/detail/:underlyingAsset/:id/amount',
-            },
-            {
-              path: '/deposit/detail/:underlyingAsset/:id/amount',
-              name: 'amount',
-              component: '@/pages/deposit/detail/amount',
-              wrappers: [
-                '@/pages/wrappers/index',
-                '@/pages/deposit/detail/index',
-              ],
+              name: 'detail',
               hideInMenu: true,
+              routes: [
+                {
+                  path: '/deposit/detail/:underlyingAsset/:id',
+                  redirect: '/deposit/detail/:underlyingAsset/:id/amount',
+                },
+                {
+                  path: '/deposit/detail/:underlyingAsset/:id/amount',
+                  name: 'amount',
+                  component: '@/pages/deposit/detail/amount',
+                  wrappers: [
+                    '@/pages/wrappers/index',
+                    '@/pages/deposit/detail/index',
+                  ],
+                  hideInMenu: true,
+                },
+                {
+                  path: '/deposit/detail/:underlyingAsset/:id/confirm/:amount',
+                  name: 'confirm',
+                  component: '@/pages/deposit/detail/confirm',
+                  wrappers: [
+                    '@/pages/wrappers/index',
+                    '@/pages/deposit/detail',
+                  ],
+                  hideInMenu: true,
+                }
+              ]
             },
-            {
-              path: '/deposit/detail/:underlyingAsset/:id/confirm/:amount',
-              name: 'confirm',
-              component: '@/pages/deposit/detail/confirm',
-              wrappers: [
-                '@/pages/wrappers/index',
-                '@/pages/deposit/detail',
-              ],
-              hideInMenu: true,
-            }
-          ]
-        },
-        {
-          path: '/deposit/withdraw/:underlyingAsset/:id',
-          name: 'withdraw',
-          hideInMenu: true,
-          routes: [
             {
               path: '/deposit/withdraw/:underlyingAsset/:id',
-              redirect: '/deposit/withdraw/:underlyingAsset/:id/amount',
+              name: 'withdraw',
+              hideInMenu: true,
+              routes: [
+                {
+                  path: '/deposit/withdraw/:underlyingAsset/:id',
+                  redirect: '/deposit/withdraw/:underlyingAsset/:id/amount',
+                },
+                {
+                  path: '/deposit/withdraw/:underlyingAsset/:id/amount',
+                  name: 'amount',
+                  component: '@/pages/deposit/withdraw/amount',
+                  wrappers: [
+                    '@/pages/wrappers/index',
+                    '@/pages/deposit/withdraw/index',
+                  ],
+                  hideInMenu: true,
+                },
+                {
+                  path: '/deposit/withdraw/:underlyingAsset/:id/confirm/:amount',
+                  name: 'confirm',
+                  component: '@/pages/deposit/withdraw/confirm',
+                  wrappers: [
+                    '@/pages/wrappers/index',
+                    '@/pages/deposit/withdraw',
+                  ],
+                  hideInMenu: true,
+                }
+              ]
             },
             {
-              path: '/deposit/withdraw/:underlyingAsset/:id/amount',
-              name: 'amount',
-              component: '@/pages/deposit/withdraw/amount',
+              path: '/deposit/collateral/:underlyingAsset/:id/confirm/:status',
+              name: 'collateral',
+              component: '@/pages/deposit/collateral/confirm',
+              hideInMenu: true,
               wrappers: [
                 '@/pages/wrappers/index',
-                '@/pages/deposit/withdraw/index',
               ],
-              hideInMenu: true,
-            },
-            {
-              path: '/deposit/withdraw/:underlyingAsset/:id/confirm/:amount',
-              name: 'confirm',
-              component: '@/pages/deposit/withdraw/confirm',
-              wrappers: [
-                '@/pages/wrappers/index',
-                '@/pages/deposit/withdraw',
-              ],
-              hideInMenu: true,
             }
-          ]
-        },
-        {
-          path: '/deposit/collateral/:underlyingAsset/:id/confirm/:status',
-          name: 'collateral',
-          component: '@/pages/deposit/collateral/confirm',
-          hideInMenu: true,
-          wrappers: [
-            '@/pages/wrappers/index',
           ],
-        }
-      ],
-    },
-    {
-      path: '/loan',
-      name: 'loan',
-      icon: 'icon-ic_loan',
-      routes: [
+        },
         {
           path: '/loan',
-          redirect: '/loan/index',
-        },
-        {
-          path: '/loan/index',
-          name: 'index',
-          component: './loan/index',
-          hideInMenu: true,
-          wrappers: [
-            '@/pages/wrappers/index',
-          ],
-        },
-        {
-          path: '/loan/detail/:underlyingAsset/:id',
-          name: 'detail',
-          hideInMenu: true,
+          name: 'loan',
+          icon: 'icon-ic_loan',
           routes: [
+            {
+              path: '/loan',
+              redirect: '/loan/index',
+            },
+            {
+              path: '/loan/index',
+              name: 'index',
+              component: './loan/index',
+              hideInMenu: true,
+              wrappers: [
+                '@/pages/wrappers/index',
+              ],
+            },
             {
               path: '/loan/detail/:underlyingAsset/:id',
-              redirect: '/loan/detail/:underlyingAsset/:id/amount',
-            },
-            {
-              path: '/loan/detail/:underlyingAsset/:id/amount',
-              name: 'amount',
-              component: '@/pages/loan/detail/amount',
-              wrappers: [
-                '@/pages/wrappers/index',
-                '@/pages/loan/detail/index',
-              ],
+              name: 'detail',
               hideInMenu: true,
+              routes: [
+                {
+                  path: '/loan/detail/:underlyingAsset/:id',
+                  redirect: '/loan/detail/:underlyingAsset/:id/amount',
+                },
+                {
+                  path: '/loan/detail/:underlyingAsset/:id/amount',
+                  name: 'amount',
+                  component: '@/pages/loan/detail/amount',
+                  wrappers: [
+                    '@/pages/wrappers/index',
+                    '@/pages/loan/detail/index',
+                  ],
+                  hideInMenu: true,
+                },
+                {
+                  path: '/loan/detail/:underlyingAsset/:id/confirm/:amount',
+                  name: 'confirm',
+                  component: '@/pages/loan/detail/confirm',
+                  wrappers: [
+                    '@/pages/wrappers/index',
+                    '@/pages/loan/detail',
+                  ],
+                  hideInMenu: true,
+                }
+              ]
             },
-            {
-              path: '/loan/detail/:underlyingAsset/:id/confirm/:amount',
-              name: 'confirm',
-              component: '@/pages/loan/detail/confirm',
-              wrappers: [
-                '@/pages/wrappers/index',
-                '@/pages/loan/detail',
-              ],
-              hideInMenu: true,
-            }
-          ]
-        },
-        {
-          path: '/loan/repay/:underlyingAsset/:id',
-          name: 'repay',
-          hideInMenu: true,
-          routes: [
             {
               path: '/loan/repay/:underlyingAsset/:id',
-              redirect: '/loan/repay/:underlyingAsset/:id/amount',
+              name: 'repay',
+              hideInMenu: true,
+              routes: [
+                {
+                  path: '/loan/repay/:underlyingAsset/:id',
+                  redirect: '/loan/repay/:underlyingAsset/:id/amount',
+                },
+                {
+                  path: '/loan/repay/:underlyingAsset/:id/amount',
+                  name: 'amount',
+                  component: '@/pages/loan/repay/amount',
+                  wrappers: [
+                    '@/pages/wrappers/index',
+                    '@/pages/loan/repay/index',
+                  ],
+                  hideInMenu: true,
+                },
+                {
+                  path: '/loan/repay/:underlyingAsset/:id/confirm/:amount',
+                  name: 'confirm',
+                  component: '@/pages/loan/repay/confirm',
+                  wrappers: [
+                    '@/pages/wrappers/index',
+                    '@/pages/loan/repay/index',
+                  ],
+                  hideInMenu: true,
+                }
+              ]
             },
             {
-              path: '/loan/repay/:underlyingAsset/:id/amount',
-              name: 'amount',
-              component: '@/pages/loan/repay/amount',
+              path: '/loan/rate/:underlyingAsset/:id/confirm/:rateMode',
+              name: 'rate',
+              component: '@/pages/loan/rate/confirm',
+              hideInMenu: true,
               wrappers: [
                 '@/pages/wrappers/index',
-                '@/pages/loan/repay/index',
               ],
-              hideInMenu: true,
-            },
-            {
-              path: '/loan/repay/:underlyingAsset/:id/confirm/:amount',
-              name: 'confirm',
-              component: '@/pages/loan/repay/confirm',
-              wrappers: [
-                '@/pages/wrappers/index',
-                '@/pages/loan/repay/index',
-              ],
-              hideInMenu: true,
             }
-          ]
+          ],
         },
         {
-          path: '/loan/rate/:underlyingAsset/:id/confirm/:rateMode',
-          name: 'rate',
-          component: '@/pages/loan/rate/confirm',
-          hideInMenu: true,
+          path: '/manage',
+          name: 'manage',
+          icon: 'icon-ic_platform_currency',
+          component: './manage',
           wrappers: [
             '@/pages/wrappers/index',
           ],
-        }
-      ],
-    },
-    {
-      path: '/manage',
-      name: 'manage',
-      icon: 'icon-ic_platform_currency',
-      component: './manage',
-      wrappers: [
-        '@/pages/wrappers/index',
-      ],
-    },
-    {
-      path: '/pledge',
-      name: 'pledge',
-      icon: 'icon-ic_Pledge',
-      component: './pledge',
-      wrappers: [
-        '@/pages/wrappers/index',
-      ],
-    },
-    {
-      path: '/control',
-      name: 'control',
-      icon: 'icon-ic_control_panel',
-      component: './control',
-      wrappers: [
-        '@/pages/wrappers/index',
-      ],
-    },
-    {
-      path: '/',
-      redirect: '/market',
+        },
+        {
+          path: '/pledge',
+          name: 'pledge',
+          icon: 'icon-ic_Pledge',
+          component: './pledge',
+          wrappers: [
+            '@/pages/wrappers/index',
+          ],
+        },
+        {
+          path: '/control',
+          name: 'control',
+          icon: 'icon-ic_control_panel',
+          component: './control',
+          wrappers: [
+            '@/pages/wrappers/index',
+          ],
+        },
+        {
+          path: '/',
+          redirect: '/market',
+        },
+      ]
     },
     {
       component: '404',

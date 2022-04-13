@@ -23,7 +23,7 @@ export const getProvider = (chainId: ChainId): ethers.providers.Provider => {
             return providers[chainId];
         }
         if (config.publicJsonRPCUrl.length) {
-            config.publicJsonRPCUrl.map((rpc) =>
+            config.publicJsonRPCUrl.map((rpc: any) =>
                 chainProviders.push(new ethers.providers.StaticJsonRpcProvider(rpc, chainId))
             );
         }

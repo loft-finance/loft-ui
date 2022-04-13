@@ -31,11 +31,11 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, match: { params:
         baseCurrency: res.baseCurrency,
         refreshPool: res.refresh
     }))
-    const { wallet, refreshWallet } = useModel('wallet', res => ({
-        wallet: res.wallet,
-        refreshWallet: res.refresh
+    const { account, provider,refreshWallet } = useModel('wallet', res => ({
+        account: res.account,
+        refreshWallet: res.refresh,
+        provider: res.provider
     }));
-    const provider = wallet?.provider
     const { lendingPool } = useModel('lendingPool', res => ({
         lendingPool: res.lendingPool
     }));
@@ -71,10 +71,10 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, match: { params:
     const usageAsCollateralEnabledOnDeposit = poolReserve.usageAsCollateralEnabled ? userReserve.usageAsCollateralEnabledOnUser ? true : false : false;
 
     useEffect(() => {
-        if (wallet) {
+        if (account) {
             handler.getTx({ depositing: false })
         }
-    }, [wallet]);
+    }, [account]);
 
     const handler = {
         async getTx({ depositing = false }) {

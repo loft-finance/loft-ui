@@ -17,12 +17,11 @@ export enum BorrowRateMode {
 }
 
 export default (props: any) => {
+  
   const { match: { params: { underlyingAsset, id } } } = props
 
-  const { wallet, balances } = useModel('wallet', res => ({
-    wallet: res.wallet,
-    balances: res.balances
-  }))
+  const { balances, isConnected } = useModel('wallet')
+
   const { reserves, user, baseCurrency } = useModel('pool', res => ({
     reserves: res.reserves,
     user: res.user,
@@ -364,9 +363,9 @@ export default (props: any) => {
         }
         <Col span={8}>
           <div className={styles.title}><FormattedMessage id="pages.market.detail.your" /></div>
-          {!wallet && <WalletDisconnected showBack={false} />}
+          {!isConnected && <WalletDisconnected showBack={false} />}
 
-          {wallet && (
+          {isConnected && (
             <Spin spinning={!user}>
               <Row>
                 <Col span={24}>

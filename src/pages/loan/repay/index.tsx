@@ -13,8 +13,8 @@ import { fixedToValue } from '@/utils';
 export default (props: any) => {
     const { match: { params: { underlyingAsset, id } } } = props
 
-    const { wallet, balances } = useModel('wallet', res => ({
-        wallet: res.wallet,
+    const { account, balances } = useModel('wallet', res => ({
+        account: res.account,
         balances: res.balances
     }));
     const { reserves, user, baseCurrency } = useModel('pool', res => ({
@@ -105,11 +105,11 @@ export default (props: any) => {
                 ]}
             />
 
-            {!wallet && <WalletDisconnected />}
+            {!account && <WalletDisconnected />}
 
             {/* {wallet && maxAmountToRepay.toString() == '0' && walletBalance.eq('0') && <WalletEmpty symbol={poolReserve ? poolReserve?.symbol : ''} />} */}
 
-            {wallet && React.cloneElement(props.children, { poolReserve, user, userReserve, maxAmountToRepay, walletBalance, networkConfig, debtType })}
+            {account && React.cloneElement(props.children, { poolReserve, user, userReserve, maxAmountToRepay, walletBalance, networkConfig, debtType })}
         </GridContent>
     );
 };

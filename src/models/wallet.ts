@@ -1,102 +1,24 @@
-import { useEffect, useState, useRef } from 'react';
-import { message } from 'antd';
+
 import { useModel } from 'umi';
-import { hooks, metaMask } from '@/lib/connectors/metaMask'
 import { WalletBalanceProviderFactory } from '@/lib/contracts/WalletBalanceProviderContract';
 import { getProvider, getNetwork } from '@/lib/helpers/provider';
-
-const {
-    useIsActivating,
-    useIsActive,
-    useAccounts,
-    useProvider,
-    useChainId,
-    // useError,
-    // useENSNames
-} = hooks
-
-const isMetaMaskReady = () => window.ethereum && typeof window.ethereum === 'object';
+import { useEffect, useState } from 'react';
+import { ethers } from 'ethers';
 
 export default () => {
+
     const { currentMarket } = useModel('market', res => ({
         currentMarket: res.current
     }));
 
-    const [current, setCurrent] = useState('');
-    const [status, setStatus] = useState('unconnect');
-    const [currentAccount, setCurrentAccount] = useState('');
-    const [currentChainId, setCurrentChainId] = useState<number | undefined>(undefined);
-    const [currentProvider, setCurrentProvider] = useState<any>(undefined);
+    const [account, setAccount] = useState<string | null>(null);
     const [balances, setBalances] = useState({});
-    const [wallet, setWallet] = useState<any>(undefined);
-
-    const [isConnect, setIsConnect] = useState(false);
-    const walletRef = useRef<any>();
-
-    const chainId = useChainId();
-    const isActivating = useIsActivating();
-    const isActive = useIsActive();
-    const accounts = useAccounts();
-    const provider = useProvider();
-    // const error = useError();
-    console.log(isActivating, isActive, accounts, chainId);
-
-    useEffect(() => {
-        if (current == 'MetaMask') {
-            if (isActivating && !isActive) {
-                setStatus('connecting')
-            } else if (isActive) {
-                setStatus('connected')
-                accounts && setCurrentAccount(accounts[0]);
-                setCurrentChainId(chainId);
-                setCurrentProvider(provider);
-
-                setWallet({
-                    current,
-                    currentAccount: accounts && accounts[0],
-                    provider: provider,
-                    chainId: chainId
-                });
-
-                localStorage.setItem('wallet', current);
-            } else {
-                if(!isConnect){
-                    setCurrent('')
-                    setStatus('unconnect');
-                    setCurrentAccount('')
-                    setCurrentChainId(undefined);
-                    setCurrentProvider(undefined);
-                }
-               
-            }
-
-        }
-    }, [isActivating, isActive, accounts, chainId]);
-
-    const connect = async (type: string) => {
-        if (current) return;
-
-        if (type == 'MetaMask') {
-            if (!isMetaMaskReady()) {
-                return message.error('No MetaMask wallet detected.')
-            }
-
-            setCurrent(type)
-            walletRef.current = metaMask
-        }
-
-        walletRef.current.activate();
-        setIsConnect(true);
-    }
-    const disconnect = () => {
-        walletRef.current.deactivate();
-        setIsConnect(false);
-        localStorage.removeItem('wallet');
-        
-    }
+    const [provider, setProvider] = useState<any>(null);
+    const [chainId, setChainId] = useState<number | undefined>();
+    const [isConnected, setIsConnected] = useState<boolean>(false);
 
     const getBalance = async () => {
-        if (!currentAccount) return;
+        if (!account) return;
 
         const chainId = currentMarket.chainId
         const provider = getProvider(chainId);
@@ -110,7 +32,7 @@ export default () => {
         const { 0: reserves, 1: balances } =
             await contract.getUserWalletBalances(
                 currentMarket.addresses.LENDING_POOL_ADDRESS_PROVIDER,
-                currentAccount
+                account
             );
 
         const aggregatedBalance = reserves.reduce((acc, reserve, i) => {
@@ -118,20 +40,27 @@ export default () => {
             return acc;
         }, {} as { [address: string]: string });
 
-        setBalances(aggregatedBalance)
+        setBalances(aggregatedBalance);
     }
 
     const refresh = () => {
         getBalance()
     }
 
+    const setWallet = (account: string | null, provider: any, isConnected: boolean, chainId: number | undefined) => {
+        setAccount(account);
+        setProvider(provider && new ethers.providers.Web3Provider(provider));
+        setChainId(chainId);
+        setIsConnected(isConnected);
+    }
+
     useEffect(() => {
-        if (currentAccount) {
+        if (account) {
             getBalance();
         } else {
-            setBalances({})
+            setBalances({});
         }
-    }, [currentAccount])
+    }, [account])
 
-    return { connect, disconnect, status, wallet, balances, refresh, currentChainId, currentProvider }
+    return { account, provider, balances, refresh, setWallet, chainId, isConnected }
 }

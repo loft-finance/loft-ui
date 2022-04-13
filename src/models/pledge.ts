@@ -16,10 +16,11 @@ const APPROVE_VALUE = valueToBigNumber('2').pow(256).minus(1).toString(10)
 
 export default () => {
   const { currentMarket } = useModel('market', res => ({
-      currentMarket: res.current
+    currentMarket: res.current
   }));
-  const { wallet } = useModel('wallet', res=>({
-      wallet: res.wallet
+  const { account, provider } = useModel('wallet', res => ({
+    account: res.account,
+    provider: res.provider
   }))
 
   const [lpApy, setLpApy] = useState(valueToBigNumber('0'));
@@ -36,7 +37,7 @@ export default () => {
 
 
   const getUserData = async () => {
-    if (!wallet?.currentAccount) return;
+    if (!account) return;
     const chainId = currentMarket.chainId
     const provider = getProvider(chainId);
 
@@ -46,12 +47,12 @@ export default () => {
     const contractLoft = new ethers.Contract(loft.address, loft.abi, provider);
 
     const [balanceLp, depositedLp, earnedLp, balanceLoft, depositedLoft, earnedLoft] = await Promise.all([
-      contractLp.balanceOf(wallet?.currentAccount),
-      contractFarm.deposited(lp.poolNumber, wallet?.currentAccount),
-      contractFarm.pending(lp.poolNumber, wallet?.currentAccount),
-      contractLoft.balanceOf(wallet?.currentAccount),
-      contractFarm.deposited(loft.poolNumber, wallet?.currentAccount),
-      contractFarm.pending(loft.poolNumber, wallet?.currentAccount),
+      contractLp.balanceOf(account),
+      contractFarm.deposited(lp.poolNumber, account),
+      contractFarm.pending(lp.poolNumber, account),
+      contractLoft.balanceOf(account),
+      contractFarm.deposited(loft.poolNumber, account),
+      contractFarm.pending(loft.poolNumber, account),
     ]);
 
     setBalanceLp(valueToBigNumber(formatUnits(balanceLp, lp.decimals).toString()))
@@ -68,19 +69,19 @@ export default () => {
 
 
   const isLpAllowanceEnough = async () => {
-    if (!wallet?.currentAccount) return false;
+    if (!account) return false;
     const chainId = currentMarket.chainId
     const provider = getProvider(chainId);
 
     const { farm, lp } = config;
     const contract = new ethers.Contract(lp.address, lp.abi, provider);
 
-    const allowance = await contract.allowance(wallet?.currentAccount, farm.address)
+    const allowance = await contract.allowance(account, farm.address)
     return isAllowanceEnough(allowance.toString())
   }
 
   const lpApprove = async () => {
-    const provider = wallet.provider;
+
     const signer = provider.getSigner()
     const { farm, lp } = config;
     const contract = new ethers.Contract(lp.address, lp.abi, signer || provider);
@@ -88,7 +89,7 @@ export default () => {
   }
 
   const lpDeposit = async (amount: string) => {
-    const provider = wallet.provider;
+
     const signer = provider.getSigner()
 
     const { farm, lp } = config;
@@ -99,7 +100,6 @@ export default () => {
   }
 
   const lpWithdraw = async (amount: number) => {
-    const provider = wallet.provider;
     const signer = provider.getSigner()
 
     const { farm, lp } = config;
@@ -110,19 +110,18 @@ export default () => {
 
 
   const isLoftAllowanceEnough = async () => {
-    if (!wallet?.currentAccount) return false;
+    if (!account) return false;
     const chainId = currentMarket.chainId
     const provider = getProvider(chainId);
 
     const { farm, loft } = config;
     const contract = new ethers.Contract(loft.address, loft.abi, provider);
 
-    const allowance = await contract.allowance(wallet?.currentAccount, farm.address)
+    const allowance = await contract.allowance(account, farm.address)
     return isAllowanceEnough(allowance.toString())
   }
 
   const loftApprove = async () => {
-    const provider = wallet.provider;
     const signer = provider.getSigner()
     const { farm, loft } = config;
     const contract = new ethers.Contract(loft.address, loft.abi, signer || provider);
@@ -130,7 +129,6 @@ export default () => {
   }
 
   const loftDeposit = async (amount: number) => {
-    const provider = wallet.provider;
     const signer = provider.getSigner()
 
     const { farm, loft } = config;
@@ -140,7 +138,6 @@ export default () => {
   }
 
   const loftWithdraw = async (amount: number) => {
-    const provider = wallet.provider;
     const signer = provider.getSigner()
 
     const { farm, loft } = config;
@@ -260,7 +257,7 @@ export default () => {
 
   useEffect(() => {
     getPublicData();
-    if (wallet) {
+    if (account) {
       getUserData();
       if (!IntervalIdUserReserves) {
         IntervalIdUserReserves = setInterval(() => {
@@ -275,7 +272,7 @@ export default () => {
     return () => {
       IntervalIdUserReserves && clearInterval(IntervalIdUserReserves);
     }
-  }, [wallet]);
+  }, [account]);
 
   const refresh = () => {
     getUserData()

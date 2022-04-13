@@ -10,33 +10,29 @@ const IconFont = createFromIconfontCN({
 // import { getNetwork } from '@/lib/helpers/provider';
 import Connect from '@/components/Wallet/Connect';
 import networkNameConfig from './index.network';
+import { useWallet } from 'use-wallet';
 
 export type SiderTheme = 'light' | 'dark';
 
 const GlobalHeaderRight: React.FC = () => {
+  const { reset, account, chainId, isConnected } = useWallet();
+
   const { initialState } = useModel('@@initialState');
 
   if (!initialState || !initialState.settings) {
     return null;
   }
 
-  const { navTheme, layout } = initialState.settings;
   let className = styles.right;
-
-  if ((navTheme === 'dark' && layout === 'top') || layout === 'mix') {
-    className = `${styles.right}  ${styles.dark}`;
-  }
-
-  const { wallet, disconnect } = useModel('wallet');
 
   const connectRef = useRef();
 
   const handler = {
     connect() {
-      connectRef.current.show();
+      (connectRef as any).current.show();
     },
     disconnect() {
-      disconnect()
+      reset()
     }
   };
 
@@ -47,18 +43,14 @@ const GlobalHeaderRight: React.FC = () => {
     </Menu>
   );
 
-  // const { current: currentMarket } = useModel('market');
+  const networkConfig = networkNameConfig[chainId || 0];
 
-  // const chainId = currentMarket.chainId
-
-  const networkConfig = networkNameConfig[wallet?.chainId];
-  
   return (
     <>
       <Space className={className}>
         <IconFont type="icon-ic_twitter" className={styles.share} />
         <IconFont type="icon-ic_telegram" className={styles.share} />
-        {!wallet && (
+        {!isConnected() && (
           <Button
             size="small"
             style={{ borderRadius: 16, padding: '0 10px 24px' }}
@@ -67,11 +59,11 @@ const GlobalHeaderRight: React.FC = () => {
             connect
           </Button>
         )}
-        {!!wallet && !!wallet.currentAccount && (
+        {isConnected() && !!account && (
           <Dropdown overlay={menu} trigger={['click']}>
             <div className={styles.user}>
               {networkConfig || 'Anther'} Network
-              <div className={styles.account}>{wallet && wallet.currentAccount.slice(0, 4)}...{wallet.currentAccount.slice(-4)}</div>
+              <div className={styles.account}>{account.slice(0, 4)}...{account.slice(-4)}</div>
             </div>
           </Dropdown>
         )}

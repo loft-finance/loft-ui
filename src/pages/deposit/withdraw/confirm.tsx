@@ -10,11 +10,11 @@ import Back from '@/components/Back';
 import styles from './confirm.less';
 const { Step } = Steps;
 
-export default ({ poolReserve, user, userReserve,  maxAmountToDeposit, match: { params: { amount: amount0 } }, }: any,) => {
-    if(!poolReserve || !userReserve) {
+export default ({ poolReserve, user, userReserve, maxAmountToDeposit, match: { params: { amount: amount0 } }, }: any,) => {
+    if (!poolReserve || !userReserve) {
         // return <div style={{textAlign:'center'}}><Spin /></div>
     }
-    
+
     const underlyingSymbol = poolReserve?.symbol || ''
     const amount = valueToBigNumber(amount0);
 
@@ -24,16 +24,17 @@ export default ({ poolReserve, user, userReserve,  maxAmountToDeposit, match: { 
     const [actionTxData, setActionTxData] = useState<any>(undefined)
     const [customGasPrice, setCustomGasPrice] = useState<string | null>(null);
     const [records, setRecords] = useState<any>([]);
-    
-    const { refreshPool } = useModel('pool', res=>({
+
+    const { refreshPool } = useModel('pool', res => ({
         refreshPool: res.refresh
     }));
-    const { wallet, refreshWallet } = useModel('wallet', res=>({
-        wallet: res.wallet,
-        refreshWallet: res.refresh
+    const { account, provider, refreshWallet } = useModel('wallet', res => ({
+        account: res.account,
+        refreshWallet: res.refresh,
+        provider: res.provider
     }));
-    const provider = wallet?.provider
-    const { lendingPool } = useModel('lendingPool', res=>({
+
+    const { lendingPool } = useModel('lendingPool', res => ({
         lendingPool: res.lendingPool
     }));
 
@@ -52,7 +53,7 @@ export default ({ poolReserve, user, userReserve,  maxAmountToDeposit, match: { 
     const availableLiquidity = valueToBigNumber(poolReserve.availableLiquidity);
     let maxAmountToWithdraw = BigNumber.min(underlyingBalance, availableLiquidity);
     let maxCollateralToWithdrawInETH = valueToBigNumber('0');
-    
+
     if (
         userReserve.usageAsCollateralEnabledOnUser &&
         poolReserve.usageAsCollateralEnabled &&
@@ -62,64 +63,64 @@ export default ({ poolReserve, user, userReserve,  maxAmountToDeposit, match: { 
         // with 0.5% gap to avoid reverting of tx
         const excessHF = valueToBigNumber(user.healthFactor).minus('1');
         if (excessHF.gt('0')) {
-        maxCollateralToWithdrawInETH = excessHF
-            .multipliedBy(user.totalBorrowsMarketReferenceCurrency)
-            // because of the rounding issue on the contracts side this value still can be incorrect
-            .div(Number(poolReserve.reserveLiquidationThreshold) + 0.01)
-            .multipliedBy('0.99');
+            maxCollateralToWithdrawInETH = excessHF
+                .multipliedBy(user.totalBorrowsMarketReferenceCurrency)
+                // because of the rounding issue on the contracts side this value still can be incorrect
+                .div(Number(poolReserve.reserveLiquidationThreshold) + 0.01)
+                .multipliedBy('0.99');
         }
         maxAmountToWithdraw = BigNumber.min(
-        maxAmountToWithdraw,
-        maxCollateralToWithdrawInETH.dividedBy(poolReserve.priceInMarketReferenceCurrency)
+            maxAmountToWithdraw,
+            maxCollateralToWithdrawInETH.dividedBy(poolReserve.priceInMarketReferenceCurrency)
         );
     }
-    
+
     let amountToWithdraw = amount;
     let displayAmountToWithdraw = amount;
-    
+
     if (amountToWithdraw.eq('-1')) {
         if (user.totalBorrowsMarketReferenceCurrency !== '0') {
-        if (!maxAmountToWithdraw.eq(underlyingBalance)) {
-            amountToWithdraw = maxAmountToWithdraw;
-        }
+            if (!maxAmountToWithdraw.eq(underlyingBalance)) {
+                amountToWithdraw = maxAmountToWithdraw;
+            }
         }
         displayAmountToWithdraw = maxAmountToWithdraw;
     }
-    
+
     let blockingError = '';
     let totalCollateralInETHAfterWithdraw = valueToBigNumber(
         user.totalCollateralMarketReferenceCurrency
     );
     let liquidationThresholdAfterWithdraw = user.currentLiquidationThreshold;
     let healthFactorAfterWithdraw = valueToBigNumber(user.healthFactor);
-    
+
     if (userReserve.usageAsCollateralEnabledOnUser && poolReserve.usageAsCollateralEnabled) {
         const amountToWithdrawInEth = displayAmountToWithdraw.multipliedBy(
-        poolReserve.priceInMarketReferenceCurrency
+            poolReserve.priceInMarketReferenceCurrency
         );
         totalCollateralInETHAfterWithdraw =
-        totalCollateralInETHAfterWithdraw.minus(amountToWithdrawInEth);
-    
+            totalCollateralInETHAfterWithdraw.minus(amountToWithdrawInEth);
+
         liquidationThresholdAfterWithdraw = valueToBigNumber(
-        user.totalCollateralMarketReferenceCurrency
+            user.totalCollateralMarketReferenceCurrency
         )
-        .multipliedBy(user.currentLiquidationThreshold)
-        .minus(
-            valueToBigNumber(amountToWithdrawInEth).multipliedBy(
-            poolReserve.reserveLiquidationThreshold
+            .multipliedBy(user.currentLiquidationThreshold)
+            .minus(
+                valueToBigNumber(amountToWithdrawInEth).multipliedBy(
+                    poolReserve.reserveLiquidationThreshold
+                )
             )
-        )
-        .div(totalCollateralInETHAfterWithdraw)
-        .toFixed(4, BigNumber.ROUND_DOWN);
-    
+            .div(totalCollateralInETHAfterWithdraw)
+            .toFixed(4, BigNumber.ROUND_DOWN);
+
         healthFactorAfterWithdraw = calculateHealthFactorFromBalancesBigUnits(
-        totalCollateralInETHAfterWithdraw,
-        user.totalBorrowsMarketReferenceCurrency,
-        liquidationThresholdAfterWithdraw
+            totalCollateralInETHAfterWithdraw,
+            user.totalBorrowsMarketReferenceCurrency,
+            liquidationThresholdAfterWithdraw
         );
-    
+
         if (healthFactorAfterWithdraw.lt('1') && user.totalBorrowsMarketReferenceCurrency !== '0') {
-        // blockingError = intl.formatMessage(messages.errorCanNotWithdrawThisAmount);
+            // blockingError = intl.formatMessage(messages.errorCanNotWithdrawThisAmount);
         }
     }
 
@@ -128,10 +129,10 @@ export default ({ poolReserve, user, userReserve,  maxAmountToDeposit, match: { 
     // healthFactorAfterWithdraw.toNumber() <= 1.05;
 
     useEffect(() => {
-        if (wallet) {
+        if (account) {
             handler.getTx({ withdrawing: false })
         }
-    }, [wallet]);
+    }, [account]);
 
     const handler = {
         async getTx({ withdrawing = false }) {
@@ -154,7 +155,7 @@ export default ({ poolReserve, user, userReserve,  maxAmountToDeposit, match: { 
                         mainTxType,
                     ].includes(tx.txType)
                 );
-                
+
                 let approve, action: any;
                 if (approvalTx) {
                     approve = {
@@ -176,8 +177,8 @@ export default ({ poolReserve, user, userReserve,  maxAmountToDeposit, match: { 
                     setActionTxData(action)
                 }
 
-                if((approve || approveTxData) && action){
-                    if(!approve) approve = approveTxData
+                if ((approve || approveTxData) && action) {
+                    if (!approve) approve = approveTxData
                     setSteps([
                         {
                             key: 'approval',
@@ -194,7 +195,7 @@ export default ({ poolReserve, user, userReserve,  maxAmountToDeposit, match: { 
                             buttonText: <FormattedMessage id="pages.deposit.withdraw.confirm.steps.withdraw.button" />,
                             stepText: <FormattedMessage id="pages.deposit.withdraw.confirm.steps.withdraw.step" />,
                             description: <FormattedMessage id="pages.deposit.withdraw.confirm.steps.withdraw.desc" />,
-                            loading: withdrawing ? true:false,
+                            loading: withdrawing ? true : false,
                             error: '',
                         },
                         {
@@ -207,7 +208,7 @@ export default ({ poolReserve, user, userReserve,  maxAmountToDeposit, match: { 
                             error: '',
                         },
                     ]);
-                }else if(action){
+                } else if (action) {
                     setSteps([
                         {
                             key: 'withdraw',
@@ -215,7 +216,7 @@ export default ({ poolReserve, user, userReserve,  maxAmountToDeposit, match: { 
                             buttonText: <FormattedMessage id="pages.deposit.withdraw.confirm.steps.withdraw.button" />,
                             stepText: <FormattedMessage id="pages.deposit.withdraw.confirm.steps.withdraw.step" />,
                             description: <FormattedMessage id="pages.deposit.withdraw.confirm.steps.withdraw.desc" />,
-                            loading: withdrawing ? true:false,
+                            loading: withdrawing ? true : false,
                             error: '',
                         },
                         {
@@ -229,7 +230,7 @@ export default ({ poolReserve, user, userReserve,  maxAmountToDeposit, match: { 
                         },
                     ]);
                 }
-                
+
                 return true;
             } catch (e) {
                 console.log('Error on txs loading', e);
@@ -246,11 +247,11 @@ export default ({ poolReserve, user, userReserve,  maxAmountToDeposit, match: { 
                     setApproveTxData,
                     customGasPrice,
                     {
-                      onConfirmation: handler.approve.confirmed,
+                        onConfirmation: handler.approve.confirmed,
                     }
                 )
             },
-            confirmed(){
+            confirmed() {
                 console.log('approve confirmed----')
                 handler.loading.set('approval', false);
                 handler.records.set('approval', 'approval', 'confirmed')
@@ -276,7 +277,7 @@ export default ({ poolReserve, user, userReserve,  maxAmountToDeposit, match: { 
                         }
                     );
                 } else {
-                    setActionTxData((state:any) => ({
+                    setActionTxData((state: any) => ({
                         ...state,
                         txStatus: TxStatusType.error,
                         loading: false,
@@ -285,10 +286,10 @@ export default ({ poolReserve, user, userReserve,  maxAmountToDeposit, match: { 
                     handler.loading.set('withdraw', false);
                 }
             },
-            executed(){
+            executed() {
                 console.log('--------withdraw executed----')
             },
-            confirmed(){
+            confirmed() {
                 handler.records.set('withdraw', 'withdraw', 'confirmed')
                 setCurrent(current + 1);
                 handler.loading.set('withdraw', false);
@@ -303,14 +304,14 @@ export default ({ poolReserve, user, userReserve,  maxAmountToDeposit, match: { 
             }
         },
         records: {
-            set(key: string, name: string, status: string){
-                let id = records.findIndex((item: any)=>item.key == key)
-                if(id !==  -1){
+            set(key: string, name: string, status: string) {
+                let id = records.findIndex((item: any) => item.key == key)
+                if (id !== -1) {
                     records[id] = {
                         ...records[id],
                         status
                     }
-                }else{
+                } else {
                     records.push({
                         key,
                         name,
@@ -318,13 +319,13 @@ export default ({ poolReserve, user, userReserve,  maxAmountToDeposit, match: { 
                     })
                 }
 
-                setRecords([ ...records ])
+                setRecords([...records])
             }
         },
         loading: {
-            set(key: string, status: boolean){
-                let list = steps.map((item: any)=>{
-                    if(item.key === key){
+            set(key: string, status: boolean) {
+                let list = steps.map((item: any) => {
+                    if (item.key === key) {
                         item.loading = status
                     }
                     return item;
@@ -334,23 +335,23 @@ export default ({ poolReserve, user, userReserve,  maxAmountToDeposit, match: { 
             }
         },
         error: {
-            set(key: string, error: string){
-                let id = steps.findIndex((item: any)=>item.key == key)
-                if(id !==  -1){
+            set(key: string, error: string) {
+                let id = steps.findIndex((item: any) => item.key == key)
+                if (id !== -1) {
                     steps[id] = {
                         ...steps[id],
                         error
                     }
-                    setSteps([ ...steps ])
+                    setSteps([...steps])
                 }
             }
         },
         async submit() {
-            if(approveTxData && steps[current]?.key === 'approval'){
+            if (approveTxData && steps[current]?.key === 'approval') {
                 handler.approve.submit()
-            }else if(actionTxData && steps[current]?.key === 'withdraw'){
+            } else if (actionTxData && steps[current]?.key === 'withdraw') {
                 handler.action.submit()
-            }else if(steps[current]?.key === 'completed'){
+            } else if (steps[current]?.key === 'completed') {
                 history.push('/control')
             }
         }
@@ -409,50 +410,50 @@ export default ({ poolReserve, user, userReserve,  maxAmountToDeposit, match: { 
                         </Col>
                     </Row>
                 </div>
-                {!steps.length && <Row><Col span={10} offset={7} style={{ marginTop: 20, textAlign:'center' }}><Spin /></Col></Row>}
+                {!steps.length && <Row><Col span={10} offset={7} style={{ marginTop: 20, textAlign: 'center' }}><Spin /></Col></Row>}
                 {steps.length > 0 &&
-                <Row>
-                    <Col span={10} offset={7} style={{ marginBottom: 20 }}>
-                        <Steps
-                            type="navigation"
-                            size="small"
-                            current={current}
-                            className="site-navigation-steps"
-                        >
-                            {steps.map((item:any, index: number) => (
-                                <Step title={item.title} key={index} />
-                            ))}
-                        </Steps>
-                    </Col>
-                    <Col span={7} offset={7}>
-                        <p className={styles.tip}>
-                            {current + 1}/{steps.length} {steps[current]?.stepText}
-                        </p>
+                    <Row>
+                        <Col span={10} offset={7} style={{ marginBottom: 20 }}>
+                            <Steps
+                                type="navigation"
+                                size="small"
+                                current={current}
+                                className="site-navigation-steps"
+                            >
+                                {steps.map((item: any, index: number) => (
+                                    <Step title={item.title} key={index} />
+                                ))}
+                            </Steps>
+                        </Col>
+                        <Col span={7} offset={7}>
+                            <p className={styles.tip}>
+                                {current + 1}/{steps.length} {steps[current]?.stepText}
+                            </p>
 
-                        <p className={styles.tip} style={steps[current]?.error?{ color: '#F46D6D' }:{}}>{steps[current]?.error?steps[current]?.error:steps[current]?.description}</p>
-                    </Col>
-                    <Col span={3}>
-                        <Button type="primary" shape="round" loading={steps[current]?.loading?true:false} onClick={handler.submit}>
-                            {steps[current]?.buttonText}
-                        </Button>
-                    </Col>
-                    <Col span={10} offset={7}>
-                        <Divider style={{ margin: '12px 0' }} />
-                    </Col>
-                    <Col span={10} offset={7}>
-                        <Row>
-                            {records.map((item: any) => <>
-                            <Col span={8}>{item.name}</Col>
-                            <Col span={8}>
-                                {item.status} {item.status == 'wait' ? <LoadingOutlined /> : <Badge status={item.status == 'confirmed' ? "success" : "error"} />}
-                            </Col>
-                            <Col span={8}>
-                                <FormattedMessage id="pages.deposit.withdraw.confirm.explorer" />
-                            </Col>
-                            </>)}
-                        </Row>
-                    </Col>
-                </Row>
+                            <p className={styles.tip} style={steps[current]?.error ? { color: '#F46D6D' } : {}}>{steps[current]?.error ? steps[current]?.error : steps[current]?.description}</p>
+                        </Col>
+                        <Col span={3}>
+                            <Button type="primary" shape="round" loading={steps[current]?.loading ? true : false} onClick={handler.submit}>
+                                {steps[current]?.buttonText}
+                            </Button>
+                        </Col>
+                        <Col span={10} offset={7}>
+                            <Divider style={{ margin: '12px 0' }} />
+                        </Col>
+                        <Col span={10} offset={7}>
+                            <Row>
+                                {records.map((item: any) => <>
+                                    <Col span={8}>{item.name}</Col>
+                                    <Col span={8}>
+                                        {item.status} {item.status == 'wait' ? <LoadingOutlined /> : <Badge status={item.status == 'confirmed' ? "success" : "error"} />}
+                                    </Col>
+                                    <Col span={8}>
+                                        <FormattedMessage id="pages.deposit.withdraw.confirm.explorer" />
+                                    </Col>
+                                </>)}
+                            </Row>
+                        </Col>
+                    </Row>
                 }
             </Card>
         </Card>

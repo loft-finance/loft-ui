@@ -30,8 +30,8 @@ export default () => {
     reserveIncentives: res.reserveIncentives
   }))
 
-  const { wallet } = useModel('wallet', res => ({
-    wallet: res.wallet,
+  const { account } = useModel('wallet', res => ({
+    account: res.account,
   }))
 
   const availableBorrowsMarketReferenceCurrency = valueToBigNumber(
@@ -39,7 +39,7 @@ export default () => {
   );
 
   const filteredReserves = reserves.filter(
-    (reserve) =>
+    (reserve: any) =>
       reserve.symbol.toLowerCase().includes(searchValue.toLowerCase()) &&
       reserve.isActive &&
       (!showOnlyStableCoins || isAssetStable(reserve.symbol))
@@ -48,7 +48,7 @@ export default () => {
   const list = (withFilter: boolean) => {
     const data = (reserves: any) =>
       reserves.map((reserve: any) => {
-        const availableBorrows = wallet && availableBorrowsMarketReferenceCurrency.gt(0)
+        const availableBorrows = account && availableBorrowsMarketReferenceCurrency.gt(0)
           ? BigNumber.min(
             // one percent margin to don't fail tx
             availableBorrowsMarketReferenceCurrency
@@ -67,10 +67,10 @@ export default () => {
         return {
           ...reserve,
           currentBorrows:
-            wallet && user?.userReservesData.find((userReserve: any) => userReserve.reserve.id === reserve.id)
+            account && user?.userReservesData.find((userReserve: any) => userReserve.reserve.id === reserve.id)
               ?.totalBorrows || '0',
           currentBorrowsInUSD:
-            wallet && user?.userReservesData.find((userReserve: any) => userReserve.reserve.id === reserve.id)
+            account && user?.userReservesData.find((userReserve: any) => userReserve.reserve.id === reserve.id)
               ?.totalBorrowsUSD || '0',
           availableBorrows,
           availableBorrowsInUSD,
@@ -210,7 +210,7 @@ export default () => {
               dataSource={list(true)}
               pagination={false}
               loading={!list(true)?.length}
-              scroll={{ y: 600 }}
+              // scroll={{ y: 600 }}
               onRow={(record) => ({ onClick: () => handler.detail(record) })}
             />
           </Col>

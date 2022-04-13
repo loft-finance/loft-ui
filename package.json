@@ -91,6 +91,7 @@
     "react-router": "^4.3.1",
     "umi": "^3.5.0",
     "umi-serve": "^1.9.10",
+    "use-wallet": "^0.13.6",
     "web3-utils": "^1.7.1"
   },
   "devDependencies": {

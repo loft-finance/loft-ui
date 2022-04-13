@@ -29,11 +29,11 @@ export default ({ poolReserve, user, userReserve, maxAmountToRepay, debtType, wa
         baseCurrency: res.baseCurrency,
         refreshPool: res.refresh
     }))
-    const { wallet, refreshWallet } = useModel('wallet', res => ({
-        wallet: res.wallet,
-        refreshWallet: res.refresh
+    const { account, provider, refreshWallet } = useModel('wallet', res => ({
+        account: res.account,
+        refreshWallet: res.refresh,
+        provider: res.provider
     }));
-    const provider = wallet?.provider
     const { lendingPool } = useModel('lendingPool', res => ({
         lendingPool: res.lendingPool
     }));
@@ -82,10 +82,10 @@ export default ({ poolReserve, user, userReserve, maxAmountToRepay, debtType, wa
             userReserve.usageAsCollateralEnabledOnUser);
 
     useEffect(() => {
-        if (wallet) {
+        if (account) {
             handler.getTx({ repaying: false })
         }
-    }, [wallet]);
+    }, [account]);
 
     const handler = {
         async getTx({ repaying = false }) {

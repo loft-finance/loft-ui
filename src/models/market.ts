@@ -6,7 +6,7 @@ const getInitialMarket = () => {
     return markets[keys[0]];
 };
 export default () => {
-    const [current, setCurrent] = useState(getInitialMarket());
+    const [current,] = useState(getInitialMarket());
 
     return { current }
 }

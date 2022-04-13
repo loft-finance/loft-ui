@@ -20,20 +20,20 @@ export async function getInitialState() {
 }
 
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
-export const layout: RunTimeLayoutConfig = ({ initialState }) => {
-  return {
-    rightContentRender: () => <RightContent />,
-    disableContentMargin: false,
-    waterMarkProps: {
-      content: '',
-    },
-    footerRender: () => <Footer />,
-    onPageChange: () => {},
-    links: [],
-    menuHeaderRender: undefined,
-    // 自定义 403 页面
-    // unAccessible: <div>unAccessible</div>,
-    ...initialState?.settings,
-    iconfontUrl: '//at.alicdn.com/t/font_3128701_ei68zukt4a9.js',
-  };
-};
+// export const layout: RunTimeLayoutConfig = ({ initialState }) => {
+//   return {
+//     rightContentRender: () => <RightContent />,
+//     disableContentMargin: false,
+//     waterMarkProps: {
+//       content: '',
+//     },
+//     footerRender: () => <Footer />,
+//     onPageChange: () => {},
+//     links: [],
+//     menuHeaderRender: undefined,
+//     // 自定义 403 页面
+//     // unAccessible: <div>unAccessible</div>,
+//     ...initialState?.settings,
+//     iconfontUrl: '//at.alicdn.com/t/font_3128701_ei68zukt4a9.js',
+//   };
+// };

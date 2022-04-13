@@ -12,11 +12,11 @@ import { getNetwork } from '@/lib/helpers/provider';
 import { fixedToValue } from '@/utils';
 
 
-export default (props) => {
+export default (props: { children?: any; match?: any; }) => {
   const { match: { params: { underlyingAsset, id } } } = props
 
-  const { wallet, balances } = useModel('wallet', res => ({
-    wallet: res.wallet,
+  const { account, balances } = useModel('wallet', res => ({
+    account: res.account,
     balances: res.balances
   }));
 
@@ -85,11 +85,11 @@ export default (props) => {
       />
       <Overview poolReserve={poolReserve} marketRefPriceInUsd={baseCurrency.marketRefPriceInUsd} />
 
-      {!wallet && <WalletDisconnected />}
+      {!account && <WalletDisconnected />}
 
       {/* {wallet && maxAmountToDeposit.toString() == '0' && walletBalance.eq('0') && <WalletEmpty symbol={poolReserve ? poolReserve?.symbol : ''} />} */}
 
-      {wallet && React.cloneElement(props.children, { poolReserve, userReserve, maxAmountToDeposit: maxAmountToDeposit.toString(10) })}
+      {account && React.cloneElement(props.children, { poolReserve, userReserve, maxAmountToDeposit: maxAmountToDeposit.toString(10) })}
     </GridContent>
   );
 };

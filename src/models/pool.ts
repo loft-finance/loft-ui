@@ -11,8 +11,8 @@ export default () => {
     const { currentMarket } = useModel('market', res => ({
         currentMarket: res.current
     }));
-    const { wallet } = useModel('wallet', res=>({
-        wallet: res.wallet
+    const { account } = useModel('wallet', res => ({
+        account: res.account
     }))
 
     const [loadingReverse, setLoadingReverse] = useState(false);
@@ -27,6 +27,7 @@ export default () => {
         const provider = getProvider(chainId);
 
         const networkConfig = getNetwork(chainId);
+
         const contract = new UiPoolDataProvider({
             uiPoolDataProviderAddress: networkConfig.addresses.uiPoolDataProvider,
             provider,
@@ -46,12 +47,12 @@ export default () => {
         }
     }
     const getReserves = (): any => {
-        if(!reservesBase) return [];
+        if (!reservesBase) return [];
         return formatReserves(fixUnderlyingReserves(reservesBase));
     }
 
     const fetchUserReserves = async () => {
-        if(!wallet?.currentAccount) return;
+        if (!account) return;
 
         const chainId = currentMarket.chainId
         const provider = getProvider(chainId);
@@ -65,14 +66,14 @@ export default () => {
         setLoadingUserReverse(true);
         const userReservesResponse = await contract.getUserReservesHumanized(
             lendingPoolAddressProvider,
-            wallet?.currentAccount
+            account
         );
         setLoadingUserReverse(false);
         setUserReservesBase(userReservesResponse)
     }
     const getUserReserves = (): any => {
-        if(!wallet?.currentAccount || !userReservesBase || !userReservesBase?.length) return undefined;
-        return  formatUserReserves(fixUnderlyingUserReserves(reservesBase, userReservesBase));
+        if (!account || !userReservesBase || !userReservesBase?.length) return undefined;
+        return formatUserReserves(fixUnderlyingUserReserves(reservesBase, userReservesBase));
     }
 
     const fixUnderlyingReserves = (reserves: any) => {
@@ -80,30 +81,30 @@ export default () => {
         const networkConfig = getNetwork(chainId);
         reserves
             ?.map((reserve: any) => {
-            if (reserve.symbol.toUpperCase() === `W${networkConfig.baseAsset}`) {
-                return {
-                ...reserve,
-                symbol: networkConfig.baseAsset,
-                underlyingAsset: API_ETH_MOCK_ADDRESS.toLowerCase(),
-                };
-            }
-            if (
-                reserve.underlyingAsset.toLowerCase() ===
-                '0x50379f632ca68d36e50cfbc8f78fe16bd1499d1e'.toLowerCase()
-            ) {
-                reserve.symbol = 'GUNIDAIUSDC';
-            }
-            if (
-                reserve.underlyingAsset.toLowerCase() ===
-                '0xd2eec91055f07fe24c9ccb25828ecfefd4be0c41'.toLowerCase()
-            ) {
-                reserve.symbol = 'GUNIUSDCUSDT';
-            }
-            return reserve;
+                if (reserve.symbol.toUpperCase() === `W${networkConfig.baseAsset}`) {
+                    return {
+                        ...reserve,
+                        symbol: networkConfig.baseAsset,
+                        underlyingAsset: API_ETH_MOCK_ADDRESS.toLowerCase(),
+                    };
+                }
+                if (
+                    reserve.underlyingAsset.toLowerCase() ===
+                    '0x50379f632ca68d36e50cfbc8f78fe16bd1499d1e'.toLowerCase()
+                ) {
+                    reserve.symbol = 'GUNIDAIUSDC';
+                }
+                if (
+                    reserve.underlyingAsset.toLowerCase() ===
+                    '0xd2eec91055f07fe24c9ccb25828ecfefd4be0c41'.toLowerCase()
+                ) {
+                    reserve.symbol = 'GUNIUSDCUSDT';
+                }
+                return reserve;
             })
             .sort(
-            ({ symbol: a }, { symbol: b }) =>
-                assetsOrder.indexOf(a.toUpperCase()) - assetsOrder.indexOf(b.toUpperCase())
+                ({ symbol: a }, { symbol: b }) =>
+                    assetsOrder.indexOf(a.toUpperCase()) - assetsOrder.indexOf(b.toUpperCase())
             );
         return reserves
     }
@@ -116,8 +117,8 @@ export default () => {
         const list: any = [];
         userReserves?.forEach((userReserve: any) => {
             const reserve = reserves?.find(
-            (reserve: any) =>
-                reserve.underlyingAsset.toLowerCase() === userReserve.underlyingAsset.toLowerCase()
+                (reserve: any) =>
+                    reserve.underlyingAsset.toLowerCase() === userReserve.underlyingAsset.toLowerCase()
             );
             if (reserve) {
                 const reserveWithBase = {
@@ -127,13 +128,13 @@ export default () => {
                 userReservesFixUnderlying.push(reserveWithBase);
                 if (reserve.symbol.toUpperCase() === `W${networkConfig.baseAsset}`) {
                     const userReserveFixed = {
-                    ...userReserve,
-                    underlyingAsset: API_ETH_MOCK_ADDRESS.toLowerCase(),
-                    reserve: {
-                        ...reserve,
-                        symbol: networkConfig.baseAsset,
+                        ...userReserve,
                         underlyingAsset: API_ETH_MOCK_ADDRESS.toLowerCase(),
-                    },
+                        reserve: {
+                            ...reserve,
+                            symbol: networkConfig.baseAsset,
+                            underlyingAsset: API_ETH_MOCK_ADDRESS.toLowerCase(),
+                        },
                     };
                     list.push(userReserveFixed);
                 } else {
@@ -158,8 +159,8 @@ export default () => {
                 ...reserve,
                 ...formattedReserve,
                 priceInMarketReferenceCurrency: normalize(
-                  reserve.priceInMarketReferenceCurrency,
-                  marketRefCurrencyDecimals
+                    reserve.priceInMarketReferenceCurrency,
+                    marketRefCurrencyDecimals
                 ),
             };
             list.push(fullReserve)
@@ -174,21 +175,21 @@ export default () => {
         marketRefPriceInUsd = normalize(marketRefPriceInUsd, 8)
 
         const computedUserData =
-        wallet?.currentAccount && rawUserReserves
-            ? formatUserSummary({
-                currentTimestamp,
-                marketRefPriceInUsd,
-                marketRefCurrencyDecimals,
-                rawUserReserves: rawUserReserves,
+            account && rawUserReserves
+                ? formatUserSummary({
+                    currentTimestamp,
+                    marketRefPriceInUsd,
+                    marketRefCurrencyDecimals,
+                    rawUserReserves: rawUserReserves,
                 })
-            : undefined;
+                : undefined;
         return {
-            id: wallet?.currentAccount,
+            id: account,
             ...computedUserData
         }
     }
 
-    
+
     let IntervalIdReserves: any = undefined
     let IntervalIdUserReserves: any = undefined
 
@@ -201,21 +202,24 @@ export default () => {
         IntervalIdReserves = setInterval(() => {
             fetchReserves()
         }, 30 * 1000)
-        if(wallet){
+        if (account) {
             fetchUserReserves()
             IntervalIdUserReserves = setInterval(() => {
                 getUserReserves()
             }, 30 * 1000)
-        }else{
-            if(IntervalIdUserReserves) clearInterval(IntervalIdUserReserves)
+        } else {
+            if (IntervalIdUserReserves) clearInterval(IntervalIdUserReserves)
         }
-
-    },[wallet])
+        return () => {
+            IntervalIdUserReserves && clearInterval(IntervalIdUserReserves);
+            IntervalIdReserves && clearInterval(IntervalIdReserves);
+        }
+    }, [account])
 
     const reserves = getReserves()
     const user = getUserReserves()
 
     // console.log('user', user)
 
-    return { loading: loadingReverse||loadingUserReverse?true:false , baseCurrency, reserves, user, userReservesFixUnderlying, refresh };
+    return { loading: loadingReverse || loadingUserReverse ? true : false, baseCurrency, reserves, user, userReservesFixUnderlying, refresh };
 };

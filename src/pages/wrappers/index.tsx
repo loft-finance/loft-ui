@@ -1,24 +1,16 @@
-import { useModel, } from 'umi';
-// import { GridContent } from '@ant-design/pro-layout';
 import './index.less';
 import { metaMask } from '@/lib/connectors/metaMask';
 import { Button } from 'antd';
+import { useWallet } from 'use-wallet';
+import { useEffect } from 'react';
+import { useModel } from 'umi';
 
 export default (props: any) => {
-    // wallet cache
-    const { connect, wallet } = useModel('wallet', res => ({
-        connect: res.connect,
-        wallet: res.wallet
-    }))
-    const walletCurrent = localStorage.getItem('wallet');
+    const { chainId, isConnected, account, ethereum } = useWallet();
 
-    if (walletCurrent) {
-        if (!wallet) {
-            if (walletCurrent === 'MetaMask') {
-                setTimeout(() => connect(walletCurrent), 500);
-            }
-        }
-    }
+    const { setWallet } = useModel('wallet', res => ({
+        setWallet: res.setWallet
+    }));
 
     const changeNetwork = async () => {
         try {
@@ -28,11 +20,15 @@ export default (props: any) => {
         }
     }
 
+    useEffect(() => {
+        setWallet(account, ethereum, isConnected(), chainId)
+    }, [isConnected, account, ethereum, chainId])
+
     return <>
         {
-            wallet && wallet.chainId != 42 &&
+            isConnected() && chainId != 42 &&
             <div className="alert">
-                App network ({wallet.chainId}) doesn't match to network selected in wallet
+                App network ({chainId}) doesn't match to network selected in wallet
                 (network with id: {42}).
                 <Button size="small" type="primary" shape="round" onClick={changeNetwork}>
                     Change Network

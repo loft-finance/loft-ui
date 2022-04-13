@@ -12,11 +12,11 @@ import styles from './style.less';
 
 
 export default () => {
-  const { reserves, baseCurrency } = useModel('pool', res=>({
+  const { reserves, baseCurrency } = useModel('pool', res => ({
     reserves: res.reserves,
     baseCurrency: res.baseCurrency
   }))
-  const { reserveIncentives } = useModel('incentives', res=>({
+  const { reserveIncentives } = useModel('incentives', res => ({
     reserveIncentives: res.reserveIncentives
   }))
 
@@ -25,62 +25,62 @@ export default () => {
   let totalLockedInUsd = valueToBigNumber('0');
   let totalLockedLiquidity = valueToBigNumber('0');
   const marketRefPriceInUsd = normalize(baseCurrency?.marketReferenceCurrencyPriceInUsd || '0', 8)
-  if(reserves){
+  if (reserves) {
     list = reserves
-    .filter((res: any) => res.isActive && !res.isFrozen)
-    .map((reserve: any) => {
-      totalLockedInUsd = totalLockedInUsd.plus(
-        valueToBigNumber(reserve.totalLiquidity)
+      .filter((res: any) => res.isActive && !res.isFrozen)
+      .map((reserve: any) => {
+        totalLockedInUsd = totalLockedInUsd.plus(
+          valueToBigNumber(reserve.totalLiquidity)
+            .multipliedBy(reserve.priceInMarketReferenceCurrency)
+            .multipliedBy(marketRefPriceInUsd)
+        );
+
+        const totalLiquidity = Number(reserve.totalLiquidity);
+        const totalLiquidityInUSD = valueToBigNumber(reserve.totalLiquidity)
           .multipliedBy(reserve.priceInMarketReferenceCurrency)
           .multipliedBy(marketRefPriceInUsd)
-      );
-      
-      const totalLiquidity = Number(reserve.totalLiquidity);
-      const totalLiquidityInUSD = valueToBigNumber(reserve.totalLiquidity)
-        .multipliedBy(reserve.priceInMarketReferenceCurrency)
-        .multipliedBy(marketRefPriceInUsd)
-        .toNumber();
+          .toNumber();
 
-      totalLockedLiquidity = totalLockedLiquidity.plus(valueToBigNumber(reserve.totalLiquidity))
+        totalLockedLiquidity = totalLockedLiquidity.plus(valueToBigNumber(reserve.totalLiquidity))
 
 
-      const totalBorrows = Number(reserve.totalDebt);
-      const totalBorrowsInUSD = valueToBigNumber(reserve.totalDebt)
-        .multipliedBy(reserve.priceInMarketReferenceCurrency)
-        .multipliedBy(marketRefPriceInUsd)
-        .toNumber();
-      const reserveIncentiveData = reserveIncentives[reserve.underlyingAsset.toLowerCase()] || false;
-      return {
-        totalLiquidity,
-        totalLiquidityInUSD,
-        totalBorrows: reserve.borrowingEnabled ? totalBorrows : -1,
-        totalBorrowsInUSD: reserve.borrowingEnabled ? totalBorrowsInUSD : -1,
-        id: reserve.id,
-        underlyingAsset: reserve.underlyingAsset,
-        currencySymbol: reserve.symbol,
-        depositAPY: reserve.borrowingEnabled ? Number(reserve.supplyAPY) : -1,
-        avg30DaysLiquidityRate: Number(reserve.avg30DaysLiquidityRate),
-        stableBorrowRate:
-          reserve.stableBorrowRateEnabled && reserve.borrowingEnabled
-            ? Number(reserve.stableBorrowAPY)
-            : -1,
-        variableBorrowRate: reserve.borrowingEnabled ? Number(reserve.variableBorrowAPY) : -1,
-        avg30DaysVariableRate: Number(reserve.avg30DaysVariableBorrowRate),
-        borrowingEnabled: reserve.borrowingEnabled,
-        stableBorrowRateEnabled: reserve.stableBorrowRateEnabled,
-        isFreezed: reserve.isFrozen,
-        aincentivesAPR: reserveIncentiveData ? reserveIncentiveData.aIncentives.incentiveAPR : '0',
-        vincentivesAPR: reserveIncentiveData ? reserveIncentiveData.vIncentives.incentiveAPR : '0',
-        sincentivesAPR: reserveIncentiveData ? reserveIncentiveData.sIncentives.incentiveAPR : '0',
-      };
-    });
+        const totalBorrows = Number(reserve.totalDebt);
+        const totalBorrowsInUSD = valueToBigNumber(reserve.totalDebt)
+          .multipliedBy(reserve.priceInMarketReferenceCurrency)
+          .multipliedBy(marketRefPriceInUsd)
+          .toNumber();
+        const reserveIncentiveData = reserveIncentives[reserve.underlyingAsset.toLowerCase()] || false;
+        return {
+          totalLiquidity,
+          totalLiquidityInUSD,
+          totalBorrows: reserve.borrowingEnabled ? totalBorrows : -1,
+          totalBorrowsInUSD: reserve.borrowingEnabled ? totalBorrowsInUSD : -1,
+          id: reserve.id,
+          underlyingAsset: reserve.underlyingAsset,
+          currencySymbol: reserve.symbol,
+          depositAPY: reserve.borrowingEnabled ? Number(reserve.supplyAPY) : -1,
+          avg30DaysLiquidityRate: Number(reserve.avg30DaysLiquidityRate),
+          stableBorrowRate:
+            reserve.stableBorrowRateEnabled && reserve.borrowingEnabled
+              ? Number(reserve.stableBorrowAPY)
+              : -1,
+          variableBorrowRate: reserve.borrowingEnabled ? Number(reserve.variableBorrowAPY) : -1,
+          avg30DaysVariableRate: Number(reserve.avg30DaysVariableBorrowRate),
+          borrowingEnabled: reserve.borrowingEnabled,
+          stableBorrowRateEnabled: reserve.stableBorrowRateEnabled,
+          isFreezed: reserve.isFrozen,
+          aincentivesAPR: reserveIncentiveData ? reserveIncentiveData.aIncentives.incentiveAPR : '0',
+          vincentivesAPR: reserveIncentiveData ? reserveIncentiveData.vIncentives.incentiveAPR : '0',
+          sincentivesAPR: reserveIncentiveData ? reserveIncentiveData.sIncentives.incentiveAPR : '0',
+        };
+      });
   }
 
   // console.log('data:', totalLockedInUsd)
 
   useEffect(() => {
-    
-  },[])
+
+  }, [])
 
   const handler = {
     detail(record: any) {
@@ -94,7 +94,7 @@ export default () => {
       dataIndex: 'currencySymbol',
       width: 240,
       render: (text: any, record: any) => {
-        return <TokenIcon 
+        return <TokenIcon
           tokenSymbol={record.currencySymbol}
           height={35}
           width={35}
@@ -122,7 +122,7 @@ export default () => {
       align: 'center'
     },
     {
-      title: <div style={{textAlign:'center'}}><FormattedMessage id="pages.market.index.table.collumn.DepositApy" /> <p><FormattedMessage id="pages.market.index.table.collumn.DepositApyAnnotation" /></p></div>,
+      title: <div style={{ textAlign: 'center' }}><FormattedMessage id="pages.market.index.table.collumn.DepositApy" /> <p><FormattedMessage id="pages.market.index.table.collumn.DepositApyAnnotation" /></p></div>,
       dataIndex: 'depositAPY',
       render: (text: any, record: any) => {
         return <div className={styles.TagBox}>{text < 0 ? '--' : (text.toFixed(2) + '%')} <div className={styles.tag}>{record.aincentivesAPR}% <span>APR</span></div></div>
@@ -139,7 +139,7 @@ export default () => {
     },
   ];
 
-  const PageHeaderContent = ({}) => {
+  const PageHeaderContent = ({ }) => {
     return (
       <div className={styles.pageHeaderContent}>
         <div className={styles.main}>
@@ -203,7 +203,7 @@ export default () => {
   return (
     <Spin spinning={!list || !list.length}>
       <PageContainer breadcrumb={false} title={false} content={<PageHeaderContent />}>
-        <div style={{marginTop: 50}}>
+        <div style={{ marginTop: 50, }} className={styles.newmain}>
           <Table
             rowKey={'id'}
             columns={columns}
@@ -211,9 +211,9 @@ export default () => {
             loading={!list || !list.length}
             onRow={(record) => ({ onClick: () => handler.detail(record) })}
             pagination={false}
-            scroll={{ y: 400 }}
+            // scroll={{ y: 400 }}
           />
-        </div>      
+        </div>
       </PageContainer>
     </Spin>
   );

@@ -18,17 +18,17 @@ export default ({ match: { params: { underlyingAsset, id, rateMode } }, }: any,)
     const [customGasPrice, setCustomGasPrice] = useState<string | null>(null);
     const [records, setRecords] = useState<any>([]);
 
-    const { reserves, user, refreshPool } = useModel('pool', res=>({
+    const { reserves, user, refreshPool } = useModel('pool', res => ({
         reserves: res.reserves,
         user: res.user,
         refreshPool: res.refresh
     }))
-    const { wallet, refreshWallet } = useModel('wallet', res=>({
-        wallet: res.wallet,
-        refreshWallet: res.refresh
+    const { account, provider, refreshWallet } = useModel('wallet', res => ({
+        account: res.account,
+        refreshWallet: res.refresh,
+        provider: res.provider
     }));
-    const provider = wallet?.provider
-    const { lendingPool } = useModel('lendingPool', res=>({
+    const { lendingPool } = useModel('lendingPool', res => ({
         lendingPool: res.lendingPool
     }));
     const refresh = () => {
@@ -79,10 +79,10 @@ export default ({ match: { params: { underlyingAsset, id, rateMode } }, }: any,)
     );
 
     useEffect(() => {
-        if (wallet) {
+        if (account) {
             handler.getTx({ depositing: false })
         }
-    }, [wallet]);
+    }, [account]);
 
     const handler = {
         async getTx({ depositing = false }) {
@@ -293,14 +293,14 @@ export default ({ match: { params: { underlyingAsset, id, rateMode } }, }: any,)
             }
         },
         error: {
-            set(key: string, error: string){
-                let id = steps.findIndex((item: any)=>item.key == key)
-                if(id !==  -1){
+            set(key: string, error: string) {
+                let id = steps.findIndex((item: any) => item.key == key)
+                if (id !== -1) {
                     steps[id] = {
                         ...steps[id],
                         error
                     }
-                    setSteps([ ...steps ])
+                    setSteps([...steps])
                 }
             }
         },

@@ -18,8 +18,8 @@ const price = config.loft.price
 
 export default () => {
   const symbol = 'LOFT'
-  const { wallet } = useModel('wallet', res=>({
-    wallet: res.wallet
+  const { account } = useModel('wallet', res=>({
+    account: res.account
   }))
   const { loftRewardPerYear, loftApy, balanceLoft, depositedLoft, earnedLoft, isLoftAllowanceEnough, loftApprove, loftDeposit, loftWithdraw, getLoftAPY } = useModel('pledge', res=>({
     loftRewardPerYear: res.loftRewardPerYear,
@@ -187,7 +187,7 @@ export default () => {
           {
             title: <FormattedMessage id="pages.manage.info.pledge" />,
             value: <Bignumber value={depositedLoft} />,
-            tag: <>($<Bignumber value={wallet?loftToUsd(depositedLoft):valueToBigNumber(0)} /> USD)</>,
+            tag: <>($<Bignumber value={account?loftToUsd(depositedLoft):valueToBigNumber(0)} /> USD)</>,
           },
           {
             title: <FormattedMessage id="pages.manage.info.price" />,
@@ -205,8 +205,8 @@ export default () => {
         ]}
       />
 
-      {!wallet && <WalletDisconnected showBack={false} />}
-      {wallet && (
+      {!account && <WalletDisconnected showBack={false} />}
+      {account && (
         <Row>
           <Col span={10} style={{paddingRight:15}}>
             <Card bordered={false}>
@@ -250,7 +250,7 @@ export default () => {
                   </Button>
                 </Col>
                 <Col span={5}>
-                  <Button shape="round"  disabled={!wallet || depositedLoft.eq('0')} onClick={handler.withdraw.principal.amount}>
+                  <Button shape="round"  disabled={!account || depositedLoft.eq('0')} onClick={handler.withdraw.principal.amount}>
                     <FormattedMessage id="pages.manage.stake.button.withdraw" />
                   </Button>
                 </Col>
@@ -293,7 +293,7 @@ export default () => {
                   <Bignumber value={earnedLoft} /> {symbol}
                 </Col>
                 <Col span={5} offset={1}>
-                  <Button type="primary" shape="round" disabled={!wallet || earnedLoft.eq('0')} onClick={handler.withdraw.earned}>
+                  <Button type="primary" shape="round" disabled={!account || earnedLoft.eq('0')} onClick={handler.withdraw.earned}>
                     <FormattedMessage id="pages.manage.unlocked.button" />
                   </Button>
                 </Col>

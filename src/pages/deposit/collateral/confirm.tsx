@@ -23,11 +23,12 @@ export default ({ match: { params: { underlyingAsset, id, status } }, }: any,) =
         user: res.user,
         refreshPool: res.refresh
     }))
-    const { wallet, refreshWallet } = useModel('wallet', res => ({
-        wallet: res.wallet,
-        refreshWallet: res.refresh
+    const { account, provider,refreshWallet } = useModel('wallet', res => ({
+        account: res.account,
+        refreshWallet: res.refresh,
+        provider: res.provider
     }));
-    const provider = wallet?.provider
+
     const { lendingPool } = useModel('lendingPool', res => ({
         lendingPool: res.lendingPool
     }));
@@ -62,10 +63,10 @@ export default ({ match: { params: { underlyingAsset, id, status } }, }: any,) =
     );
 
     useEffect(() => {
-        if (wallet) {
+        if (account) {
             handler.getTx({ depositing: false })
         }
-    }, [wallet]);
+    }, [account]);
 
     const handler = {
         async getTx({ depositing = false }) {

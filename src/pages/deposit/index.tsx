@@ -24,9 +24,9 @@ export default () => {
   }))
   const marketRefPriceInUsd = normalize(baseCurrency?.marketReferenceCurrencyPriceInUsd || '0', 8)
 
-  const { wallet, balances } = useModel('wallet', res => ({
-    wallet: res.wallet,
+  const { account, balances } = useModel('wallet', res => ({
     balances: res.balances,
+    account: res.account
   }))
 
 
@@ -52,7 +52,7 @@ export default () => {
           (userRes: any) => userRes.reserve.symbol === reserve.symbol
         );
         const walletBalance =
-          !wallet || balances[reserve.underlyingAsset] === '0'
+          !account || balances[reserve.underlyingAsset] === '0'
             ? valueToBigNumber('0')
             : valueToBigNumber(balances[reserve.underlyingAsset] || '0').dividedBy(
               valueToBigNumber('10').pow(reserve.decimals)
@@ -67,8 +67,8 @@ export default () => {
           ...reserve,
           walletBalance,
           walletBalanceInUSD,
-          underlyingBalance: wallet && userReserve ? userReserve.underlyingBalance : '0',
-          underlyingBalanceInUSD: wallet && userReserve ? userReserve.underlyingBalanceUSD : '0',
+          underlyingBalance: account && userReserve ? userReserve.underlyingBalance : '0',
+          underlyingBalanceInUSD: account && userReserve ? userReserve.underlyingBalanceUSD : '0',
           liquidityRate: reserve.supplyAPY,
           avg30DaysLiquidityRate: Number(reserve.avg30DaysLiquidityRate),
           borrowingEnabled: reserve.borrowingEnabled,
@@ -176,7 +176,7 @@ export default () => {
               dataSource={list(true)}
               loading={!list(true)?.length}
               pagination={false}
-              scroll={{ y: 600 }}
+              // scroll={{ y: 600 }}
               onRow={(record) => ({ onClick: () => handler.detail(record) })}
             />
           </Col>

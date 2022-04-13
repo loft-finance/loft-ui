@@ -14,25 +14,25 @@ import Bignumber from '@/components/Bignumber';
 import BigNumber from 'bignumber.js';
 
 export default () => {
-  const { wallet } = useModel('wallet', res => ({
-    wallet: res.wallet
+  const { account } = useModel('wallet', res => ({
+    account: res.account
   }));
-  const { reserves, user, baseCurrency } = useModel('pool', res=>({
+  const { reserves, user, baseCurrency } = useModel('pool', res => ({
     reserves: res.reserves,
     user: res.user
   }))
-  const { reserveIncentives } = useModel('incentives', res=>({
+  const { reserveIncentives } = useModel('incentives', res => ({
     reserveIncentives: res.reserveIncentives
   }))
 
-  const { 
+  const {
     lpApy, depositedLp, earnedLp,
     loftApy, depositedLoft, earnedLoft,
   } = useModel('pledge', res => ({
     lpApy: res.lpApy,
     depositedLp: res.depositedLp,
     earnedLp: res.earnedLp,
-    
+
     loftApy: res.loftApy,
     depositedLoft: res.depositedLoft,
     earnedLoft: res.earnedLoft,
@@ -40,32 +40,32 @@ export default () => {
 
   const totalCollateralMarketReferenceCurrency = user?.totalCollateralMarketReferenceCurrency || '1'
 
-  const [isLTVModalVisible, setLTVModalVisible] = useState(false);
-  const [isBorrow, setIsBorrow] = useState(false);
-  const [isDepositMobileInfoVisible, setDepositMobileInfoVisible] = useState(false);
-  const [isBorrowMobileInfoVisible, setBorrowMobileInfoVisible] = useState(false);
+  // const [isLTVModalVisible, setLTVModalVisible] = useState(false);
+  // const [isBorrow, setIsBorrow] = useState(false);
+  // const [isDepositMobileInfoVisible, setDepositMobileInfoVisible] = useState(false);
+  // const [isBorrowMobileInfoVisible, setBorrowMobileInfoVisible] = useState(false);
 
   const maxBorrowAmount = valueToBigNumber(user?.totalBorrowsMarketReferenceCurrency || '0').plus(
     user?.availableBorrowsMarketReferenceCurrency || '0'
   );
-  const collateralUsagePercent = maxBorrowAmount.eq(0)
-    ? '1'
-    : valueToBigNumber(user?.totalBorrowsMarketReferenceCurrency || '0')
-      .div(maxBorrowAmount)
-      .toFixed();
+  // const collateralUsagePercent = maxBorrowAmount.eq(0)
+  //   ? '1'
+  //   : valueToBigNumber(user?.totalBorrowsMarketReferenceCurrency || '0')
+  //     .div(maxBorrowAmount)
+  //     .toFixed();
 
-  const loanToValue =
-    user?.totalCollateralMarketReferenceCurrency === '0'
-      ? '0'
-      : valueToBigNumber(user?.totalBorrowsMarketReferenceCurrency || '0')
-        .dividedBy(user?.totalCollateralMarketReferenceCurrency || '1')
-        .toFixed();
+  // const loanToValue =
+  //   user?.totalCollateralMarketReferenceCurrency === '0'
+  //     ? '0'
+  //     : valueToBigNumber(user?.totalBorrowsMarketReferenceCurrency || '0')
+  //       .dividedBy(user?.totalCollateralMarketReferenceCurrency || '1')
+  //       .toFixed();
 
   const depositedPositions: any = [];
   const borrowedPositions: any = [];
 
-  user?.userReservesData.forEach((userReserve) => {
-    const poolReserve = reserves.find((res) => res.symbol === userReserve.reserve.symbol);
+  user?.userReservesData.forEach((userReserve: any) => {
+    const poolReserve = reserves.find((res: any) => res.symbol === userReserve.reserve.symbol);
     if (!poolReserve) {
       // throw new Error('data is inconsistent pool reserve is not available');
     }
@@ -180,7 +180,7 @@ export default () => {
     }
   });
 
-  const data = [
+  const data: never[] = [
     // {
     //   type: 'Total borrowings',
     //   value: 14,
@@ -238,19 +238,19 @@ export default () => {
   };
 
   const depositeComposition = user?.userReservesData
-    .filter((userReserve) => userReserve.underlyingBalance !== '0')
-    .map((userReserve) => ({
+    .filter((userReserve: any) => userReserve.underlyingBalance !== '0')
+    .map((userReserve: any) => ({
       value: valueToBigNumber(userReserve.underlyingBalanceUSD)
         .div(user.totalLiquidityUSD)
         .multipliedBy(100)
         .precision(20, BigNumber.ROUND_UP)
         .toNumber(),
       type: userReserve.reserve.symbol || '',
-  })) || data;
+    })) || data;
 
   const collateralComposition = user?.userReservesData
-    ?.filter((userReserve) => {
-      const poolReserve = reserves.find((res) => res.symbol === userReserve.reserve.symbol);
+    ?.filter((userReserve: any) => {
+      const poolReserve = reserves.find((res: any) => res.symbol === userReserve.reserve.symbol);
       return (
         userReserve.usageAsCollateralEnabledOnUser &&
         poolReserve &&
@@ -258,7 +258,7 @@ export default () => {
         userReserve.underlyingBalance !== '0'
       );
     })
-    ?.map((userReserve) => ({
+    ?.map((userReserve: any) => ({
       type: userReserve.reserve.symbol || '',
       value: valueToBigNumber(userReserve.underlyingBalanceMarketReferenceCurrency)
         .div(totalCollateralMarketReferenceCurrency)
@@ -266,10 +266,10 @@ export default () => {
         .precision(20, BigNumber.ROUND_UP)
         .toNumber(),
     })) || data;
-  
+
   const borrowComposition = user?.userReservesData
-    ?.filter((reserve) => reserve.totalBorrows !== '0')
-    ?.map((userReserve) => ({
+    ?.filter((reserve: any) => reserve.totalBorrows !== '0')
+    ?.map((userReserve: any) => ({
       type: userReserve?.reserve?.symbol || '',
       value: new BigNumber(userReserve.totalBorrowsMarketReferenceCurrency)
         .div(maxBorrowAmount)
@@ -278,14 +278,14 @@ export default () => {
         .toNumber(),
     })) || data;
 
-  
+
 
 
   return (
     <Spin spinning={!reserves || !reserves.length}>
       <GridContent>
-        {!wallet && <WalletDisconnected showBack={false} />}
-        {wallet && (
+        {!account && <WalletDisconnected showBack={false} />}
+        {account && (
           <Row>
             <Col span={12} style={{ paddingRight: 10 }}>
               <Card bordered={false} style={{ height: '100%' }}>
@@ -294,7 +294,7 @@ export default () => {
                     <Title level={3}><FormattedMessage id="pages.info.deposit.title" /></Title>
                   </Col>
                 </Row>
-                <Row style={{marginTop:35}}>
+                <Row style={{ marginTop: 35 }}>
                   <Col span={12} style={{ marginTop: 20 }}>
                     <div className={styles.label}><FormattedMessage id="pages.info.deposit.balance" /></div>
                     <div className={styles.value}>
@@ -303,7 +303,7 @@ export default () => {
                     </div>
                   </Col>
                   <Col span={12}>
-                    <Pie {...{...config, data: depositeComposition}} />
+                    <Pie {...{ ...config, data: depositeComposition }} />
                     <div className={styles.tip} style={{ textAlign: 'center', fontSize: 10 }}>
                       <FormattedMessage id="pages.info.deposit.composition" />
                     </div>
@@ -334,13 +334,13 @@ export default () => {
                   <Col span={12}>
                     <Row style={{ marginTop: -10 }}>
                       <Col span={12}>
-                        <Pie {...{...config, data: collateralComposition}} />
+                        <Pie {...{ ...config, data: collateralComposition }} />
                         <div className={styles.tip} style={{ textAlign: 'center', fontSize: 10 }}>
                           <FormattedMessage id="pages.info.loan.composition" />
                         </div>
                       </Col>
                       <Col span={12}>
-                        <Pie {...{...config, data: borrowComposition}} />
+                        <Pie {...{ ...config, data: borrowComposition }} />
                         <div className={styles.tip} style={{ textAlign: 'center', fontSize: 10 }}>
                           <FormattedMessage id="pages.info.loan.CollateralComposition" />
                         </div>

@@ -19,15 +19,15 @@ export default () => {
     const { currentMarket } = useModel('market', res => ({
         currentMarket: res.current
     }));
-    const { wallet } = useModel('wallet', res=>({
-        wallet: res.wallet
+    const { account } = useModel('wallet', res => ({
+        account: res.account
     }))
-    const { rawReservesWithBase, rawUserReservesWithBase } = useModel('pool', res=>({
+    const { rawReservesWithBase, rawUserReservesWithBase } = useModel('pool', res => ({
         rawReservesWithBase: res.reserves,
         rawUserReservesWithBase: res.userReservesFixUnderlying
     }))
 
-    const currentAccount = wallet?.currentAccount || ''
+    const currentAccount = account || ''
     const lendingPoolAddressProvider = currentMarket.addresses.LENDING_POOL_ADDRESS_PROVIDER
 
     const [loadingReserveIncentives, setLoadingReserveIncentives] = useState<boolean>(true);
@@ -116,15 +116,15 @@ export default () => {
         setLoadingUserIncentives(false);
     };
 
-    
+
     const currentTimestamp = dayjs().unix();
 
     // Create array of formatted user and reserve data used for user incentive calculations
     let computedUserReserves: any = [];
     if (rawUserReservesWithBase) {
-        rawUserReservesWithBase?.forEach((userReserve) => {
+        rawUserReservesWithBase?.forEach((userReserve: any) => {
             const reserve = rawReservesWithBase.find(
-                (reserve) =>
+                (reserve: any) =>
                     reserve.underlyingAsset.toLowerCase() ===
                     userReserve.reserve.underlyingAsset.toLowerCase()
             );
@@ -219,19 +219,19 @@ export default () => {
             setLoadingUserIncentives(false);
         }
 
-        if(!currentAccount){
+        if (!currentAccount) {
             userIncentiveData([])
         }
 
-        return () => {};
+        return () => { };
     }, [currentAccount, lendingPoolAddressProvider]);
-    
+
     const refresh = () => {
         const incentiveDataProviderAddress = networkConfig.addresses.uiIncentiveDataProvider
         if (incentiveDataProviderAddress) {
             fetchData(currentAccount, lendingPoolAddressProvider, incentiveDataProviderAddress);
         }
     }
-    
+
     return { loading, reserveIncentives, userIncentives, refresh };
 };

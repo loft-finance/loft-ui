@@ -12,8 +12,8 @@ import { fixedToValue } from '@/utils';
 export default (props: any) => {
   const { match: { params: { underlyingAsset, id } } } = props
 
-  const { wallet, balances } = useModel('wallet', res => ({
-    wallet: res.wallet,
+  const { account, balances } = useModel('wallet', res => ({
+    account: res.account,
     balances: res.balances
   }));
   const { reserves, user, baseCurrency } = useModel('pool', res => ({
@@ -23,7 +23,7 @@ export default (props: any) => {
   }))
   const balance = balances ? balances[underlyingAsset] : '0'
 
-  const poolReserve = reserves.find((res) =>
+  const poolReserve = reserves.find((res: any) =>
     id ? res.id === id : res.underlyingAsset.toLowerCase() === underlyingAsset.toLowerCase()
   );
 
@@ -50,7 +50,7 @@ export default (props: any) => {
   }
 
   const userReserve = user
-    ? user.userReservesData.find((userReserve:any) =>
+    ? user.userReservesData.find((userReserve: any) =>
       id
         ? userReserve.reserve.id === id
         : userReserve.reserve.underlyingAsset.toLowerCase() === underlyingAsset.toLowerCase()
@@ -82,11 +82,11 @@ export default (props: any) => {
       />
       <Overview poolReserve={poolReserve} marketRefPriceInUsd={baseCurrency.marketRefPriceInUsd} />
 
-      {!wallet && <WalletDisconnected />}
+      {!account && <WalletDisconnected />}
 
       {/* {wallet && maxAmountToBorrow.toString() == '0' && <WalletEmpty symbol={poolReserve ? poolReserve?.symbol : ''} />} */}
 
-      {wallet && React.cloneElement(props.children, { poolReserve, userReserve, maxAmountToBorrow: maxAmountToBorrow.toString(10) })}
+      {account && React.cloneElement(props.children, { poolReserve, userReserve, maxAmountToBorrow: maxAmountToBorrow.toString(10) })}
     </GridContent>
   );
 };
