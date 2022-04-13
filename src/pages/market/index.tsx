@@ -9,6 +9,7 @@ import { normalize } from '@aave/math-utils';
 import Bignumber from '@/components/Bignumber'
 
 import styles from './style.less';
+import { numberWithCommas } from '@/utils';
 
 
 export default () => {
@@ -152,7 +153,7 @@ export default () => {
               <div className={styles.text}>
                 <FormattedMessage id="pages.market.index.describe" />
               </div>
-              <div className={styles.value}>$ <Bignumber value={totalLockedInUsd.toNumber()} /></div>
+              <div className={styles.value}>$ {numberWithCommas(totalLockedInUsd.toNumber())}</div>
               <div>
                 <Button type="primary" size="large" style={{ width: 200 }}>
                   <FormattedMessage id="pages.market.index.button" />
@@ -215,7 +216,7 @@ export default () => {
             loading={!list || !list.length}
             onRow={(record) => ({ onClick: () => handler.detail(record) })}
             pagination={false}
-            // scroll={{ y: 400 }}
+          // scroll={{ y: 400 }}
           />
         </div>
       </PageContainer>

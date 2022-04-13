@@ -54,6 +54,7 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, location: { quer
 
     const amountIntEth = amount.multipliedBy(poolReserve.priceInMarketReferenceCurrency);
     const amountInUsd = amountIntEth.multipliedBy(marketRefPriceInUsd);
+
     const totalCollateralMarketReferenceCurrencyAfter = valueToBigNumber(
         user.totalCollateralMarketReferenceCurrency
     ).plus(amountIntEth);

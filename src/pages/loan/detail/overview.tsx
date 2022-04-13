@@ -6,7 +6,7 @@ import styles from './overview.less';
 
 export default ({ title = '', items = [], poolReserve = {}, marketRefPriceInUsd = '0' }: any) => {
   const underlyingSymbol = poolReserve?.symbol || ''
-
+  console.log(poolReserve)
   const data = {
     utilizationRate: Number(poolReserve.utilizationRate),
     availableLiquidity: poolReserve.availableLiquidity,

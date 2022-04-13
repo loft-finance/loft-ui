@@ -11,23 +11,23 @@ const { Step } = Steps;
 export default ({ refs }: any) => {
     useImperativeHandle(refs, () => {
         return {
-          show: (params: any) => {
-            const { title, amount, amountInUsd, txt, isAllowanceEnough = false, approve = false, confirm, earned = false  } = params
-            setTitle(title)
-            setCurrent(0)
-            setAmount(amount)
-            setAmountInUsd(amountInUsd)
-            setArgs({
-                earned,
-                txt,
-                isAllowanceEnough,
-                approve,
-                confirm
-            })
-            handler.init(params)
-            setVisible(true);
-          },
-          close: handler.close,
+            show: (params: any) => {
+                const { title, amount, amountInUsd, txt, isAllowanceEnough = false, approve = false, confirm, earned = false } = params
+                setTitle(title)
+                setCurrent(0)
+                setAmount(amount)
+                setAmountInUsd(amountInUsd)
+                setArgs({
+                    earned,
+                    txt,
+                    isAllowanceEnough,
+                    approve,
+                    confirm
+                })
+                handler.init(params)
+                setVisible(true);
+            },
+            close: handler.close,
         };
     });
 
@@ -43,13 +43,12 @@ export default ({ refs }: any) => {
     const [steps, setSteps] = useState<any>([]);
     const [current, setCurrent] = useState(0);
     const [records, setRecords] = useState<any>([]);
-    
 
     const handler = {
         close: () => {
             setVisible(false);
         },
-        async init (params: any, confirming = false) {
+        async init(params: any, confirming = false) {
             const { txt, isAllowanceEnough = false } = params
             const steps = [
                 {
@@ -71,10 +70,10 @@ export default ({ refs }: any) => {
                     error: '',
                 }
             ]
-            if(!isAllowanceEnough){
+            if (!isAllowanceEnough) {
                 setSteps(steps)
-            }else{
-                if(!await isAllowanceEnough()){
+            } else {
+                if (!await isAllowanceEnough()) {
                     setSteps([
                         {
                             key: 'approve',
@@ -87,7 +86,7 @@ export default ({ refs }: any) => {
                         },
                         ...steps
                     ])
-                }else{
+                } else {
                     setSteps(steps)
                 }
             }
@@ -100,13 +99,13 @@ export default ({ refs }: any) => {
                 try {
                     const res = await approve()
                     res.wait()
-                    .then(() => {
-                        console.log('approve:', res)
-                        handler.approve.confirmed()
-                    })
-                    .catch((e: any) => {
-                       console.log('approve error 1:', e) 
-                    })
+                        .then(() => {
+                            console.log('approve:', res)
+                            handler.approve.confirmed()
+                        })
+                        .catch((e: any) => {
+                            console.log('approve error 1:', e)
+                        })
                 } catch (e: any) {
                     console.log('approve error:', e)
                     const key = 'approve'
@@ -115,7 +114,7 @@ export default ({ refs }: any) => {
                     handler.records.set(key, 'approve', 'error')
                 }
             },
-            confirmed(){
+            confirmed() {
                 console.log('approve confirmed----')
                 handler.loading.set('approve', false);
                 handler.records.set('approve', 'approve', 'confirmed')
@@ -127,19 +126,19 @@ export default ({ refs }: any) => {
                 handler.loading.set('confirm', true);
                 handler.records.set('confirm', 'confirm', 'wait')
                 const { confirm, earned } = args
-                try{
-                    const res = await confirm(earned?0:amount.toString())
+                try {
+                    const res = await confirm(earned ? 0 : amount.toString())
                     console.log('-----executed-----')
                     res.wait()
-                    .then(() => {
-                        console.log('--------confirmed--------')
-                        handler.confirm.confirmed()
-                        refresh();
-                    })
-                    .catch((e: any) => {
-                       console.log('confirm error 1:', e) 
-                    })
-                }catch(e: any){
+                        .then(() => {
+                            console.log('--------confirmed--------')
+                            handler.confirm.confirmed()
+                            refresh();
+                        })
+                        .catch((e: any) => {
+                            console.log('confirm error 1:', e)
+                        })
+                } catch (e: any) {
                     console.log('confirm error:', e)
                     const key = 'confirm'
                     handler.error.set(key, e?.message || 'Error')
@@ -147,24 +146,24 @@ export default ({ refs }: any) => {
                     handler.records.set(key, 'confirm', 'error')
                 }
             },
-            executed(){
+            executed() {
                 console.log('--------deposit executed----')
             },
-            confirmed(){
+            confirmed() {
                 handler.records.set('confirm', 'confirm', 'confirmed')
                 setCurrent(current + 1);
                 handler.loading.set('confirm', false);
             }
         },
         records: {
-            set(key: string, name: string, status: string){
-                let id = records.findIndex((item: any)=>item.key == key)
-                if(id !==  -1){
+            set(key: string, name: string, status: string) {
+                let id = records.findIndex((item: any) => item.key == key)
+                if (id !== -1) {
                     records[id] = {
                         ...records[id],
                         status
                     }
-                }else{
+                } else {
                     records.push({
                         key,
                         name,
@@ -172,25 +171,25 @@ export default ({ refs }: any) => {
                     })
                 }
 
-                setRecords([ ...records ])
+                setRecords([...records])
             }
         },
         error: {
-            set(key: string, error: string){
-                let id = steps.findIndex((item: any)=>item.key == key)
-                if(id !==  -1){
+            set(key: string, error: string) {
+                let id = steps.findIndex((item: any) => item.key == key)
+                if (id !== -1) {
                     steps[id] = {
                         ...steps[id],
                         error
                     }
-                    setSteps([ ...steps ])
+                    setSteps([...steps])
                 }
             }
         },
         loading: {
-            set(key: string, status: boolean){
-                let list = steps.map((item: any)=>{
-                    if(item.key === key){
+            set(key: string, status: boolean) {
+                let list = steps.map((item: any) => {
+                    if (item.key === key) {
                         item.loading = status
                     }
                     return item;
@@ -200,11 +199,11 @@ export default ({ refs }: any) => {
             }
         },
         async submit() {
-            if(steps[current]?.key === 'approve'){
+            if (steps[current]?.key === 'approve') {
                 handler.approve.submit()
-            }else if(steps[current]?.key === 'confirm'){
+            } else if (steps[current]?.key === 'confirm') {
                 handler.confirm.submit()
-            }else if(steps[current]?.key === 'completed'){
+            } else if (steps[current]?.key === 'completed') {
                 history.push('/control')
             }
         }
@@ -217,7 +216,7 @@ export default ({ refs }: any) => {
             onCancel={handler.close}
             maskClosable={false}
             width={550}
-            bodyStyle={{paddingTop:0}}
+            bodyStyle={{ paddingTop: 0 }}
             footer={false}
         >
             <Card bordered={false}>
@@ -256,48 +255,48 @@ export default ({ refs }: any) => {
                         </Col>
                     </Row>
                 </div>
-                {!steps.length && <Row><Col span={24} style={{ marginTop: 20, textAlign:'center' }}><Spin /></Col></Row>}
+                {!steps.length && <Row><Col span={24} style={{ marginTop: 20, textAlign: 'center' }}><Spin /></Col></Row>}
                 {steps.length > 0 &&
-                <Row>
-                    <Col span={24} style={{ marginBottom: 20 }}>
-                        <Steps
-                            type="navigation"
-                            size="small"
-                            current={current}
-                            className="site-navigation-steps"
-                        >
-                            {steps.map((item) => (
-                                <Step title={item.title} />
-                            ))}
-                        </Steps>
-                    </Col>
-                    <Col span={19}>
-                        <p className={styles.tip}>
-                            {current + 1}/{steps.length} {steps[current]?.stepText}
-                        </p>
+                    <Row>
+                        <Col span={24} style={{ marginBottom: 20 }}>
+                            <Steps
+                                type="navigation"
+                                size="small"
+                                current={current}
+                                className="site-navigation-steps"
+                            >
+                                {steps.map((item: any, index: number) => (
+                                    <Step title={item.title} key={index} />
+                                ))}
+                            </Steps>
+                        </Col>
+                        <Col span={19}>
+                            <p className={styles.tip}>
+                                {current + 1}/{steps.length} {steps[current]?.stepText}
+                            </p>
 
-                        <p className={styles.tip} style={steps[current]?.error?{ color: '#F46D6D' }:{}}>{steps[current]?.error?steps[current]?.error:steps[current]?.description}</p>
-                    </Col>
-                    <Col span={5} >
-                        <Button type="primary" shape="round" loading={steps[current]?.loading?true:false} onClick={handler.submit}>
-                            {steps[current]?.buttonText}
-                        </Button>
-                    </Col>
-                    <Col span={24}>
-                        <Divider style={{ margin: '12px 0' }} />
-                    </Col>
-                    <Col span={24}>
-                        <Row>
-                            {records.map((item: any) => <>
-                            <Col span={8}>{item.name}</Col>
-                            <Col span={8}>
-                                {item.status} {item.status == 'wait' ? <LoadingOutlined /> : <Badge status={item.status == 'confirmed' ? "success" : "error"} />}
-                            </Col>
-                            <Col span={8}><FormattedMessage id="pages.deposit.detail.confirm.explorer" /></Col>
-                            </>)}
-                        </Row>
-                    </Col>
-                </Row>
+                            <p className={styles.tip} style={steps[current]?.error ? { color: '#F46D6D' } : {}}>{steps[current]?.error ? steps[current]?.error : steps[current]?.description}</p>
+                        </Col>
+                        <Col span={5} >
+                            <Button type="primary" shape="round" loading={steps[current]?.loading ? true : false} onClick={handler.submit}>
+                                {steps[current]?.buttonText}
+                            </Button>
+                        </Col>
+                        <Col span={24}>
+                            <Divider style={{ margin: '12px 0' }} />
+                        </Col>
+                        <Col span={24}>
+                            <Row>
+                                {records.map((item: any) => <>
+                                    <Col span={8}>{item.name}</Col>
+                                    <Col span={8}>
+                                        {item.status} {item.status == 'wait' ? <LoadingOutlined /> : <Badge status={item.status == 'confirmed' ? "success" : "error"} />}
+                                    </Col>
+                                    <Col span={8}><FormattedMessage id="pages.deposit.detail.confirm.explorer" /></Col>
+                                </>)}
+                            </Row>
+                        </Col>
+                    </Row>
                 }
             </Card>
         </Modal>

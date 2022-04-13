@@ -7,6 +7,7 @@ import { sendEthTransaction, TxStatusType } from '@/lib/helpers/send-ethereum-tx
 import { TokenIcon } from '@aave/aave-ui-kit';
 import Back from '@/components/Back';
 import styles from './confirm.less';
+import { GridContent } from '@ant-design/pro-layout';
 const { Step } = Steps;
 
 export default ({ match: { params: { underlyingAsset, id, status } }, }: any,) => {
@@ -300,6 +301,7 @@ export default ({ match: { params: { underlyingAsset, id, status } }, }: any,) =
     };
 
     return (
+        <GridContent>
         <Card bordered={false}>
             <Back />
             <Card bordered={false}>
@@ -385,5 +387,6 @@ export default ({ match: { params: { underlyingAsset, id, status } }, }: any,) =
                 }
             </Card>
         </Card>
+        </GridContent>
     );
 };

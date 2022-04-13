@@ -16,13 +16,13 @@ const navList = [
     icon: 'icon-ic_deposit'
   },
   {
-    name: 'manage currency',
+    name: 'loan',
     url: '/loan',
     icon: 'icon-ic_loan'
   },
   {
 
-    name: 'market',
+    name: 'manage currency',
     url: '/manage',
     icon: 'icon-ic_platform_currency'
   },
@@ -39,6 +39,7 @@ const navList = [
 ]
 
 const Layout: React.FC = ({ children }) => {
+  console.log(process.env.NODE_ENV)
   const location = useLocation();
   return (
     <UseWalletProvider

@@ -18,10 +18,10 @@ const price = config.loft.price
 
 export default () => {
   const symbol = 'LOFT'
-  const { account } = useModel('wallet', res=>({
+  const { account } = useModel('wallet', res => ({
     account: res.account
   }))
-  const { loftRewardPerYear, loftApy, balanceLoft, depositedLoft, earnedLoft, isLoftAllowanceEnough, loftApprove, loftDeposit, loftWithdraw, getLoftAPY } = useModel('pledge', res=>({
+  const { loftRewardPerYear, loftApy, balanceLoft, depositedLoft, earnedLoft, isLoftAllowanceEnough, loftApprove, loftDeposit, loftWithdraw, getLoftAPY } = useModel('pledge', res => ({
     loftRewardPerYear: res.loftRewardPerYear,
     loftApy: res.loftApy,
     balanceLoft: res.balanceLoft,
@@ -32,7 +32,7 @@ export default () => {
     loftDeposit: res.loftDeposit,
     loftWithdraw: res.loftWithdraw,
   }))
-  
+
   const [form] = Form.useForm();
   const refAmount = useRef()
   const refConfirm = useRef()
@@ -40,56 +40,56 @@ export default () => {
   const handler = {
     submit(values: any) {
       form
-      .validateFields()
-      .then(values => {
-        const amount = valueToBigNumber(values.amount)
-        if(amount.gt(balanceLoft)){
-          message.error('The quality must be less than max amount to deposit')
-          return;
-        }
-        const txt = {
-          overview: {
-            title: 'Pledge Overview',
-            desc: 'These are your transaction details. Please be sure to check whether it is correct before submiting.'
-          },
-          approve: {
-            title: 'approve',
-            buttonText: 'approve',
-            stepText: 'approve',
-            description: 'Please approve before confirming',
-          },
-          confirm: {
-            title: 'pledge',
-            buttonText: 'pledge',
-            stepText: 'pledge',
-            description: 'Please submit a pledge',
-          },
-          completed: {
-            title: 'Completed',
-            buttonText: 'control panel',
-            stepText: 'Success',
-            description: '',
-          },
-        }
-        refConfirm.current.show({
-          title: 'Stake Loft',
-          amount,
-          amountInUsd: loftToUsd(amount),
-          txt,
-          isAllowanceEnough: isLoftAllowanceEnough,
-          approve: loftApprove,
-          confirm: loftDeposit
+        .validateFields()
+        .then(values => {
+          const amount = valueToBigNumber(values.amount)
+          if (amount.gt(balanceLoft)) {
+            message.error('The quality must be less than max amount to deposit')
+            return;
+          }
+          const txt = {
+            overview: {
+              title: 'Pledge Overview',
+              desc: 'These are your transaction details. Please be sure to check whether it is correct before submiting.'
+            },
+            approve: {
+              title: 'approve',
+              buttonText: 'approve',
+              stepText: 'approve',
+              description: 'Please approve before confirming',
+            },
+            confirm: {
+              title: 'pledge',
+              buttonText: 'pledge',
+              stepText: 'pledge',
+              description: 'Please submit a pledge',
+            },
+            completed: {
+              title: 'Completed',
+              buttonText: 'control panel',
+              stepText: 'Success',
+              description: '',
+            },
+          };
+          (refConfirm as any).current.show({
+            title: 'Stake Loft',
+            amount,
+            amountInUsd: loftToUsd(amount),
+            txt,
+            isAllowanceEnough: isLoftAllowanceEnough,
+            approve: loftApprove,
+            confirm: loftDeposit
+          })
         })
-      })
     },
-    max(){
+    max() {
       form.setFieldsValue({
         amount: balanceLoft.toString()
       })
     },
     withdraw: {
       principal: {
-        amount(){
+        amount() {
           const txt = {
             title: 'How much do you want to unstake?',
             desc: 'Provide LOFT/FTM liquidity on SpookySwap and stake the LP token here to earn more LOFT',
@@ -97,18 +97,18 @@ export default () => {
             max: 'Max',
             validate: 'Please input quantity!',
             button: 'Unstake'
-          }
-  
-          refAmount.current.show({
+          };
+
+          (refAmount as any).current.show({
             title: 'Withdraw Loft',
             txt,
             max: depositedLoft,
             ok: handler.withdraw.principal.amountOk
           })
         },
-        amountOk({ amount }: any){
-          refAmount.current.close();
-  
+        amountOk({ amount }: any) {
+          (refAmount as any).current.close();
+
           const txt = {
             overview: {
               title: 'Withdraw Overview',
@@ -132,8 +132,8 @@ export default () => {
               stepText: 'Success',
               description: '',
             },
-          }
-          refConfirm.current.show({
+          };
+          (refConfirm as any).current.show({
             title: 'Withdraw',
             amount,
             amountInUsd: loftToUsd(amount),
@@ -166,13 +166,13 @@ export default () => {
             stepText: 'Success',
             description: '',
           },
-        }
+        };
 
-        refConfirm.current.show({
+        (refConfirm as any).current.show({
           title: 'Withdraw Earned',
           earned: true,
-          amount: 0,
-          amountInUsd: 0,
+          amount: earnedLoft,
+          amountInUsd: loftToUsd(earnedLoft),
           txt,
           confirm: loftWithdraw
         })
@@ -181,125 +181,127 @@ export default () => {
   };
   return (
     <>
-    <GridContent>
-      <Info
-        items={[
-          {
-            title: <FormattedMessage id="pages.manage.info.pledge" />,
-            value: <Bignumber value={depositedLoft} />,
-            tag: <>($<Bignumber value={account?loftToUsd(depositedLoft):valueToBigNumber(0)} /> USD)</>,
-          },
-          {
-            title: <FormattedMessage id="pages.manage.info.price" />,
-            value: '$' + price,
-          },
-          {
-            title: <FormattedMessage id="pages.manage.info.fluidity" />,
-            value: '5.3M',
-            tag: '(28.5% LOCKED)',
-          },
-          {
-            title: <FormattedMessage id="pages.manage.info.market" />,
-            value: '$49.4M',
-          },
-        ]}
-      />
+      <GridContent>
+        <Info
+          items={[
+            {
+              title: <FormattedMessage id="pages.manage.info.pledge" />,
+              value: <Bignumber value={depositedLoft} />,
+              tag: <>($<Bignumber value={account ? loftToUsd(depositedLoft) : valueToBigNumber(0)} /> USD)</>,
+            },
+            {
+              title: <FormattedMessage id="pages.manage.info.price" />,
+              value: '$' + price,
+            },
+            {
+              title: <FormattedMessage id="pages.manage.info.fluidity" />,
+              value: '5.3M',
+              tag: '(28.5% LOCKED)',
+            },
+            {
+              title: <FormattedMessage id="pages.manage.info.market" />,
+              value: '$49.4M',
+            },
+          ]}
+        />
 
-      {!account && <WalletDisconnected showBack={false} />}
-      {account && (
-        <Row>
-          <Col span={10} style={{paddingRight:15}}>
-            <Card bordered={false}>
-              <Row>
-                <Col span={18}>
-                  <Title level={3}><FormattedMessage id="pages.manage.stake.title" /></Title>
-                </Col>
-                <Col span={6}>APY <Bignumber value={loftApy} />%</Col>
-              </Row>
-              <Row>
-                <Col span={24}>
-                  <p className={styles.tip}>
-                    <FormattedMessage id="pages.manage.stake.desc" />
-                  </p>
-                </Col>
-                <Col span={24}>
-                  <p className={styles.tip}><FormattedMessage id="pages.manage.stake.balance" /></p>
-                  <p><Bignumber value={balanceLoft} /> {symbol}</p>
-                </Col>
-              </Row>
+        {!account && <WalletDisconnected showBack={false} />}
+        {account && (
+          <Row>
+            <Col span={10} style={{ paddingRight: 15 }}>
+              <Card bordered={false}>
+                <Row>
+                  <Col span={18}>
+                    <Title level={3}><FormattedMessage id="pages.manage.stake.title" /></Title>
+                  </Col>
+                  <Col span={6}>APY <Bignumber value={loftApy} />%</Col>
+                </Row>
+                <Row>
+                  <Col span={24}>
+                    <p className={styles.tip}>
+                      <FormattedMessage id="pages.manage.stake.desc" />
+                    </p>
+                  </Col>
+                  <Col span={24}>
+                    <p className={styles.tip}><FormattedMessage id="pages.manage.stake.balance" /></p>
+                    <p><Bignumber value={balanceLoft} /> {symbol}</p>
+                  </Col>
+                </Row>
 
-              <Row className={styles.form}>
-                <Col span={14}>
-                  <Form form={form} name="basic" layout={'vertical'} autoComplete="off">
-                    <Form.Item
-                      name="amount"
-                      rules={[{ required: true, message: 'Please input quantity!' }]}
-                    >
-                      <Input
-                        style={{ width: '100%' }}
-                        placeholder="Quantity"
-                        prefix={<DollarCircleOutlined className="site-form-item-icon" />}
-                        suffix={<a onClick={handler.max}><FormattedMessage id="pages.manage.stake.max" /></a>}
-                      />
-                    </Form.Item>
-                  </Form>
-                </Col>
-                <Col span={4} offset={1}>
-                  <Button type="primary" shape="round" onClick={handler.submit}>
-                    <FormattedMessage id="pages.manage.stake.button.stake" />
-                  </Button>
-                </Col>
-                <Col span={5}>
-                  <Button shape="round"  disabled={!account || depositedLoft.eq('0')} onClick={handler.withdraw.principal.amount}>
-                    <FormattedMessage id="pages.manage.stake.button.withdraw" />
-                  </Button>
-                </Col>
-              </Row>
-            </Card>
-            <Card bordered={false} style={{ marginTop: 15 }}>
-              <Row>
-                <Col span={18}>
-                  <Title level={3}><FormattedMessage id="pages.manage.help.title" /></Title>
-                </Col>
-              </Row>
-              <Row>
-                <Col span={24}>
-                  <p className={styles.tip}>
-                    <FormattedMessage id="pages.manage.help.desc" />
-                  </p>
-                </Col>
-                <Col span={5} offset={19} style={{ marginTop: 18 }}>
-                  <Button type="primary" shape="round">
-                    <FormattedMessage id="pages.manage.help.button" />
-                  </Button>
-                </Col>
-              </Row>
-            </Card>
-          </Col>
-          <Col span={13}>
-            <Card bordered={false}>
-              <Row>
-                <Col span={18}>
-                  <Title level={3}><FormattedMessage id="pages.manage.unlocked.title" /></Title>
-                </Col>
-              </Row>
-              <Row>
-                <Col span={10}>
-                  <p className={styles.tip}>
-                    <FormattedMessage id="pages.manage.unlocked.desc" />
-                  </p>
-                </Col>
-                <Col span={6} offset={1}>
-                  <Bignumber value={earnedLoft} /> {symbol}
-                </Col>
-                <Col span={5} offset={1}>
-                  <Button type="primary" shape="round" disabled={!account || earnedLoft.eq('0')} onClick={handler.withdraw.earned}>
-                    <FormattedMessage id="pages.manage.unlocked.button" />
-                  </Button>
-                </Col>
-              </Row>
-            </Card>
-            {/* <Card bordered={false} style={{ marginTop: 15 }}>
+                <Row className={styles.form}>
+                  <Col span={14}>
+                    <Form form={form} name="basic" layout={'vertical'} autoComplete="off">
+                      <Form.Item
+                        name="amount"
+                        rules={[{ required: true, message: 'Please input quantity!' }]}
+                      >
+                        <Input
+                          style={{ width: '100%' }}
+                          placeholder="Quantity"
+                          prefix={<DollarCircleOutlined className="site-form-item-icon" />}
+                          suffix={<a onClick={handler.max}><FormattedMessage id="pages.manage.stake.max" /></a>}
+                        />
+                      </Form.Item>
+                    </Form>
+                  </Col>
+                  <Col span={4} offset={1}>
+                    <Button type="primary" shape="round" onClick={handler.submit}>
+                      <FormattedMessage id="pages.manage.stake.button.stake" />
+                    </Button>
+                  </Col>
+                  <Col span={5}>
+                    <Button shape="round" disabled={!account || depositedLoft.eq('0')} onClick={handler.withdraw.principal.amount}>
+                      <FormattedMessage id="pages.manage.stake.button.withdraw" />
+                    </Button>
+                  </Col>
+                </Row>
+              </Card>
+              <Card bordered={false} style={{ marginTop: 15 }}>
+                <Row>
+                  <Col span={18}>
+                    <Title level={3}><FormattedMessage id="pages.manage.help.title" /></Title>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col span={24}>
+                    <p className={styles.tip}>
+                      <FormattedMessage id="pages.manage.help.desc" />
+                    </p>
+                  </Col>
+                  <Col span={5} offset={19} style={{ marginTop: 18 }}>
+                    <Button type="primary" shape="round">
+                      <FormattedMessage id="pages.manage.help.button" />
+                    </Button>
+                  </Col>
+                </Row>
+              </Card>
+            </Col>
+            <Col span={13}>
+              <Card bordered={false}>
+                <Row>
+                  <Col span={18}>
+                    <Title level={3}><FormattedMessage id="pages.manage.unlocked.title" /></Title>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col span={10}>
+                    <p className={styles.tip}>
+                      <FormattedMessage id="pages.manage.unlocked.desc" />
+                    </p>
+                  </Col>
+                  <Col span={6} offset={1}>
+                    <p className={styles.tip}>
+                      <Bignumber value={earnedLoft} /> {symbol}
+                    </p>
+                  </Col>
+                  <Col span={5} offset={1}>
+                    <Button type="primary" shape="round" disabled={!account || earnedLoft.eq('0')} onClick={handler.withdraw.earned}>
+                      <FormattedMessage id="pages.manage.unlocked.button" />
+                    </Button>
+                  </Col>
+                </Row>
+              </Card>
+              {/* <Card bordered={false} style={{ marginTop: 15 }}>
               <Row>
                 <Col span={18}>
                   <Title level={3}>Platform fees</Title>
@@ -339,12 +341,12 @@ export default () => {
                 </Row>
               </div>
             </Card> */}
-          </Col>
-        </Row>
-      )}
-    </GridContent>
-    <Amount refs={refAmount} />
-    <Confirm refs={refConfirm} />
+            </Col>
+          </Row>
+        )}
+      </GridContent>
+      <Amount refs={refAmount} />
+      <Confirm refs={refConfirm} />
     </>
   );
 };
