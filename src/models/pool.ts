@@ -194,6 +194,7 @@ export default () => {
     let IntervalIdUserReserves: any = undefined
 
     const refresh = () => {
+        fetchReserves()
         fetchUserReserves()
     }
 

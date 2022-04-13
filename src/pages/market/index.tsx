@@ -110,7 +110,8 @@ export default () => {
       width: 200,
       render: (text: any, record: any) => {
         return record.isPriceInUSD ? <>$ <Bignumber value={record.totalLiquidityInUSD} /></> : <Bignumber value={record.totalLiquidity} />
-      }
+      },
+      sorter: (a: any, b: any) => a.totalBorrows - b.totalBorrows
     },
     {
       title: <FormattedMessage id="pages.market.index.table.collumn.TotalBorrowings" />,
@@ -119,7 +120,8 @@ export default () => {
         return text < 0 ? <>--</> : <>$ <Bignumber value={text} /></>
       },
       width: 200,
-      align: 'center'
+      align: 'center',
+      sorter: (a: any, b: any) => a.totalBorrowsInUSD - b.totalBorrowsInUSD
     },
     {
       title: <div style={{ textAlign: 'center' }}><FormattedMessage id="pages.market.index.table.collumn.DepositApy" /> <p><FormattedMessage id="pages.market.index.table.collumn.DepositApyAnnotation" /></p></div>,
@@ -127,7 +129,8 @@ export default () => {
       render: (text: any, record: any) => {
         return <div className={styles.TagBox}>{text < 0 ? '--' : (text.toFixed(2) + '%')} <div className={styles.tag}>{record.aincentivesAPR}% <span>APR</span></div></div>
       },
-      align: 'center'
+      align: 'center',
+      sorter: (a: any, b: any) => a.depositAPY - b.depositAPY
     },
     {
       title: <FormattedMessage id="pages.market.index.table.collumn.BorrowingRate" />,
@@ -136,6 +139,7 @@ export default () => {
       render: (text: any, record: any) => {
         return <div className={styles.TagBox}>{text < 0 ? '--' : (text.toFixed(2) + '%')} <div className={styles.tag}>{record.vincentivesAPR}% <span>APR</span></div></div>
       },
+      sorter: (a: any, b: any) => a.variableBorrowRate - b.variableBorrowRate
     },
   ];
 

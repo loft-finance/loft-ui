@@ -81,7 +81,7 @@ export default (props: any) => {
                     },
                     {
                         title: <FormattedMessage id="pages.deposit.withdraw.info.FitnessFactor" />,
-                        value: <Bignumber value={user?.healthFactor || '-1'} />,
+                        value: <Bignumber value={user?.healthFactor || '--'} />,
                     },
                     {
                         title: <FormattedMessage id="pages.deposit.withdraw.info.LoanAppreciation" />,
