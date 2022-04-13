@@ -62,7 +62,7 @@ export default function ({ refs }: any) {
           </Row>
         </div>
 
-        <div className={`${styles.item}`}>
+        <div className={`${styles.item}`} onClick={() => handler.connect('walletconnect')}>
           <Row>
             <Col span={18} className={styles.title}>
               WalletConnect

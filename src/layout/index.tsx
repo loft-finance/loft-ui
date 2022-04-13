@@ -4,44 +4,42 @@ import styles from './index.less';
 import Footer from '@/components/Footer';
 import RightContent from '@/components/RightContent';
 import { Link, useLocation } from 'umi';
-// import { defineConfig } from 'umi';
+const navList = [
+  {
+    name: 'market',
+    url: '/market',
+    icon: 'icon-ic_market'
+  },
+  {
+    name: 'deposit',
+    url: '/deposit',
+    icon: 'icon-ic_deposit'
+  },
+  {
+    name: 'manage currency',
+    url: '/loan',
+    icon: 'icon-ic_loan'
+  },
+  {
+
+    name: 'market',
+    url: '/manage',
+    icon: 'icon-ic_platform_currency'
+  },
+  {
+    name: 'pledge',
+    url: '/pledge',
+    icon: 'icon-ic_Pledge'
+  },
+  {
+    name: 'control panel',
+    url: '/control',
+    icon: 'icon-ic_control_panel'
+  }
+]
+
 const Layout: React.FC = ({ children }) => {
-  // console.log(defineConfig)
-  const navList = [
-    {
-      name: 'market',
-      url: '/market',
-      icon: 'icon-ic_market'
-    },
-    {
-      name: 'deposit',
-      url: '/deposit',
-      icon: 'icon-ic_deposit'
-    },
-    {
-      name: 'manage currency',
-      url: '/loan',
-      icon: 'icon-ic_loan'
-    },
-    {
-
-      name: 'market',
-      url: '/manage',
-      icon: 'icon-ic_platform_currency'
-    },
-    {
-      name: 'pledge',
-      url: '/pledge',
-      icon: 'icon-ic_Pledge'
-    },
-    {
-      name: 'control panel',
-      url: '/control',
-      icon: 'icon-ic_control_panel'
-    }
-  ]
   const location = useLocation();
-
   return (
     <UseWalletProvider
       autoConnect

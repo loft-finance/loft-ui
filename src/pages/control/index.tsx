@@ -48,18 +48,18 @@ export default () => {
   const maxBorrowAmount = valueToBigNumber(user?.totalBorrowsMarketReferenceCurrency || '0').plus(
     user?.availableBorrowsMarketReferenceCurrency || '0'
   );
-  // const collateralUsagePercent = maxBorrowAmount.eq(0)
-  //   ? '1'
-  //   : valueToBigNumber(user?.totalBorrowsMarketReferenceCurrency || '0')
-  //     .div(maxBorrowAmount)
-  //     .toFixed();
+  const collateralUsagePercent = maxBorrowAmount.eq(0)
+    ? '1'
+    : valueToBigNumber(user?.totalBorrowsMarketReferenceCurrency || '0')
+      .div(maxBorrowAmount)
+      .toFixed();
 
-  // const loanToValue =
-  //   user?.totalCollateralMarketReferenceCurrency === '0'
-  //     ? '0'
-  //     : valueToBigNumber(user?.totalBorrowsMarketReferenceCurrency || '0')
-  //       .dividedBy(user?.totalCollateralMarketReferenceCurrency || '1')
-  //       .toFixed();
+  const loanToValue =
+    user?.totalCollateralMarketReferenceCurrency === '0'
+      ? '0'
+      : valueToBigNumber(user?.totalBorrowsMarketReferenceCurrency || '0')
+        .dividedBy(user?.totalCollateralMarketReferenceCurrency || '1')
+        .toFixed();
 
   const depositedPositions: any = [];
   const borrowedPositions: any = [];

@@ -46,7 +46,7 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, match: { params:
     }
 
     const marketRefPriceInUsd = normalize(baseCurrency?.marketReferenceCurrencyPriceInUsd || '0', 8)
-    const amountIntEth = amount.multipliedBy(poolReserve.priceInMarketReferenceCurrency);
+    const amountIntEth = amount.multipliedBy(poolReserve.priceInMarketReferenceCurrency || '0');
     const amountInUsd = amountIntEth.multipliedBy(marketRefPriceInUsd);
     const totalCollateralMarketReferenceCurrencyAfter = valueToBigNumber(
         user.totalCollateralMarketReferenceCurrency
