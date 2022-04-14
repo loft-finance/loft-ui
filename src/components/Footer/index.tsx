@@ -10,5 +10,5 @@ export default () => {
 
   const currentYear = new Date().getFullYear();
 
-  return <DefaultFooter copyright={`${currentYear} ${defaultMessage}`}/>;
+  return <DefaultFooter style={{position:'fixed', bottom:0, left:0, right:0, padding:0}} copyright={`${currentYear} ${defaultMessage}`}/>;
 };
