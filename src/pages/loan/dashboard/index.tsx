@@ -3,6 +3,7 @@ import { history, FormattedMessage } from 'umi';
 import { TokenIcon } from '@aave/aave-ui-kit';
 import styles from './index.less';
 import { fixedToValue } from '@/utils';
+import Percent from '@/components/Percent';
 export enum BorrowRateMode {
   None = 'None',
   Stable = 'Stable',
@@ -46,7 +47,7 @@ export default ({ borrowedPositions }: any) => {
           </div>
         </Col>
         <Col span={7} className={styles.single}>
-          {Number(item.borrowRate).toFixed(2)}%
+          <Percent value={item.borrowRate} />
         </Col>
         {/* <Col span={3} className={styles.single}>
           <Switch onClick={()=>handler.rate(item)} checked={item.borrowRateMode === BorrowRateMode.Variable} checkedChildren="yes" unCheckedChildren="no" />

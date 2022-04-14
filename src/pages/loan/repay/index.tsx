@@ -9,6 +9,7 @@ import { normalize } from '@aave/math-utils';
 import { getNetwork } from '@/lib/helpers/provider';
 import Bignumber from '@/components/Bignumber';
 import { fixedToValue } from '@/utils';
+import Percent from '@/components/Percent';
 
 export default (props: any) => {
     const { match: { params: { underlyingAsset, id } } } = props
@@ -98,7 +99,7 @@ export default (props: any) => {
                     },
                     {
                         title: <FormattedMessage id="pages.loan.repay.info.ratio" />,
-                        value: <><Bignumber value={user?.currentLoanToValue || '0'} />%</>,
+                        value: <><Percent value={user?.currentLoanToValue || '0'} /></>,
                         span: 8,
                     },
                 ]}

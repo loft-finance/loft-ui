@@ -8,6 +8,7 @@ import WalletDisconnected from '@/components/Wallet/Disconnected';
 import WalletEmpty from '@/components/Wallet/Empty';
 import { BigNumber, valueToBigNumber } from '@aave/protocol-js';
 import { fixedToValue } from '@/utils';
+import Percent from '@/components/Percent'
 
 export default (props: any) => {
     const { match: { params: { underlyingAsset, id } } } = props
@@ -85,7 +86,7 @@ export default (props: any) => {
                     },
                     {
                         title: <FormattedMessage id="pages.deposit.withdraw.info.LoanAppreciation" />,
-                        value: <><Bignumber value={user?.currentLoanToValue || '0'} /> %</>,
+                        value: <><Percent value={user?.currentLoanToValue || '0'} /></>,
                     },
                     {
                         title: <FormattedMessage id="pages.deposit.withdraw.info.collateral" />,

@@ -54,7 +54,7 @@ const Layout: React.FC = ({ children }) => {
       <header className={styles.header}>
         <div className={styles.newmain + ' ' + styles.head}>
           <div className={styles.logo}>
-            <Link to='/' ><img src='./logo.png' /></Link>
+            <Link to='/' ><img src='/logo.png' /></Link>
           </div>
           <div className={styles.nav}>
             {

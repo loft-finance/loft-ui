@@ -2,6 +2,7 @@ import { Row, Col, Card, Descriptions } from 'antd';
 import { FormattedMessage } from 'umi';
 import { valueToBigNumber } from '@aave/protocol-js';
 import Bignumber from '@/components/Bignumber';
+import Percent from '@/components/Percent';
 import styles from './overview.less';
 
 export default ({ title = '', items = [], poolReserve = {}, marketRefPriceInUsd = '0' }: any) => {
@@ -44,7 +45,7 @@ export default ({ title = '', items = [], poolReserve = {}, marketRefPriceInUsd 
               contentStyle={{ justifyContent: 'end', color: '#29292D', fontWeight: 'bold' }}
             >
               <Descriptions.Item label={<FormattedMessage id="pages.loan.detail.overview.UtilizationRate" />} span={3}>
-                {data.utilizationRate.toFixed(4)} %
+                <Percent value={data.utilizationRate} />
               </Descriptions.Item>
               <Descriptions.Item label={<FormattedMessage id="pages.loan.detail.overview.AvailableLiquidity" />} span={3}>
                 <Bignumber value={data.availableLiquidity} /> {underlyingSymbol}
@@ -60,7 +61,7 @@ export default ({ title = '', items = [], poolReserve = {}, marketRefPriceInUsd 
                 <Bignumber value={data.priceInUsd} /> USD
               </Descriptions.Item>
               <Descriptions.Item label={<FormattedMessage id="pages.loan.detail.overview.LoanApy" />} span={3}>
-                {data.baseLTVasCollateral.toFixed(4)} %
+              <Percent value={data.baseLTVasCollateral} />
               </Descriptions.Item>
             </Descriptions>
           </Col>

@@ -13,6 +13,7 @@ import { config } from "@/lib/config/pledge"
 import { loftToUsd } from '@/lib/helpers/utils';
 const { Title } = Typography;
 import styles from './index.less';
+import Percent from '@/components/Percent';
 
 const price = config.loft.price
 
@@ -214,7 +215,7 @@ export default () => {
                   <Col span={18}>
                     <Title level={3}><FormattedMessage id="pages.manage.stake.title" /></Title>
                   </Col>
-                  <Col span={6}>APY <Bignumber value={loftApy} />%</Col>
+                  <Col span={6}>APY <Percent value={loftApy} /></Col>
                 </Row>
                 <Row>
                   <Col span={24}>

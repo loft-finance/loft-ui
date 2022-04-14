@@ -3,6 +3,7 @@ import { history, FormattedMessage } from 'umi';
 import { TokenIcon } from '@aave/aave-ui-kit';
 import styles from './index.less';
 import { fixedToValue } from '@/utils';
+import Percent from '@/components/Percent';
 
 export default ({ depositedPositions }: any) => {
   const handler = {
@@ -42,7 +43,7 @@ export default ({ depositedPositions }: any) => {
           </div>
         </Col>
         <Col span={7} className={styles.single}>
-          {Number(item.avg30DaysLiquidityRate || item.aincentivesAPR).toFixed(2)}%
+          <Percent value={item.avg30DaysLiquidityRate || item.aincentivesAPR} />
         </Col>
         <Col span={3} className={styles.single}>
           <Switch onClick={() => handler.collateral(item)} checked={item.usageAsCollateralEnabledOnThePool ? item.usageAsCollateralEnabledOnUser ? true : false : false} checkedChildren="yes" unCheckedChildren="no" disabled={!item.usageAsCollateralEnabledOnThePool} />

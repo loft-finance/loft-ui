@@ -9,6 +9,7 @@ import { normalize } from '@aave/math-utils';
 
 import styles from './style.less';
 import { fixedToValue } from '@/utils';
+import Percent from '@/components/Percent';
 
 const { Search } = Input;
 
@@ -143,7 +144,7 @@ export default () => {
       title: <FormattedMessage id="pages.deposit.index.table.col.rate" />,
       dataIndex: 'liquidityRate',
       render: (text: any) => {
-        return Number(text).toFixed(2) + '%'
+        return <Percent value={text} />
       }
     },
   ];
