@@ -51,16 +51,21 @@ const Layout: React.FC = ({ children }) => {
 
   const footerRef = useRef(null);
   const appRef = useRef(null);
+  const contentRef = useRef(null);
 
   useEffect(() => {
     const appEle = (appRef.current as any);
     const footerEle = (footerRef.current as any);
-    const classVal = footerEle.getAttribute('class');
-    
+    const contentEle = (contentRef.current as any);
+    const classVal = footerEle.getAttribute('class') || '';
+    const contentClass = contentEle.getAttribute('class') || '';
+
     if (appEle.offsetHeight >= document.documentElement.clientHeight && classVal.indexOf('footerstatic') == -1) {
       footerEle.setAttribute('class', classVal + ' ' + 'footerstatic');
+      contentEle.setAttribute('class', '');
     } else {
       footerEle.setAttribute('class', classVal.replace(/footerstatic/g, ''));
+      contentClass.indexOf('contentmain') == -1 && contentEle.setAttribute('class', 'contentmain');
     }
   }, [domUpdateDid, location.pathname]);
 
@@ -95,7 +100,9 @@ const Layout: React.FC = ({ children }) => {
             <RightContent />
           </div>
         </header>
-        {children}
+        <div ref={contentRef}>
+          {children}
+        </div>
         <div ref={footerRef} className={styles.footer}>
           <Footer />
         </div>
