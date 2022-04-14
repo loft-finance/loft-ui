@@ -8,6 +8,7 @@ import { TokenIcon } from '@aave/aave-ui-kit';
 
 import styles from './style.less';
 import { fixedToValue } from '@/utils';
+import Percent from '@/components/Percent';
 
 const { Search } = Input;
 
@@ -181,7 +182,7 @@ export default () => {
       title: <FormattedMessage id="pages.loan.index.table.col.BorrowApy" />,
       dataIndex: 'variableBorrowRate',
       render: (text: any) => {
-        return text.toFixed(2) + '%'
+        return <Percent value={text} />
       }
     },
   ];

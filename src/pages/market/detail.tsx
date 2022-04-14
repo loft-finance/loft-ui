@@ -7,8 +7,8 @@ import { Pie } from '@ant-design/plots';
 import { valueToBigNumber, BigNumber } from '@aave/protocol-js';
 import Bignumber from '@/components/Bignumber';
 import styles from './detail.less';
-import { TokenIcon } from '@aave/aave-ui-kit';
 import { normalize } from '@aave/math-utils';
+import Percent from '@/components/Percent';
 
 export enum BorrowRateMode {
   None = 'None',
@@ -290,7 +290,7 @@ export default (props: any) => {
                             <FormattedMessage id="pages.market.detail.config.DepositApy" />
                           </Col>
                           <Col span={12} className={styles.value}>
-                            {Number(data.supplyAPY).toFixed(2)}%
+                            <Percent value={data.supplyAPY} />
                           </Col>
                           <Col span={12} className={styles.label}>
                             <FormattedMessage id="pages.market.detail.config.DepositAverage" />
@@ -313,7 +313,7 @@ export default (props: any) => {
                             <FormattedMessage id="pages.market.detail.config.BorrowApy" />
                           </Col>
                           <Col span={12} className={styles.value}>
-                            {Number(data.variableAPY).toFixed(2)}%
+                            <Percent value={data.variableAPY} />
                           </Col>
                           <Col span={12} className={styles.label}>
                             <FormattedMessage id="pages.market.detail.config.BorrowAverage" />
@@ -325,7 +325,7 @@ export default (props: any) => {
                             <FormattedMessage id="pages.market.detail.config.BorrowPercentage" />
                           </Col>
                           <Col span={12} className={styles.value}>
-                            {Number(data.variableOverTotal || 0).toFixed(2)}%
+                            <Percent value={data.variableOverTotal || 0} />
                           </Col>
                         </Row>
                       </Card>
@@ -334,17 +334,17 @@ export default (props: any) => {
                   <Row style={{ marginTop: 15 }} className={styles.info}>
                     <Col span={6}>
                       <div className={styles.label}><FormattedMessage id="pages.market.detail.config.MaxLtv" /></div>
-                      <div className={styles.value}>{data.baseLTVasCollateral}%</div>
+                      <div className={styles.value}><Percent value={data.baseLTVasCollateral} /></div>
                     </Col>
                     <Col span={6}>
                       <div className={styles.label}><FormattedMessage id="pages.market.detail.config.LiquidationThreshold" /></div>
-                      <div className={styles.value}>{data.liquidationBonus <= 0
-                        ? 0
-                        : data.liquidationThreshold}%</div>
+                      <div className={styles.value}>
+                        <Percent value={data.liquidationBonus <= 0 ? 0 : data.liquidationThreshold} />
+                       </div>
                     </Col>
                     <Col span={6}>
                       <div className={styles.label}><FormattedMessage id="pages.market.detail.config.LiquidationPenalty" /></div>
-                      <div className={styles.value}>{data.liquidationBonus}%</div>
+                      <div className={styles.value}><Percent value={data.liquidationBonus} /></div>
                     </Col>
                     <Col span={6}>
                       <div className={styles.label}><FormattedMessage id="pages.market.detail.config.Collatera" /></div>
@@ -433,7 +433,7 @@ export default (props: any) => {
                           </Col>
                           <Col span={12} className={styles.label}><FormattedMessage id="pages.market.detail.your.loan.LoanAppreciation" />Loan appreciation</Col>
                           <Col span={12} className={styles.value}>
-                            {Number(user?.currentLoanToValue || 0).toFixed(2)}%
+                            <Percent value={user?.currentLoanToValue || 0} />
                           </Col>
                           <Col span={12} className={styles.label}><FormattedMessage id="pages.market.detail.your.loan.available" /></Col>
                           <Col span={12} className={styles.value}>

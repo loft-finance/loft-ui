@@ -11,6 +11,7 @@ import { lpToUsd } from '@/lib/helpers/utils';
 import Amount from './Amount';
 import Confirm from './Confirm'
 import styles from './index.less'
+import Percent from '@/components/Percent';
 
 export default () => {
   const symbol = 'LP'
@@ -277,7 +278,7 @@ export default () => {
                     <Col span={14} className={styles.label}><FormattedMessage id="pages.pledge.view.loft" /></Col>
                     <Col span={10} className={styles.value}><Bignumber value={lpRewardPerYear.div(12)} /></Col>
                     <Col span={14} className={styles.label}><FormattedMessage id="pages.pledge.view.annualization" /></Col>
-                    <Col span={10} className={styles.value}><Bignumber value={lpApy} />%</Col>
+                    <Col span={10} className={styles.value}><Percent value={lpApy} /></Col>
                   </Row>
                 </Card>
               </Col>

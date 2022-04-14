@@ -8,6 +8,7 @@ import Back from '@/components/Back';
 import { TokenIcon } from '@aave/aave-ui-kit';
 import styles from './confirm.less';
 const { Step } = Steps;
+import Percent from '@/components/Percent';
 
 export default ({ match: { params: { underlyingAsset, id, rateMode } }, }: any,) => {
 
@@ -349,14 +350,14 @@ export default ({ match: { params: { underlyingAsset, id, rateMode } }, }: any,)
                                     span={3}
                                     contentStyle={{ color: '#3163E2' }}
                                 >
-                                    {Number(currentApy).toFixed(2)} %
+                                    <Percent value={currentApy} />
                                 </Descriptions.Item>
                                 <Descriptions.Item
                                     label={`Next ${currentRateMode} rate`}
                                     span={3}
                                     contentStyle={{ color: '#3163E2' }}
                                 >
-                                    {Number(apyAfterSwitch).toFixed(2)} %
+                                    <Percent value={apyAfterSwitch} />
                                 </Descriptions.Item>
                             </Descriptions>
                         </Col>

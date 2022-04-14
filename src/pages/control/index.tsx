@@ -12,6 +12,7 @@ import LoanDashboard from '@/pages/loan/dashboard'
 import { loftToUsd, lpToUsd } from '@/lib/helpers/utils';
 import Bignumber from '@/components/Bignumber';
 import BigNumber from 'bignumber.js';
+import Percent from '@/components/Percent';
 
 export default () => {
   const { account } = useModel('wallet', res => ({
@@ -327,7 +328,7 @@ export default () => {
                       </Col>
                       <Col span={24} style={{ marginTop: 15 }}>
                         <div className={styles.label}><FormattedMessage id="pages.info.loan.ltv" /></div>
-                        <div className={styles.value}><Bignumber value={loanToValue} />%</div>
+                        <div className={styles.value}><Percent value={loanToValue} /></div>
                       </Col>
                     </Row>
                   </Col>
@@ -355,7 +356,7 @@ export default () => {
                       </Col>
                       <Col span={24} style={{ marginTop: 15 }}>
                         <div className={styles.label}><FormattedMessage id="pages.info.loan.capacity" /></div>
-                        <div className={styles.value}><Bignumber value={collateralUsagePercent} />%</div>
+                        <div className={styles.value}><Percent value={collateralUsagePercent} /></div>
                       </Col>
                     </Row>
                   </Col>
@@ -384,7 +385,7 @@ export default () => {
                         </div>
                       </Col>
                       <Col span={3} className={styles.single}>
-                        <Bignumber value={loftApy} />%
+                        <Percent value={loftApy} />
                       </Col>
                       <Col span={4}>
                         <div className={styles.multi}>
@@ -434,7 +435,7 @@ export default () => {
                         </div>
                       </Col>
                       <Col span={3} className={styles.single}>
-                        <Bignumber value={lpApy} />%
+                        <Percent value={lpApy} />
                       </Col>
                       <Col span={4}>
                         <div className={styles.multi}>

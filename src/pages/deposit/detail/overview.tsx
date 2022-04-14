@@ -3,6 +3,7 @@ import { FormattedMessage } from 'umi';
 import { valueToBigNumber } from '@aave/protocol-js';
 import styles from './overview.less';
 import Bignumber from '@/components/Bignumber';
+import Percent from '@/components/Percent';
 
 export default ({ title = '', items = [], poolReserve = {}, marketRefPriceInUsd = '0' }: any) => {
   const underlyingSymbol = poolReserve?.symbol || ''
@@ -44,13 +45,13 @@ export default ({ title = '', items = [], poolReserve = {}, marketRefPriceInUsd 
               contentStyle={{ justifyContent: 'end', color: '#29292D', fontWeight: 'bold' }}
             >
               <Descriptions.Item label={<FormattedMessage id="pages.deposit.detail.overview.UtilizationRate" />} span={3}>
-                {data.utilizationRate.toFixed(2)}%
+                <Percent value={data.utilizationRate} />
               </Descriptions.Item>
               <Descriptions.Item label={<FormattedMessage id="pages.deposit.detail.overview.AvailableLiquidity" />} span={3}>
                 <Bignumber value={data.availableLiquidity} /> {underlyingSymbol}
               </Descriptions.Item>
               <Descriptions.Item label={<FormattedMessage id="pages.deposit.detail.overview.DepositApy" />} span={3}>
-                {data.depositApy.toFixed(2)}%
+                <Percent value={data.depositApy} />
               </Descriptions.Item>
               <Descriptions.Item label={<FormattedMessage id="pages.deposit.detail.overview.collateral" />} span={3}>
                 {data.usageAsCollateralEnabled?'yes':'no'}
@@ -69,10 +70,10 @@ export default ({ title = '', items = [], poolReserve = {}, marketRefPriceInUsd 
                 <Bignumber value={data.baseLTVasCollateral} /> {underlyingSymbol}
               </Descriptions.Item>
               <Descriptions.Item label={<FormattedMessage id="pages.deposit.detail.overview.LiquidationThreshold" />} span={3}>
-                {data.liquidationThreshold.toFixed(2)}%
+                <Percent value={data.liquidationThreshold} />
               </Descriptions.Item>
               <Descriptions.Item label={<FormattedMessage id="pages.deposit.detail.overview.LiquidationPenal" />} span={3}>
-                {data.liquidationBonus.toFixed(2)}%
+                <Percent value={data.liquidationBonus} />
               </Descriptions.Item>
             </Descriptions>
           </Col>
