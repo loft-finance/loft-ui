@@ -60,8 +60,8 @@ const Layout: React.FC = ({ children }) => {
     const classVal = footerEle.getAttribute('class') || '';
     const contentClass = contentEle.getAttribute('class') || '';
 
-    if (appEle.offsetHeight >= document.documentElement.clientHeight && classVal.indexOf('footerstatic') == -1) {
-      footerEle.setAttribute('class', classVal + ' ' + 'footerstatic');
+    if (appEle.offsetHeight >= document.documentElement.clientHeight) {
+      classVal.indexOf('footerstatic') == -1 && footerEle.setAttribute('class', classVal + ' ' + 'footerstatic');
       contentEle.setAttribute('class', '');
     } else {
       footerEle.setAttribute('class', classVal.replace(/footerstatic/g, ''));

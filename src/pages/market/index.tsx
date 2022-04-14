@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Table, Row, Col, Card, Button, Image, Spin } from 'antd';
-import { history, useModel, FormattedMessage } from 'umi';
+import { history, useModel, FormattedMessage, useLocation } from 'umi';
 import { valueToBigNumber } from '@aave/protocol-js';
 import { TokenIcon } from '@aave/aave-ui-kit';
 import { normalize } from '@aave/math-utils';
@@ -14,6 +14,7 @@ import { numberWithCommas } from '@/utils';
 
 
 export default () => {
+  const location = useLocation();
   const { reserves, baseCurrency } = useModel('pool', res => ({
     reserves: res.reserves,
     baseCurrency: res.baseCurrency
@@ -126,7 +127,7 @@ export default () => {
       title: <div style={{ textAlign: 'center' }}><FormattedMessage id="pages.market.index.table.collumn.DepositApy" /> <p><FormattedMessage id="pages.market.index.table.collumn.DepositApyAnnotation" /></p></div>,
       dataIndex: 'depositAPY',
       render: (text: any, record: any) => {
-        return <div className={styles.TagBox}><Percent value={text}/> <div className={styles.tag}><Percent value={record.aincentivesAPR}/> <span>APR</span></div></div>
+        return <div className={styles.TagBox}><Percent value={text} /> <div className={styles.tag}><Percent value={record.aincentivesAPR} /> <span>APR</span></div></div>
       },
       align: 'center',
       sorter: (a: any, b: any) => a.depositAPY - b.depositAPY
@@ -136,7 +137,7 @@ export default () => {
       dataIndex: 'variableBorrowRate',
       align: 'center',
       render: (text: any, record: any) => {
-        return <div className={styles.TagBox}><Percent value={text}/> <div className={styles.tag}><Percent value={record.vincentivesAPR}/> <span>APR</span></div></div>
+        return <div className={styles.TagBox}><Percent value={text} /> <div className={styles.tag}><Percent value={record.vincentivesAPR} /> <span>APR</span></div></div>
       },
       sorter: (a: any, b: any) => a.variableBorrowRate - b.variableBorrowRate
     },
@@ -205,7 +206,7 @@ export default () => {
 
   useEffect(() => {
     updateDom();
-  }, [reserves]);
+  }, [reserves, location.pathname]);
 
   return (
     <Spin spinning={!list || !list.length}>
