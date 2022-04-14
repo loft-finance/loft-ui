@@ -8,6 +8,7 @@ import Bignumber from '@/components/Bignumber';
 
 import Back from '@/components/Back';
 import styles from './confirm.less';
+import React from 'react';
 const { Step } = Steps;
 
 export default ({ poolReserve, user, userReserve, maxAmountToDeposit, match: { params: { amount: amount0 } }, }: any,) => {
@@ -182,28 +183,28 @@ export default ({ poolReserve, user, userReserve, maxAmountToDeposit, match: { p
                     setSteps([
                         {
                             key: 'approval',
-                            title: <FormattedMessage id="pages.deposit.withdraw.confirm.steps.approve.title" />,
-                            buttonText: <FormattedMessage id="pages.deposit.withdraw.confirm.steps.approve.button" />,
-                            stepText: <FormattedMessage id="pages.deposit.withdraw.confirm.steps.approve.step" />,
-                            description: <FormattedMessage id="pages.deposit.withdraw.confirm.steps.approve.desc" />,
+                            title: <span><FormattedMessage id="pages.deposit.withdraw.confirm.steps.approve.title" /></span>,
+                            buttonText: <span><FormattedMessage id="pages.deposit.withdraw.confirm.steps.approve.button" /></span>,
+                            stepText: <span><FormattedMessage id="pages.deposit.withdraw.confirm.steps.approve.step" /></span>,
+                            description: <span><FormattedMessage id="pages.deposit.withdraw.confirm.steps.approve.desc" /></span>,
                             loading: false,
                             error: '',
                         },
                         {
                             key: 'withdraw',
-                            title: <FormattedMessage id="pages.deposit.withdraw.confirm.steps.withdraw.title" />,
-                            buttonText: <FormattedMessage id="pages.deposit.withdraw.confirm.steps.withdraw.button" />,
-                            stepText: <FormattedMessage id="pages.deposit.withdraw.confirm.steps.withdraw.step" />,
-                            description: <FormattedMessage id="pages.deposit.withdraw.confirm.steps.withdraw.desc" />,
+                            title: <span><FormattedMessage id="pages.deposit.withdraw.confirm.steps.withdraw.title" /></span>,
+                            buttonText: <span><FormattedMessage id="pages.deposit.withdraw.confirm.steps.withdraw.button" /></span>,
+                            stepText: <span> <FormattedMessage id="pages.deposit.withdraw.confirm.steps.withdraw.step" /></span>,
+                            description: <span><FormattedMessage id="pages.deposit.withdraw.confirm.steps.withdraw.desc" /></span>,
                             loading: withdrawing ? true : false,
                             error: '',
                         },
                         {
                             key: 'completed',
-                            title: <FormattedMessage id="pages.deposit.withdraw.confirm.steps.completed.title" />,
-                            buttonText: <FormattedMessage id="pages.deposit.withdraw.confirm.steps.completed.button" />,
-                            stepText: <FormattedMessage id="pages.deposit.withdraw.confirm.steps.completed.step" />,
-                            description: <FormattedMessage id="pages.deposit.withdraw.confirm.steps.completed.desc" />,
+                            title: <span><FormattedMessage id="pages.deposit.withdraw.confirm.steps.completed.title" /></span>,
+                            buttonText: <span><FormattedMessage id="pages.deposit.withdraw.confirm.steps.completed.button" /></span>,
+                            stepText: <span> <FormattedMessage id="pages.deposit.withdraw.confirm.steps.completed.step" /></span>,
+                            description: <span> <FormattedMessage id="pages.deposit.withdraw.confirm.steps.completed.desc" /></span>,
                             loading: false,
                             error: '',
                         },
@@ -212,19 +213,19 @@ export default ({ poolReserve, user, userReserve, maxAmountToDeposit, match: { p
                     setSteps([
                         {
                             key: 'withdraw',
-                            title: <FormattedMessage id="pages.deposit.withdraw.confirm.steps.withdraw.title" />,
-                            buttonText: <FormattedMessage id="pages.deposit.withdraw.confirm.steps.withdraw.button" />,
-                            stepText: <FormattedMessage id="pages.deposit.withdraw.confirm.steps.withdraw.step" />,
-                            description: <FormattedMessage id="pages.deposit.withdraw.confirm.steps.withdraw.desc" />,
+                            title: <span><FormattedMessage id="pages.deposit.withdraw.confirm.steps.withdraw.title" /></span>,
+                            buttonText: <span><FormattedMessage id="pages.deposit.withdraw.confirm.steps.withdraw.button" /></span>,
+                            stepText: <span><FormattedMessage id="pages.deposit.withdraw.confirm.steps.withdraw.step" /></span>,
+                            description: <span><FormattedMessage id="pages.deposit.withdraw.confirm.steps.withdraw.desc" /></span>,
                             loading: withdrawing ? true : false,
                             error: '',
                         },
                         {
                             key: 'completed',
-                            title: <FormattedMessage id="pages.deposit.withdraw.confirm.steps.completed.title" />,
-                            buttonText: <FormattedMessage id="pages.deposit.withdraw.confirm.steps.completed.button" />,
-                            stepText: <FormattedMessage id="pages.deposit.withdraw.confirm.steps.completed.step" />,
-                            description: <FormattedMessage id="pages.deposit.withdraw.confirm.steps.completed.desc" />,
+                            title: <span><FormattedMessage id="pages.deposit.withdraw.confirm.steps.completed.title" /></span>,
+                            buttonText: <span><FormattedMessage id="pages.deposit.withdraw.confirm.steps.completed.button" /></span>,
+                            stepText: <span><FormattedMessage id="pages.deposit.withdraw.confirm.steps.completed.step" /></span>,
+                            description: <span><FormattedMessage id="pages.deposit.withdraw.confirm.steps.completed.desc" /></span>,
                             loading: false,
                             error: '',
                         },
@@ -442,7 +443,7 @@ export default ({ poolReserve, user, userReserve, maxAmountToDeposit, match: { p
                         </Col>
                         <Col span={10} offset={7}>
                             <Row>
-                                {records.map((item: any) => <>
+                                {records.map((item: any, index: number) => <React.Fragment key={index}>
                                     <Col span={8}>{item.name}</Col>
                                     <Col span={8}>
                                         {item.status} {item.status == 'wait' ? <LoadingOutlined /> : <Badge status={item.status == 'confirmed' ? "success" : "error"} />}
@@ -450,7 +451,7 @@ export default ({ poolReserve, user, userReserve, maxAmountToDeposit, match: { p
                                     <Col span={8}>
                                         <FormattedMessage id="pages.deposit.withdraw.confirm.explorer" />
                                     </Col>
-                                </>)}
+                                </React.Fragment>)}
                             </Row>
                         </Col>
                     </Row>

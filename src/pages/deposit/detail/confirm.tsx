@@ -31,7 +31,7 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, match: { params:
         baseCurrency: res.baseCurrency,
         refreshPool: res.refresh
     }))
-    const { account, provider,refreshWallet } = useModel('wallet', res => ({
+    const { account, provider, refreshWallet } = useModel('wallet', res => ({
         account: res.account,
         refreshWallet: res.refresh,
         provider: res.provider
@@ -123,28 +123,28 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, match: { params:
                     setSteps([
                         {
                             key: 'approve',
-                            title: <FormattedMessage id="pages.deposit.detail.confirm.steps.approve.title" />,
-                            buttonText: <FormattedMessage id="pages.deposit.detail.confirm.steps.approve.button" />,
-                            stepText: <FormattedMessage id="pages.deposit.detail.confirm.steps.approve.step" />,
-                            description: <FormattedMessage id="pages.deposit.detail.confirm.steps.approve.desc" />,
+                            title: <span><FormattedMessage id="pages.deposit.detail.confirm.steps.approve.title" /></span>,
+                            buttonText: <span><FormattedMessage id="pages.deposit.detail.confirm.steps.approve.button" /></span>,
+                            stepText: <span><FormattedMessage id="pages.deposit.detail.confirm.steps.approve.step" /></span>,
+                            description: <span><FormattedMessage id="pages.deposit.detail.confirm.steps.approve.desc" /></span>,
                             loading: false,
                             error: '',
                         },
                         {
                             key: 'deposit',
-                            title: <FormattedMessage id="pages.deposit.detail.confirm.steps.deposit.title" />,
-                            buttonText: <FormattedMessage id="pages.deposit.detail.confirm.steps.deposit.button" />,
-                            stepText: <FormattedMessage id="pages.deposit.detail.confirm.steps.deposit.step" />,
-                            description: <FormattedMessage id="pages.deposit.detail.confirm.steps.deposit.desc" />,
+                            title: <span><FormattedMessage id="pages.deposit.detail.confirm.steps.deposit.title" /></span>,
+                            buttonText: <span><FormattedMessage id="pages.deposit.detail.confirm.steps.deposit.button" /></span>,
+                            stepText: <span><FormattedMessage id="pages.deposit.detail.confirm.steps.deposit.step" /></span>,
+                            description: <span><FormattedMessage id="pages.deposit.detail.confirm.steps.deposit.desc" /></span>,
                             loading: depositing ? true : false,
                             error: '',
                         },
                         {
                             key: 'completed',
-                            title: <FormattedMessage id="pages.deposit.detail.confirm.steps.completed.title" />,
-                            buttonText: <FormattedMessage id="pages.deposit.detail.confirm.steps.completed.button" />,
-                            stepText: <FormattedMessage id="pages.deposit.detail.confirm.steps.completed.step" />,
-                            description: <FormattedMessage id="pages.deposit.detail.confirm.steps.completed.desc" />,
+                            title: <span><FormattedMessage id="pages.deposit.detail.confirm.steps.completed.title" /></span>,
+                            buttonText: <span><FormattedMessage id="pages.deposit.detail.confirm.steps.completed.button" /></span>,
+                            stepText: <span><FormattedMessage id="pages.deposit.detail.confirm.steps.completed.step" /></span>,
+                            description: <span><FormattedMessage id="pages.deposit.detail.confirm.steps.completed.desc" /></span>,
                             loading: false,
                             error: '',
                         },
@@ -153,10 +153,10 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, match: { params:
                     setSteps([
                         {
                             key: 'deposit',
-                            title: <FormattedMessage id="pages.deposit.detail.confirm.steps.deposit.title" />,
-                            buttonText: <FormattedMessage id="pages.deposit.detail.confirm.steps.deposit.button" />,
-                            stepText: <FormattedMessage id="pages.deposit.detail.confirm.steps.deposit.step" />,
-                            description: <FormattedMessage id="pages.deposit.detail.confirm.steps.deposit.desc" />,
+                            title: <span><FormattedMessage id="pages.deposit.detail.confirm.steps.deposit.title" /></span>,
+                            buttonText: <span><FormattedMessage id="pages.deposit.detail.confirm.steps.deposit.button" /></span>,
+                            stepText: <span><FormattedMessage id="pages.deposit.detail.confirm.steps.deposit.step" /></span>,
+                            description: <span><FormattedMessage id="pages.deposit.detail.confirm.steps.deposit.desc" /></span>,
                             loading: depositing ? true : false,
                             error: '',
                         },
@@ -394,7 +394,7 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, match: { params:
                             <Row>
                                 {
                                     records.map((item: any, index: number) =>
-                                        <React.Fragment key={item.id}>
+                                        <React.Fragment key={index}>
                                             <Col span={8}>{item.name}</Col>
                                             <Col span={8}>
                                                 {item.status} {item.status == 'wait' ? <LoadingOutlined /> : <Badge status={item.status == 'confirmed' ? "success" : "error"} />}

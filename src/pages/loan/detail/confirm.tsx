@@ -9,6 +9,7 @@ import Bignumber from '@/components/Bignumber';
 
 import Back from '@/components/Back';
 import styles from './confirm.less';
+import React from 'react';
 const { Step } = Steps;
 
 export default ({ poolReserve, userReserve, maxAmountToDeposit, location: { query }, match: { params: { amount: amount0 } }, }: any,) => {
@@ -149,27 +150,27 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, location: { quer
                         {
                             key: 'approve',
                             title: <FormattedMessage id="pages.loan.detail.confirm.steps.approve.title" />,
-                            buttonText: <FormattedMessage id="pages.loan.detail.confirm.steps.approve.button" />,
-                            stepText: <FormattedMessage id="pages.loan.detail.confirm.steps.approve.step" />,
-                            description: <FormattedMessage id="pages.loan.detail.confirm.steps.approve.desc" />,
+                            buttonText: <span><FormattedMessage id="pages.loan.detail.confirm.steps.approve.button" /></span>,
+                            stepText: <span><FormattedMessage id="pages.loan.detail.confirm.steps.approve.step" /></span>,
+                            description: <span><FormattedMessage id="pages.loan.detail.confirm.steps.approve.desc" /></span>,
                             loading: false,
                             error: '',
                         },
                         {
                             key: 'loan',
-                            title: <FormattedMessage id="pages.loan.detail.confirm.steps.loan.title" />,
-                            buttonText: <FormattedMessage id="pages.loan.detail.confirm.steps.loan.button" />,
-                            stepText: <FormattedMessage id="pages.loan.detail.confirm.steps.loan.step" />,
-                            description: <FormattedMessage id="pages.loan.detail.confirm.steps.loan.desc" />,
+                            title: <span><FormattedMessage id="pages.loan.detail.confirm.steps.loan.title" /></span>,
+                            buttonText: <span><FormattedMessage id="pages.loan.detail.confirm.steps.loan.button" /></span>,
+                            stepText: <span><FormattedMessage id="pages.loan.detail.confirm.steps.loan.step" /></span>,
+                            description: <span><FormattedMessage id="pages.loan.detail.confirm.steps.loan.desc" /></span>,
                             loading: loaning ? true : false,
                             error: '',
                         },
                         {
                             key: 'completed',
-                            title: <FormattedMessage id="pages.loan.detail.confirm.steps.completed.title" />,
-                            buttonText: <FormattedMessage id="pages.loan.detail.confirm.steps.completed.button" />,
-                            stepText: <FormattedMessage id="pages.loan.detail.confirm.steps.completed.step" />,
-                            description: <FormattedMessage id="pages.loan.detail.confirm.steps.completed.desc" />,
+                            title: <span><FormattedMessage id="pages.loan.detail.confirm.steps.completed.title" /></span>,
+                            buttonText: <span><FormattedMessage id="pages.loan.detail.confirm.steps.completed.button" /></span>,
+                            stepText: <span> <FormattedMessage id="pages.loan.detail.confirm.steps.completed.step" /></span>,
+                            description: <span><FormattedMessage id="pages.loan.detail.confirm.steps.completed.desc" /></span>,
                             loading: false,
                             error: '',
                         },
@@ -178,19 +179,19 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, location: { quer
                     setSteps([
                         {
                             key: 'loan',
-                            title: <FormattedMessage id="pages.loan.detail.confirm.steps.loan.title" />,
-                            buttonText: <FormattedMessage id="pages.loan.detail.confirm.steps.loan.button" />,
-                            stepText: <FormattedMessage id="pages.loan.detail.confirm.steps.loan.step" />,
-                            description: <FormattedMessage id="pages.loan.detail.confirm.steps.loan.desc" />,
+                            title: <span><FormattedMessage id="pages.loan.detail.confirm.steps.loan.title" /></span>,
+                            buttonText: <span><FormattedMessage id="pages.loan.detail.confirm.steps.loan.button" /></span>,
+                            stepText: <span> <FormattedMessage id="pages.loan.detail.confirm.steps.loan.step" /></span>,
+                            description: <span><FormattedMessage id="pages.loan.detail.confirm.steps.loan.desc" /></span>,
                             loading: loaning ? true : false,
                             error: '',
                         },
                         {
                             key: 'completed',
-                            title: <FormattedMessage id="pages.loan.detail.confirm.steps.completed.title" />,
-                            buttonText: <FormattedMessage id="pages.loan.detail.confirm.steps.completed.button" />,
-                            stepText: <FormattedMessage id="pages.loan.detail.confirm.steps.completed.step" />,
-                            description: <FormattedMessage id="pages.loan.detail.confirm.steps.completed.desc" />,
+                            title: <span><FormattedMessage id="pages.loan.detail.confirm.steps.completed.title" /></span>,
+                            buttonText: <span><FormattedMessage id="pages.loan.detail.confirm.steps.completed.button" /></span>,
+                            stepText: <span> <FormattedMessage id="pages.loan.detail.confirm.steps.completed.step" /></span>,
+                            description: <span><FormattedMessage id="pages.loan.detail.confirm.steps.completed.desc" /></span>,
                             loading: false,
                             error: '',
                         },
@@ -417,13 +418,13 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, location: { quer
                         </Col>
                         <Col span={10} offset={7}>
                             <Row>
-                                {records.map((item: any) => <>
+                                {records.map((item: any, index: number) => <React.Fragment key={index}>
                                     <Col span={8}>{item.name}</Col>
                                     <Col span={8}>
                                         {item.status} {item.status == 'wait' ? <LoadingOutlined /> : <Badge status={item.status == 'confirmed' ? "success" : "error"} />}
                                     </Col>
                                     <Col span={8}><FormattedMessage id="pages.loan.detail.confirm.explorer" /></Col>
-                                </>)}
+                                </React.Fragment>)}
                             </Row>
                         </Col>
                     </Row>

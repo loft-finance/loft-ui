@@ -9,6 +9,7 @@ import { TokenIcon } from '@aave/aave-ui-kit';
 import styles from './confirm.less';
 const { Step } = Steps;
 import Percent from '@/components/Percent';
+import React from 'react';
 
 export default ({ match: { params: { underlyingAsset, id, rateMode } }, }: any,) => {
 
@@ -133,28 +134,28 @@ export default ({ match: { params: { underlyingAsset, id, rateMode } }, }: any,)
                     setSteps([
                         {
                             key: 'approve',
-                            title: <FormattedMessage id="pages.loan.rate.confirm.steps.approve.title" />,
-                            buttonText: <FormattedMessage id="pages.loan.rate.confirm.steps.approve.button" />,
-                            stepText: <FormattedMessage id="pages.loan.rate.confirm.steps.approve.step" />,
-                            description: <FormattedMessage id="pages.loan.rate.confirm.steps.approve.desc" />,
+                            title: <span><FormattedMessage id="pages.loan.rate.confirm.steps.approve.title" /></span>,
+                            buttonText: <span><FormattedMessage id="pages.loan.rate.confirm.steps.approve.button" /></span>,
+                            stepText: <span><FormattedMessage id="pages.loan.rate.confirm.steps.approve.step" /></span>,
+                            description: <span><FormattedMessage id="pages.loan.rate.confirm.steps.approve.desc" /></span>,
                             loading: false,
                             error: '',
                         },
                         {
                             key: 'deposit',
-                            title: <FormattedMessage id="pages.loan.rate.confirm.steps.rate.title" />,
-                            buttonText: <FormattedMessage id="pages.loan.rate.confirm.steps.rate.button" />,
-                            stepText: <FormattedMessage id="pages.loan.rate.confirm.steps.rate.step" />,
-                            description: <FormattedMessage id="pages.loan.rate.confirm.steps.rate.desc" />,
+                            title: <span><FormattedMessage id="pages.loan.rate.confirm.steps.rate.title" /></span>,
+                            buttonText: <span><FormattedMessage id="pages.loan.rate.confirm.steps.rate.button" /></span>,
+                            stepText: <span> <FormattedMessage id="pages.loan.rate.confirm.steps.rate.step" /></span>,
+                            description: <span> <FormattedMessage id="pages.loan.rate.confirm.steps.rate.desc" /></span>,
                             loading: depositing ? true : false,
                             error: '',
                         },
                         {
                             key: 'completed',
-                            title: <FormattedMessage id="pages.loan.rate.confirm.steps.completed.title" />,
-                            buttonText: <FormattedMessage id="pages.loan.rate.confirm.steps.completed.button" />,
-                            stepText: <FormattedMessage id="pages.loan.rate.confirm.steps.completed.step" />,
-                            description: <FormattedMessage id="pages.loan.rate.confirm.steps.completed.desc" />,
+                            title: <span><FormattedMessage id="pages.loan.rate.confirm.steps.completed.title" /></span>,
+                            buttonText: <span> <FormattedMessage id="pages.loan.rate.confirm.steps.completed.button" /></span>,
+                            stepText: <span> <FormattedMessage id="pages.loan.rate.confirm.steps.completed.step" /></span>,
+                            description: <span><FormattedMessage id="pages.loan.rate.confirm.steps.completed.desc" /></span>,
                             loading: false,
                             error: '',
                         },
@@ -163,19 +164,19 @@ export default ({ match: { params: { underlyingAsset, id, rateMode } }, }: any,)
                     setSteps([
                         {
                             key: 'deposit',
-                            title: <FormattedMessage id="pages.loan.rate.confirm.steps.rate.title" />,
-                            buttonText: <FormattedMessage id="pages.loan.rate.confirm.steps.rate.button" />,
-                            stepText: <FormattedMessage id="pages.loan.rate.confirm.steps.rate.step" />,
-                            description: <FormattedMessage id="pages.loan.rate.confirm.steps.rate.desc" />,
+                            title: <span> <FormattedMessage id="pages.loan.rate.confirm.steps.rate.title" /></span>,
+                            buttonText: <span><FormattedMessage id="pages.loan.rate.confirm.steps.rate.button" /></span>,
+                            stepText: <span> <FormattedMessage id="pages.loan.rate.confirm.steps.rate.step" /></span>,
+                            description: <span><FormattedMessage id="pages.loan.rate.confirm.steps.rate.desc" /></span>,
                             loading: depositing ? true : false,
                             error: '',
                         },
                         {
                             key: 'completed',
-                            title: <FormattedMessage id="pages.loan.rate.confirm.steps.completed.title" />,
-                            buttonText: <FormattedMessage id="pages.loan.rate.confirm.steps.completed.button" />,
-                            stepText: <FormattedMessage id="pages.loan.rate.confirm.steps.completed.step" />,
-                            description: <FormattedMessage id="pages.loan.rate.confirm.steps.completed.desc" />,
+                            title: <span> <FormattedMessage id="pages.loan.rate.confirm.steps.completed.title" /></span>,
+                            buttonText: <span><FormattedMessage id="pages.loan.rate.confirm.steps.completed.button" /></span>,
+                            stepText: <span> <FormattedMessage id="pages.loan.rate.confirm.steps.completed.step" /></span>,
+                            description: <span><FormattedMessage id="pages.loan.rate.confirm.steps.completed.desc" /></span>,
                             loading: false,
                             error: '',
                         },
@@ -373,8 +374,8 @@ export default ({ match: { params: { underlyingAsset, id, rateMode } }, }: any,)
                                 current={current}
                                 className="site-navigation-steps"
                             >
-                                {steps.map((item) => (
-                                    <Step title={item.title} />
+                                {steps.map((item: any, index: number) => (
+                                    <Step title={item.title} key={index} />
                                 ))}
                             </Steps>
                         </Col>
@@ -395,13 +396,13 @@ export default ({ match: { params: { underlyingAsset, id, rateMode } }, }: any,)
                         </Col>
                         <Col span={10} offset={7}>
                             <Row>
-                                {records.map((item: any) => <>
+                                {records.map((item: any, index: number) => <React.Fragment key={index}>
                                     <Col span={8}>{item.name}</Col>
                                     <Col span={8}>
                                         {item.status} {item.status == 'wait' ? <LoadingOutlined /> : <Badge status={item.status == 'confirmed' ? "success" : "error"} />}
                                     </Col>
                                     <Col span={8}><FormattedMessage id="pages.loan.rate.confirm.explorer" /></Col>
-                                </>)}
+                                </React.Fragment>)}
                             </Row>
                         </Col>
                     </Row>

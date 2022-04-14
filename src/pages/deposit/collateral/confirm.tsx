@@ -8,6 +8,7 @@ import { TokenIcon } from '@aave/aave-ui-kit';
 import Back from '@/components/Back';
 import styles from './confirm.less';
 import { GridContent } from '@ant-design/pro-layout';
+import React from 'react';
 const { Step } = Steps;
 
 export default ({ match: { params: { underlyingAsset, id, status } }, }: any,) => {
@@ -24,7 +25,7 @@ export default ({ match: { params: { underlyingAsset, id, status } }, }: any,) =
         user: res.user,
         refreshPool: res.refresh
     }))
-    const { account, provider,refreshWallet } = useModel('wallet', res => ({
+    const { account, provider, refreshWallet } = useModel('wallet', res => ({
         account: res.account,
         refreshWallet: res.refresh,
         provider: res.provider
@@ -117,28 +118,28 @@ export default ({ match: { params: { underlyingAsset, id, status } }, }: any,) =
                     setSteps([
                         {
                             key: 'approve',
-                            title: <FormattedMessage id="pages.deposit.collateral.confirm.steps.approve.title" />,
-                            buttonText: <FormattedMessage id="pages.deposit.collateral.confirm.steps.approve.button" />,
-                            stepText: <FormattedMessage id="pages.deposit.collateral.confirm.steps.approve.step" />,
-                            description: <FormattedMessage id="pages.deposit.collateral.confirm.steps.approve.desc" />,
+                            title: <span><FormattedMessage id="pages.deposit.collateral.confirm.steps.approve.title" /></span>,
+                            buttonText: <span><FormattedMessage id="pages.deposit.collateral.confirm.steps.approve.button" /></span>,
+                            stepText: <span><FormattedMessage id="pages.deposit.collateral.confirm.steps.approve.step" /></span>,
+                            description: <span><FormattedMessage id="pages.deposit.collateral.confirm.steps.approve.desc" /></span>,
                             loading: false,
                             error: '',
                         },
                         {
                             key: 'deposit',
-                            title: <FormattedMessage id="pages.deposit.collateral.confirm.steps.collateral.title" />,
-                            buttonText: <FormattedMessage id="pages.deposit.collateral.confirm.steps.collateral.button" />,
-                            stepText: <FormattedMessage id="pages.deposit.collateral.confirm.steps.collateral.step" />,
-                            description: <FormattedMessage id="pages.deposit.collateral.confirm.steps.collateral.desc" />,
+                            title: <span><FormattedMessage id="pages.deposit.collateral.confirm.steps.collateral.title" /></span>,
+                            buttonText: <span><FormattedMessage id="pages.deposit.collateral.confirm.steps.collateral.button" /></span>,
+                            stepText: <span> <FormattedMessage id="pages.deposit.collateral.confirm.steps.collateral.step" /></span>,
+                            description: <span><FormattedMessage id="pages.deposit.collateral.confirm.steps.collateral.desc" /></span>,
                             loading: depositing ? true : false,
                             error: '',
                         },
                         {
                             key: 'completed',
-                            title: <FormattedMessage id="pages.deposit.collateral.confirm.steps.completed.title" />,
-                            buttonText: <FormattedMessage id="pages.deposit.collateral.confirm.steps.completed.button" />,
-                            stepText: <FormattedMessage id="pages.deposit.collateral.confirm.steps.completed.step" />,
-                            description: <FormattedMessage id="pages.deposit.collateral.confirm.steps.completed.desc" />,
+                            title: <span><FormattedMessage id="pages.deposit.collateral.confirm.steps.completed.title" /></span>,
+                            buttonText: <span><FormattedMessage id="pages.deposit.collateral.confirm.steps.completed.button" /></span>,
+                            stepText: <span><FormattedMessage id="pages.deposit.collateral.confirm.steps.completed.step" /></span>,
+                            description: <span><FormattedMessage id="pages.deposit.collateral.confirm.steps.completed.desc" /></span>,
                             loading: false,
                             error: '',
                         },
@@ -147,19 +148,19 @@ export default ({ match: { params: { underlyingAsset, id, status } }, }: any,) =
                     setSteps([
                         {
                             key: 'deposit',
-                            title: <FormattedMessage id="pages.deposit.collateral.confirm.steps.collateral.title" />,
-                            buttonText: <FormattedMessage id="pages.deposit.collateral.confirm.steps.collateral.button" />,
-                            stepText: <FormattedMessage id="pages.deposit.collateral.confirm.steps.collateral.step" />,
-                            description: <FormattedMessage id="pages.deposit.collateral.confirm.steps.collateral.desc" />,
+                            title: <span><FormattedMessage id="pages.deposit.collateral.confirm.steps.collateral.title" /></span>,
+                            buttonText: <span><FormattedMessage id="pages.deposit.collateral.confirm.steps.collateral.button" /></span>,
+                            stepText: <span><FormattedMessage id="pages.deposit.collateral.confirm.steps.collateral.step" /></span>,
+                            description: <span><FormattedMessage id="pages.deposit.collateral.confirm.steps.collateral.desc" /></span>,
                             loading: depositing ? true : false,
                             error: '',
                         },
                         {
                             key: 'completed',
-                            title: <FormattedMessage id="pages.deposit.collateral.confirm.steps.completed.title" />,
-                            buttonText: <FormattedMessage id="pages.deposit.collateral.confirm.steps.completed.button" />,
-                            stepText: <FormattedMessage id="pages.deposit.collateral.confirm.steps.completed.step" />,
-                            description: <FormattedMessage id="pages.deposit.collateral.confirm.steps.completed.desc" />,
+                            title: <span><FormattedMessage id="pages.deposit.collateral.confirm.steps.completed.title" /></span>,
+                            buttonText: <span> <FormattedMessage id="pages.deposit.collateral.confirm.steps.completed.button" /></span>,
+                            stepText: <span><FormattedMessage id="pages.deposit.collateral.confirm.steps.completed.step" /></span>,
+                            description: <span><FormattedMessage id="pages.deposit.collateral.confirm.steps.completed.desc" /></span>,
                             loading: false,
                             error: '',
                         },
@@ -302,91 +303,91 @@ export default ({ match: { params: { underlyingAsset, id, status } }, }: any,) =
 
     return (
         <GridContent>
-        <Card bordered={false}>
-            <Back />
             <Card bordered={false}>
-                <Row>
-                    <Col span={12} offset={6}>
-                        <div className={styles.desc}>
-                            <div className={styles.title}>{status == 1 ? 'Use' : 'Do not use'} {poolReserve.symbol} as collateral </div>
-                            <div className={styles.text}>
-                                These are your transaction details. Please be sure to check whether it is
-                                correct before submitting
+                <Back />
+                <Card bordered={false}>
+                    <Row>
+                        <Col span={12} offset={6}>
+                            <div className={styles.desc}>
+                                <div className={styles.title}>{status == 1 ? 'Use' : 'Do not use'} {poolReserve.symbol} as collateral </div>
+                                <div className={styles.text}>
+                                    These are your transaction details. Please be sure to check whether it is
+                                    correct before submitting
+                                </div>
                             </div>
-                        </div>
-                    </Col>
-                </Row>
-                <div>
-                    <Row>
-                        <Col span={10} offset={7} className={styles.info}>
-                            <Descriptions
-                                labelStyle={{ color: '#696D85' }}
-                                contentStyle={{ justifyContent: 'end', color: '#29292D', fontWeight: 'bold' }}
-                            >
-                                <Descriptions.Item label="Currency" span={3}>
-                                    <TokenIcon
-                                        tokenSymbol={poolReserve.symbol}
-                                        height={25}
-                                        width={25}
-                                        tokenFullName={poolReserve.symbol}
-                                    />
-                                </Descriptions.Item>
-                                <Descriptions.Item
-                                    label="New health factors"
-                                    span={3}
-                                    contentStyle={{ color: '#3163E2' }}
+                        </Col>
+                    </Row>
+                    <div>
+                        <Row>
+                            <Col span={10} offset={7} className={styles.info}>
+                                <Descriptions
+                                    labelStyle={{ color: '#696D85' }}
+                                    contentStyle={{ justifyContent: 'end', color: '#29292D', fontWeight: 'bold' }}
                                 >
-                                    {healthFactorAfterSwitch.decimalPlaces(3).toString()}
-                                </Descriptions.Item>
-                            </Descriptions>
-                        </Col>
-                    </Row>
-                </div>
-                {!steps.length && <Row><Col span={10} offset={7} style={{ marginTop: 20, textAlign: 'center' }}><Spin /></Col></Row>}
-                {steps.length > 0 &&
-                    <Row>
-                        <Col span={10} offset={7} style={{ marginBottom: 20 }}>
-                            <Steps
-                                type="navigation"
-                                size="small"
-                                current={current}
-                                className="site-navigation-steps"
-                            >
-                                {steps.map((item: any, index: number) => (
-                                    <Step title={item.title} key={index} />
-                                ))}
-                            </Steps>
-                        </Col>
-                        <Col span={7} offset={7}>
-                            <p className={styles.tip}>
-                                {current + 1}/{steps.length} {steps[current]?.stepText}
-                            </p>
+                                    <Descriptions.Item label="Currency" span={3}>
+                                        <TokenIcon
+                                            tokenSymbol={poolReserve.symbol}
+                                            height={25}
+                                            width={25}
+                                            tokenFullName={poolReserve.symbol}
+                                        />
+                                    </Descriptions.Item>
+                                    <Descriptions.Item
+                                        label="New health factors"
+                                        span={3}
+                                        contentStyle={{ color: '#3163E2' }}
+                                    >
+                                        {healthFactorAfterSwitch.decimalPlaces(3).toString()}
+                                    </Descriptions.Item>
+                                </Descriptions>
+                            </Col>
+                        </Row>
+                    </div>
+                    {!steps.length && <Row><Col span={10} offset={7} style={{ marginTop: 20, textAlign: 'center' }}><Spin /></Col></Row>}
+                    {steps.length > 0 &&
+                        <Row>
+                            <Col span={10} offset={7} style={{ marginBottom: 20 }}>
+                                <Steps
+                                    type="navigation"
+                                    size="small"
+                                    current={current}
+                                    className="site-navigation-steps"
+                                >
+                                    {steps.map((item: any, index: number) => (
+                                        <Step title={item.title} key={index} />
+                                    ))}
+                                </Steps>
+                            </Col>
+                            <Col span={7} offset={7}>
+                                <p className={styles.tip}>
+                                    {current + 1}/{steps.length} {steps[current]?.stepText}
+                                </p>
 
-                            <p className={styles.tip} style={steps[current]?.error ? { color: '#F46D6D' } : {}}>{steps[current]?.error ? steps[current]?.error : steps[current]?.description}</p>
-                        </Col>
-                        <Col span={3}>
-                            <Button type="primary" shape="round" loading={steps[current]?.loading ? true : false} onClick={handler.submit}>
-                                {steps[current]?.buttonText}
-                            </Button>
-                        </Col>
-                        <Col span={10} offset={7}>
-                            <Divider style={{ margin: '12px 0' }} />
-                        </Col>
-                        <Col span={10} offset={7}>
-                            <Row>
-                                {records.map((item: any) => <>
-                                    <Col span={8}>{item.name}</Col>
-                                    <Col span={8}>
-                                        {item.status} {item.status == 'wait' ? <LoadingOutlined /> : <Badge status={item.status == 'confirmed' ? "success" : "error"} />}
-                                    </Col>
-                                    <Col span={8}><FormattedMessage id="pages.deposit.collateral.confirm.explorer" /></Col>
-                                </>)}
-                            </Row>
-                        </Col>
-                    </Row>
-                }
+                                <p className={styles.tip} style={steps[current]?.error ? { color: '#F46D6D' } : {}}>{steps[current]?.error ? steps[current]?.error : steps[current]?.description}</p>
+                            </Col>
+                            <Col span={3}>
+                                <Button type="primary" shape="round" loading={steps[current]?.loading ? true : false} onClick={handler.submit}>
+                                    {steps[current]?.buttonText}
+                                </Button>
+                            </Col>
+                            <Col span={10} offset={7}>
+                                <Divider style={{ margin: '12px 0' }} />
+                            </Col>
+                            <Col span={10} offset={7}>
+                                <Row>
+                                    {records.map((item: any, index: number) => <React.Fragment key={index}>
+                                        <Col span={8}>{item.name}</Col>
+                                        <Col span={8}>
+                                            {item.status} {item.status == 'wait' ? <LoadingOutlined /> : <Badge status={item.status == 'confirmed' ? "success" : "error"} />}
+                                        </Col>
+                                        <Col span={8}><FormattedMessage id="pages.deposit.collateral.confirm.explorer" /></Col>
+                                    </React.Fragment >)}
+                                </Row>
+                            </Col>
+                        </Row>
+                    }
+                </Card>
             </Card>
-        </Card>
         </GridContent>
     );
 };
