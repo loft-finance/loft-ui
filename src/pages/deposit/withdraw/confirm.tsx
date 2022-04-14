@@ -299,7 +299,7 @@ export default ({ poolReserve, user, userReserve, maxAmountToDeposit, match: { p
             error(e: any) {
                 console.log('confirm error:', e.message)
                 const key = 'withdraw'
-                handler.error.set(key, e.message)
+                handler.error.set(key, e.message.indexOf('(') > -1 ? e.message.slice(0, e.message.indexOf('(')) : e.message);
                 handler.loading.set(key, false);
                 handler.records.set(key, 'withdraw', 'error')
             }

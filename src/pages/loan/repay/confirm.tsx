@@ -214,7 +214,7 @@ export default ({ poolReserve, user, userReserve, maxAmountToRepay, debtType, wa
             error(e: any) {
                 console.log('approve error:', e)
                 const key = 'approve'
-                handler.error.set(key, e.message)
+                handler.error.set(key, e.message.indexOf('(') > -1 ? e.message.slice(0, e.message.indexOf('(')) : e.message);
                 handler.loading.set(key, false);
                 handler.records.set(key, 'approve', 'error')
             }
@@ -259,7 +259,7 @@ export default ({ poolReserve, user, userReserve, maxAmountToRepay, debtType, wa
             error(e: any) {
                 console.log('confirm error:', e)
                 const key = 'repay'
-                handler.error.set(key, e.message)
+                handler.error.set(key, e.message.indexOf('(') > -1 ? e.message.slice(0, e.message.indexOf('(')) : e.message);
                 handler.loading.set(key, false);
                 handler.records.set(key, 'repay', 'error')
             }
