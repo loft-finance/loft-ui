@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useModel, history, FormattedMessage } from 'umi';
 import { Table, Row, Col, Menu, Radio, Input, Spin } from 'antd';
 import { GridContent } from '@ant-design/pro-layout';
@@ -24,6 +24,7 @@ export default () => {
     baseCurrency: res.baseCurrency,
     user: res.user
   }))
+  const { updateDom } = useModel('domUpdateDid');
 
   const marketRefPriceInUsd = baseCurrency.marketRefPriceInUsd
 
@@ -188,6 +189,10 @@ export default () => {
   ];
 
   const totalValue = list(false).reduce((a: any, b: any) => a + (+b['currentBorrowsInUSD'] || 0), 0)
+
+  useEffect(() => {
+    updateDom();
+  }, [reserves]);
 
   return (
     <Spin spinning={!reserves || !reserves.length}>

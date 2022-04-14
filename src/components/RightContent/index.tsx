@@ -48,8 +48,8 @@ const GlobalHeaderRight: React.FC = () => {
   return (
     <>
       <Space className={className}>
-        <IconFont type="icon-ic_twitter" className={styles.share} />
-        <IconFont type="icon-ic_telegram" className={styles.share} />
+        {/* <IconFont type="icon-ic_twitter" className={styles.share} /> */}
+        {/* <IconFont type="icon-ic_telegram" className={styles.share} /> */}
         {!isConnected() && (
           <Button
             size="small"
@@ -67,7 +67,7 @@ const GlobalHeaderRight: React.FC = () => {
             </div>
           </Dropdown>
         )}
-        <SelectLang className={styles.action} />
+        {/* <SelectLang className={styles.action} /> */}
       </Space>
       <Connect refs={connectRef} />
     </>

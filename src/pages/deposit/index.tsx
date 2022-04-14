@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useModel, history, FormattedMessage } from 'umi';
 import { Table, Row, Col, Menu, Radio, Input, Spin } from 'antd';
 import { GridContent } from '@ant-design/pro-layout';
@@ -29,6 +29,8 @@ export default () => {
     balances: res.balances,
     account: res.account
   }))
+
+  const { updateDom } = useModel('domUpdateDid');
 
 
   const { reserveIncentives } = useModel('incentives', res => ({
@@ -151,6 +153,10 @@ export default () => {
 
   const totalValue = list(false).reduce((a, b) => a + (+b['underlyingBalanceInUSD'] || 0), 0)
 
+  useEffect(() => {
+    updateDom();
+  }, [reserves]);
+  
   return (
     <Spin spinning={!reserves || !reserves.length}>
       <GridContent>

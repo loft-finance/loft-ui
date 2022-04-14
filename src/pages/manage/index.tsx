@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Card, Row, Col, Button, Typography, Input, message, Form } from 'antd';
 import { DollarCircleOutlined } from '@ant-design/icons';
 import { GridContent } from '@ant-design/pro-layout';
@@ -22,6 +22,8 @@ export default () => {
   const { account } = useModel('wallet', res => ({
     account: res.account
   }))
+  const { updateDom } = useModel('domUpdateDid');
+  
   const { loftRewardPerYear, loftApy, balanceLoft, depositedLoft, earnedLoft, isLoftAllowanceEnough, loftApprove, loftDeposit, loftWithdraw, getLoftAPY } = useModel('pledge', res => ({
     loftRewardPerYear: res.loftRewardPerYear,
     loftApy: res.loftApy,
@@ -34,10 +36,15 @@ export default () => {
     loftWithdraw: res.loftWithdraw,
   }))
 
+
   const [form] = Form.useForm();
   const refAmount = useRef()
   const refConfirm = useRef()
 
+  useEffect(() => {
+    updateDom();
+  }, []);
+  
   const handler = {
     submit(values: any) {
       form

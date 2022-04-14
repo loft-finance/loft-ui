@@ -76,7 +76,7 @@ export default (props: any) => {
           },
           {
             title: <FormattedMessage id="pages.loan.detail.info.FitnessFactor" />,
-            value: <Bignumber value={user?.healthFactor || '--'} />,
+            value: user?.healthFactor ? Number(user?.healthFactor).toFixed(2) : '--',
           }
         ]}
       />

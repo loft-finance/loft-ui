@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { GridContent } from '@ant-design/pro-layout';
 import { Card, Row, Col, Button, Typography, Divider, Spin } from 'antd';
 import WalletDisconnected from '@/components/Wallet/Disconnected';
@@ -25,6 +25,13 @@ export default () => {
   const { reserveIncentives } = useModel('incentives', res => ({
     reserveIncentives: res.reserveIncentives
   }))
+  
+  const { updateDom } = useModel('domUpdateDid');
+
+  useEffect(() => {
+    updateDom();
+  }, [reserves]);
+
 
   const {
     lpApy, depositedLp, earnedLp,

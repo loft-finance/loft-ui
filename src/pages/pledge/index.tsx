@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Card, Row, Col, Button, Form, Input, message } from 'antd';
 import { GridContent } from '@ant-design/pro-layout';
 import Info from '@/components/Info';
@@ -34,6 +34,12 @@ export default () => {
   const [form] = Form.useForm();
   const refAmount = useRef()
   const refConfirm = useRef()
+
+  const { updateDom } = useModel('domUpdateDid');
+
+  useEffect(() => {
+    updateDom();
+  }, []);
 
   const handler = {
     submit(values: any) {

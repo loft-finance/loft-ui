@@ -21,6 +21,7 @@ export default () => {
   const { reserveIncentives } = useModel('incentives', res => ({
     reserveIncentives: res.reserveIncentives
   }))
+  const { updateDom } = useModel('domUpdateDid');
 
   let list: any = []
 
@@ -79,10 +80,6 @@ export default () => {
   }
 
   // console.log('data:', totalLockedInUsd)
-
-  useEffect(() => {
-
-  }, [])
 
   const handler = {
     detail(record: any) {
@@ -205,6 +202,10 @@ export default () => {
       </div>
     );
   };
+
+  useEffect(() => {
+    updateDom();
+  }, [reserves]);
 
   return (
     <Spin spinning={!list || !list.length}>

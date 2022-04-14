@@ -1,4 +1,3 @@
-import './index.less';
 import { metaMask } from '@/lib/connectors/metaMask';
 import { Button } from 'antd';
 import { useWallet } from 'use-wallet';
