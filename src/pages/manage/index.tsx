@@ -194,8 +194,8 @@ export default () => {
           items={[
             {
               title: <FormattedMessage id="pages.manage.info.pledge" />,
-              value: <Bignumber value={depositedLoft} />,
-              tag: <>($<Bignumber value={account ? loftToUsd(depositedLoft) : valueToBigNumber(0)} /> USD)</>,
+              value: <Bignumber on={true} value={depositedLoft} />,
+              tag: <>($<Bignumber on={true} value={account ? loftToUsd(depositedLoft) : valueToBigNumber(0)} /> USD)</>,
             },
             {
               title: <FormattedMessage id="pages.manage.info.price" />,
