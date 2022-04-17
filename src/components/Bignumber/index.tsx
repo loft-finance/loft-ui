@@ -1,7 +1,12 @@
 import { valueToBigNumber } from '@aave/protocol-js';
 const POSTFIXES = ['', 'K', 'M', 'B', 'T', 'P', 'E', 'Z', 'Y'];
-export default ({value, maximumFractionDigits = 2, ...props }: any) => {
+export default ({value, maximumFractionDigits = 2, on = false, ...props }: any) => {
     const bnValue = valueToBigNumber(value);
+    if(!on){
+        return (
+            <>{bnValue.toNumber().toFixed(maximumFractionDigits)}</>
+        );
+    }
 
     const integerPlaces = bnValue.toFixed(0).length;
     const significantDigitsGroup = Math.min(

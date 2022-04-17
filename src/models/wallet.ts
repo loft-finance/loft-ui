@@ -54,11 +54,21 @@ export default () => {
         setIsConnected(isConnected);
     }
 
+    let IntervalIdBalance: any;
+
     useEffect(() => {
         if (account) {
             getBalance();
+            IntervalIdBalance = setInterval(() => {
+                getBalance()
+            }, 30 * 1000)
         } else {
             setBalances({});
+            IntervalIdBalance && clearInterval(IntervalIdBalance);
+        }
+
+        return () => {
+            IntervalIdBalance && clearInterval(IntervalIdBalance);
         }
     }, [account])
 

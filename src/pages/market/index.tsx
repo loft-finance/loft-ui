@@ -109,7 +109,7 @@ export default () => {
       dataIndex: 'totalBorrows',
       width: 200,
       render: (text: any, record: any) => {
-        return record.isPriceInUSD ? <>$ <Bignumber value={record.totalLiquidityInUSD} /></> : <Bignumber value={record.totalLiquidity} />
+        return record.isPriceInUSD ? <>$ <Bignumber on={true} value={record.totalLiquidityInUSD} /></> : <Bignumber on={true} value={record.totalLiquidity} />
       },
       sorter: (a: any, b: any) => a.totalBorrows - b.totalBorrows
     },
@@ -117,7 +117,7 @@ export default () => {
       title: <FormattedMessage id="pages.market.index.table.collumn.TotalBorrowings" />,
       dataIndex: 'totalBorrowsInUSD',
       render: (text: any, record: any) => {
-        return text < 0 ? <>--</> : <>$ <Bignumber value={text} /></>
+        return text < 0 ? <>--</> : <>$ <Bignumber on={true} value={text} /></>
       },
       width: 200,
       align: 'center',
@@ -169,7 +169,7 @@ export default () => {
             <Col span={6}>
               <Card className={styles.card} bordered={false}>
                 <div className={styles.value}>
-                  <Bignumber value={totalLockedLiquidity} />
+                  <Bignumber on={true} value={totalLockedLiquidity} />
                 </div>
                 <div className={styles.title}><FormattedMessage id="pages.market.index.info.pledge" /></div>
               </Card>
@@ -177,7 +177,7 @@ export default () => {
             <Col span={6}>
               <Card className={styles.card} bordered={false}>
                 <div style={{ color: '#FF5E2C' }} className={styles.value}>
-                  $<Bignumber value={marketRefPriceInUsd} />
+                  $<Bignumber on={true} value={marketRefPriceInUsd} />
                 </div>
                 <div className={styles.title}><FormattedMessage id="pages.market.index.info.price" /></div>
               </Card>
@@ -193,7 +193,7 @@ export default () => {
             <Col span={6}>
               <Card className={styles.card} bordered={false}>
                 <div style={{ color: '#FF5E2C' }} className={styles.value}>
-                  $ <Bignumber value={totalLockedInUsd.toNumber()} />
+                  $ <Bignumber on={true} value={totalLockedInUsd.toNumber()} />
                 </div>
                 <div className={styles.title}><FormattedMessage id="pages.market.index.info.value" /></div>
               </Card>
