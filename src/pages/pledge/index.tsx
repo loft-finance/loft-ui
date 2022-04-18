@@ -19,7 +19,7 @@ export default () => {
   const { account } = useModel('wallet', res => ({
     account: res.account
   }));
-  const { lpRewardPerYear, lpApy, balanceLp, depositedLp, earnedLp, isLpAllowanceEnough, lpApprove, lpDeposit, lpWithdraw } = useModel('pledge', res => ({
+  const { lpContractBalance, lpRewardPerYear, lpApy, balanceLp, depositedLp, earnedLp, isLpAllowanceEnough, lpApprove, lpDeposit, lpWithdraw } = useModel('pledge', res => ({
     lpRewardPerYear: res.lpRewardPerYear,
     lpApy: res.lpApy,
     balanceLp: res.balanceLp,
@@ -71,8 +71,8 @@ export default () => {
           stepText: 'Success',
           description: '',
         },
-      }
-      refConfirm.current.show({
+      };
+      (refConfirm as any).current.show({
         title: 'Stake',
         amount,
         amountInUsd: lpToUsd(amount),
@@ -97,9 +97,9 @@ export default () => {
             max: 'Max',
             validate: 'Please input quantity!',
             button: 'Unstake'
-          }
+          };
 
-          refAmount.current.show({
+          (refAmount as any).current.show({
             title: 'Unstake',
             txt,
             max: depositedLp,
@@ -107,7 +107,7 @@ export default () => {
           })
         },
         amountOk({ amount }: any) {
-          refAmount.current.close();
+          (refAmount as any).current.close();
 
           const txt = {
             overview: {
@@ -132,8 +132,8 @@ export default () => {
               stepText: 'Success',
               description: '',
             },
-          }
-          refConfirm.current.show({
+          };
+          (refConfirm as any).current.show({
             title: 'Unstake',
             amount,
             amountInUsd: lpToUsd(amount),
@@ -166,9 +166,9 @@ export default () => {
             stepText: 'Success',
             description: '',
           },
-        }
+        };
 
-        refConfirm.current.show({
+        (refConfirm as any).current.show({
           title: 'Unstake Earned',
           earned: true,
           amount: earnedLp,
@@ -187,7 +187,7 @@ export default () => {
           items={[
             {
               title: <FormattedMessage id="pages.pledge.info.funds" />,
-              value: '$ 0.00 USD',
+              value: `$ ${lpContractBalance} USD`,
             },
           ]}
         />

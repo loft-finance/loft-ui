@@ -9,6 +9,7 @@ import Bignumber from '@/components/Bignumber';
 import styles from './detail.less';
 import { normalize } from '@aave/math-utils';
 import Percent from '@/components/Percent';
+import { TokenIcon } from '@aave/aave-ui-kit';
 
 export enum BorrowRateMode {
   None = 'None',
@@ -17,7 +18,7 @@ export enum BorrowRateMode {
 }
 
 export default (props: any) => {
-  
+
   const { match: { params: { underlyingAsset, id } } } = props
 
   const { balances, isConnected } = useModel('wallet')
@@ -104,6 +105,7 @@ export default (props: any) => {
           .multipliedBy(marketRefPriceInUsd)
           .toString();
 
+        // console.log(poolReserve);
         const data = {
           totalLiquidityInUsd,
           totalBorrowsInUsd,
@@ -132,6 +134,7 @@ export default (props: any) => {
           usageAsCollateralEnabled: poolReserve?.usageAsCollateralEnabled,
           stableBorrowRateEnabled: poolReserve?.stableBorrowRateEnabled,
           borrowingEnabled: poolReserve?.borrowingEnabled,
+          currencySymbol: poolReserve?.symbol
         };
 
         setData(data)
@@ -207,7 +210,7 @@ export default (props: any) => {
         },
       },
     },
-    legend: false,
+    legend: undefined,
     theme: {
       colors10: [
         '#7BDBBF',
@@ -224,7 +227,7 @@ export default (props: any) => {
     },
   };
 
-  // console.log(data);
+  console.log(data);
   return (
     <GridContent>
       <Row>
@@ -237,6 +240,16 @@ export default (props: any) => {
                   <Row>
                     <Col span={8}>
                       <Pie {...config} />
+                      <div className={styles.iconimg}>
+                        {data.currencySymbol && <TokenIcon
+                          tokenSymbol={data.currencySymbol}
+                          height={35}
+                          width={35}
+                          tokenFullName={data.currencySymbol}
+                          className="MarketTableItem__token"
+                        />}
+
+                      </div>
                     </Col>
                     <Col span={16}>
                       <Row>
@@ -340,7 +353,7 @@ export default (props: any) => {
                       <div className={styles.label}><FormattedMessage id="pages.market.detail.config.LiquidationThreshold" /></div>
                       <div className={styles.value}>
                         <Percent value={data.liquidationBonus <= 0 ? 0 : data.liquidationThreshold} />
-                       </div>
+                      </div>
                     </Col>
                     <Col span={6}>
                       <div className={styles.label}><FormattedMessage id="pages.market.detail.config.LiquidationPenalty" /></div>

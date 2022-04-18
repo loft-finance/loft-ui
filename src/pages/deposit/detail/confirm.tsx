@@ -13,7 +13,7 @@ const { Step } = Steps;
 
 export default ({ poolReserve, userReserve, maxAmountToDeposit, match: { params: { amount: amount0 } }, }: any,) => {
     if (!poolReserve || !userReserve) {
-        // return <div style={{textAlign:'center'}}><Spin /></div>
+        return <div style={{textAlign:'center'}}><Spin /></div>
     }
     const underlyingSymbol = poolReserve?.symbol || ''
     const amount = valueToBigNumber(amount0);
@@ -49,12 +49,12 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, match: { params:
     const amountIntEth = amount.multipliedBy(poolReserve.priceInMarketReferenceCurrency || '0');
     const amountInUsd = amountIntEth.multipliedBy(marketRefPriceInUsd);
     const totalCollateralMarketReferenceCurrencyAfter = valueToBigNumber(
-        user.totalCollateralMarketReferenceCurrency
+        user?.totalCollateralMarketReferenceCurrency || '0'
     ).plus(amountIntEth);
 
 
-    const liquidationThresholdAfter = valueToBigNumber(user.totalCollateralMarketReferenceCurrency)
-        .multipliedBy(user.currentLiquidationThreshold)
+    const liquidationThresholdAfter = valueToBigNumber(user?.totalCollateralMarketReferenceCurrency || '0')
+        .multipliedBy(user?.currentLiquidationThreshold || '0')
         .plus(amountIntEth.multipliedBy(poolReserve.reserveLiquidationThreshold))
         .dividedBy(totalCollateralMarketReferenceCurrencyAfter);
 

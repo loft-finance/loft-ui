@@ -28,6 +28,7 @@ export default () => {
   const [loftApy, setLoftpApy] = useState(valueToBigNumber('0'));
   const [loftRewardPerYear, setLoftRewardPerYear] = useState(valueToBigNumber('0'));
 
+  const [lpContractBalance, setLpContractBalance] = useState(valueToBigNumber('0'));
   const [balanceLp, setBalanceLp] = useState(valueToBigNumber('0'));
   const [depositedLp, setDepositedLp] = useState(valueToBigNumber('0'));
   const [earnedLp, setEarnedLp] = useState(valueToBigNumber('0'));
@@ -46,7 +47,8 @@ export default () => {
     const contractLp = new ethers.Contract(lp.address, lp.abi, provider);
     const contractLoft = new ethers.Contract(loft.address, loft.abi, provider);
 
-    const [balanceLp, depositedLp, earnedLp, balanceLoft, depositedLoft, earnedLoft] = await Promise.all([
+    const [lpContractBalance, balanceLp, depositedLp, earnedLp, balanceLoft, depositedLoft, earnedLoft] = await Promise.all([
+      contractLp.balanceOf(lp.address),
       contractLp.balanceOf(account),
       contractFarm.deposited(lp.poolNumber, account),
       contractFarm.pending(lp.poolNumber, account),
@@ -55,6 +57,7 @@ export default () => {
       contractFarm.pending(loft.poolNumber, account),
     ]);
 
+    setLpContractBalance(valueToBigNumber(formatUnits(lpContractBalance, lp.decimals).toString()))
     setBalanceLp(valueToBigNumber(formatUnits(balanceLp, lp.decimals).toString()))
     setDepositedLp(valueToBigNumber(formatUnits(depositedLp, lp.decimals).toString()))
     setEarnedLp(valueToBigNumber(formatUnits(earnedLp, lp.decimals).toString()))
@@ -280,7 +283,7 @@ export default () => {
 
   return {
     lpRewardPerYear, lpApy,
-    balanceLp, depositedLp, earnedLp,
+    balanceLp, depositedLp, earnedLp,lpContractBalance,
     isLpAllowanceEnough, lpApprove, lpDeposit, lpWithdraw, getLpAPY,
 
     loftRewardPerYear, loftApy,
