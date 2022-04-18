@@ -35,5 +35,6 @@ export default (props: any) => {
             </div>
         }
         {(props.children)}
+        <div className="placeholder"></div>
     </>
 }
