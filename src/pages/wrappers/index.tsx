@@ -4,6 +4,9 @@ import { useWallet } from 'use-wallet';
 import { useEffect } from 'react';
 import { useModel } from 'umi';
 
+
+const childIdSetting = 42;
+
 export default (props: any) => {
     const { chainId, isConnected, account, ethereum } = useWallet();
 
@@ -25,7 +28,7 @@ export default (props: any) => {
 
     return <>
         {
-            isConnected() && chainId != 42 &&
+            isConnected() && chainId != childIdSetting && account && ethereum &&
             <div className="alert">
                 App network ({chainId}) doesn't match to network selected in wallet
                 (network with id: {42}).

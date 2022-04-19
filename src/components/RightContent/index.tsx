@@ -50,23 +50,20 @@ const GlobalHeaderRight: React.FC = () => {
       <Space className={className}>
         {/* <IconFont type="icon-ic_twitter" className={styles.share} /> */}
         {/* <IconFont type="icon-ic_telegram" className={styles.share} /> */}
-        {!isConnected() && (
-          <Button
-            size="small"
-            style={{ borderRadius: 16, padding: '0 10px 24px' }}
-            onClick={handler.connect}
-          >
-            connect
-          </Button>
-        )}
-        {isConnected() && !!account && (
+        {isConnected() && !!account ? (
           <Dropdown overlay={menu} trigger={['click']}>
             <div className={styles.user}>
               {networkConfig || 'Anther'} Network
               <div className={styles.account}>{account.slice(0, 4)}...{account.slice(-4)}</div>
             </div>
           </Dropdown>
-        )}
+        ) : <Button
+          size="small"
+          style={{ borderRadius: 16, padding: '0 10px 24px' }}
+          onClick={handler.connect}
+        >
+          connect
+        </Button>}
         {/* <SelectLang className={styles.action} /> */}
       </Space>
       <Connect refs={connectRef} />
