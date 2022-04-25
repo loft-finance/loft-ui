@@ -182,9 +182,11 @@ export default () => {
     {
       title: <FormattedMessage id="pages.loan.index.table.col.BorrowApy" />,
       dataIndex: 'variableBorrowRate',
+      width: 200,
       render: (text: any) => {
         return <Percent value={text} />
-      }
+      },
+      sorter: (a: any, b: any) => a.variableBorrowRate - b.variableBorrowRate
     },
   ];
 

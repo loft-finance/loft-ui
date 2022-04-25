@@ -227,7 +227,7 @@ export default (props: any) => {
     },
   };
 
-  console.log(data);
+  // console.log(data);
   return (
     <GridContent>
       <Row>
@@ -282,8 +282,11 @@ export default (props: any) => {
                             <div className={styles.amount}><Bignumber value={data.availableLiquidity} /></div>
                             <div className={styles.value}>$<Bignumber value={data.availableLiquidityInUsd} /></div>
                             <div className={styles.card}>
-                              <div className={styles.name}><FormattedMessage id="pages.market.detail.config.ReserveScale" /></div>
-                              <div className={styles.value}>$<Bignumber value={data.availableLiquidityInUsd} /></div>
+                              <div className={styles.name}>
+                                {/* <FormattedMessage id="pages.market.detail.config.ReserveScale" /> */}
+                                Utilisation rate
+                              </div>
+                              <div className={styles.value}>{valueToBigNumber(data.totalBorrowsInUsd).dividedBy(valueToBigNumber(data.totalLiquidityInUsd)).multipliedBy(100).toFixed(2)}%</div>
                             </div>
                           </div>
                         </Col>

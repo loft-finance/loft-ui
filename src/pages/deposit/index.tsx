@@ -145,9 +145,11 @@ export default () => {
     {
       title: <FormattedMessage id="pages.deposit.index.table.col.rate" />,
       dataIndex: 'liquidityRate',
+      width: 200,
       render: (text: any) => {
         return <Percent value={text} />
-      }
+      },
+      sorter: (a: any, b: any) => a.liquidityRate - b.liquidityRate
     },
   ];
 
@@ -156,7 +158,7 @@ export default () => {
   useEffect(() => {
     updateDom();
   }, [reserves]);
-  
+
   return (
     <Spin spinning={!reserves || !reserves.length}>
       <GridContent>
