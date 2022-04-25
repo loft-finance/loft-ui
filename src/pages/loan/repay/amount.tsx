@@ -10,7 +10,7 @@ import styles from './amount.less';
 export default ({ poolReserve, maxAmountToRepay }: any) => {
   const symbol = poolReserve ? poolReserve.symbol : ''
   const [form] = Form.useForm();
-  console.log(poolReserve)
+
   useEffect(() => {
 
   }, []);

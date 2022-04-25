@@ -65,6 +65,7 @@ export default (props: any) => {
         debtType == InterestRate.Stable ? userReserve?.stableBorrows : userReserve?.variableBorrows
     );
 
+    console.log(user);
     return (
         <GridContent>
             <Info
@@ -72,13 +73,13 @@ export default (props: any) => {
                     {
                         title: <FormattedMessage id="pages.loan.repay.info.balance" />,
                         value: fixedToValue(userReserve?.totalBorrows),
-                        tag: <>({fixedToValue(userReserve?.totalBorrowsUSD)})</>,
+                        tag: <>(${fixedToValue(userReserve?.totalBorrowsUSD)})</>,
                         span: 8,
                     },
                     {
                         title: <FormattedMessage id="pages.loan.repay.info.collateral" />,
-                        value: <Bignumber value={user?.totalCollateralUSD || '0'} />,
-                        tag: <>(<Bignumber value={user?.totalCollateralMarketReferenceCurrency || '0'} />)</>,
+                        value:<>$<Bignumber value={user?.totalCollateralUSD || '0'} /></>,
+                        // tag: <>(<Bignumber value={user?.totalCollateralMarketReferenceCurrency || '0'} />%)</>,
                         span: 8,
                     },
                     {
@@ -89,7 +90,7 @@ export default (props: any) => {
                     {
                         title: <FormattedMessage id="pages.loan.repay.info.WalletBalance" />,
                         value: <Bignumber value={walletBalance || '0'} />,
-                        tag: <>(<Bignumber value={walletBalanceUSD || '0'} />)</>,
+                        tag: <>($<Bignumber value={walletBalanceUSD || '0'} />)</>,
                         span: 8,
                     },
                     {

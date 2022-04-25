@@ -227,7 +227,7 @@ export default (props: any) => {
     },
   };
 
-  // console.log(data);
+  console.log(user);
   return (
     <GridContent>
       <Row>
@@ -286,7 +286,9 @@ export default (props: any) => {
                                 {/* <FormattedMessage id="pages.market.detail.config.ReserveScale" /> */}
                                 Utilisation rate
                               </div>
-                              <div className={styles.value}>{valueToBigNumber(data.totalBorrowsInUsd).dividedBy(valueToBigNumber(data.totalLiquidityInUsd)).multipliedBy(100).toFixed(2)}%</div>
+                              <div className={styles.value}>
+                                {data.totalBorrowsInUsd != '0' && data.totalLiquidityInUsd != '0' ? valueToBigNumber(data.totalBorrowsInUsd).dividedBy(valueToBigNumber(data.totalLiquidityInUsd)).multipliedBy(100).toFixed(2) : '0.00'}%
+                              </div>
                             </div>
                           </div>
                         </Col>
@@ -447,7 +449,7 @@ export default (props: any) => {
                           <Col span={12} className={styles.value}>
                             {Number(user?.healthFactor || '--').toFixed(2)}
                           </Col>
-                          <Col span={12} className={styles.label}><FormattedMessage id="pages.market.detail.your.loan.LoanAppreciation" />Loan appreciation</Col>
+                          <Col span={12} className={styles.label}><FormattedMessage id="pages.market.detail.your.loan.LoanAppreciation" /></Col>
                           <Col span={12} className={styles.value}>
                             <Percent value={user?.currentLoanToValue || 0} />
                           </Col>

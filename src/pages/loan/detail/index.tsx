@@ -8,6 +8,7 @@ import WalletEmpty from '@/components/Wallet/Empty';
 import Bignumber from '@/components/Bignumber';
 import { valueToBigNumber, BigNumber } from '@aave/protocol-js';
 import { fixedToValue } from '@/utils';
+import Percent from '@/components/Percent';
 
 export default (props: any) => {
   const { match: { params: { underlyingAsset, id } } } = props
@@ -72,7 +73,7 @@ export default (props: any) => {
           },
           {
             title: <FormattedMessage id="pages.loan.detail.info.LoanValue" />,
-            value: <Bignumber value={user?.currentLoanToValue} />,
+            value: <><Percent value={user?.currentLoanToValue} /></>,
           },
           {
             title: <FormattedMessage id="pages.loan.detail.info.FitnessFactor" />,

@@ -71,7 +71,7 @@ export default (props: { children?: any; match?: any; }) => {
         items={[
           {
             title: <FormattedMessage id="pages.deposit.detail.info.balance" />,
-            value: <>{fixedToValue(userReserve?.underlyingBalance)}</>,
+            value: <>{fixedToValue(userReserve?.underlyingBalance)} {underlyingSymbol}</>,
           },
           {
             title: <FormattedMessage id="pages.deposit.detail.info.WalletBalance" />,
