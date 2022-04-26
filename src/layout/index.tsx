@@ -47,27 +47,27 @@ const Layout: React.FC = ({ children }) => {
   const location = useLocation();
 
   // const { reserves } = useModel('pool')
-  const { domUpdateDid } = useModel('domUpdateDid');
+  // const { domUpdateDid } = useModel('domUpdateDid');
 
-  const footerRef = useRef(null);
-  const appRef = useRef(null);
-  const contentRef = useRef(null);
+  // const footerRef = useRef(null);
+  // const appRef = useRef(null);
+  // const contentRef = useRef(null);
 
-  useEffect(() => {
-    const appEle = (appRef.current as any);
-    const footerEle = (footerRef.current as any);
-    const contentEle = (contentRef.current as any);
-    const classVal = footerEle.getAttribute('class') || '';
-    const contentClass = contentEle.getAttribute('class') || '';
+  // useEffect(() => {
+  //   const appEle = (appRef.current as any);
+  //   const footerEle = (footerRef.current as any);
+  //   const contentEle = (contentRef.current as any);
+  //   const classVal = footerEle.getAttribute('class') || '';
+  //   const contentClass = contentEle.getAttribute('class') || '';
 
-    if (appEle.offsetHeight >= document.documentElement.clientHeight) {
-      classVal.indexOf('footerstatic') == -1 && footerEle.setAttribute('class', classVal + ' ' + 'footerstatic');
-      contentEle.setAttribute('class', '');
-    } else {
-      footerEle.setAttribute('class', classVal.replace(/footerstatic/g, ''));
-      contentClass.indexOf('contentmain') == -1 && contentEle.setAttribute('class', 'contentmain');
-    }
-  }, [domUpdateDid, location.pathname]);
+  //   if (appEle.offsetHeight >= document.documentElement.clientHeight) {
+  //     classVal.indexOf('footerstatic') == -1 && footerEle.setAttribute('class', classVal + ' ' + 'footerstatic');
+  //     contentEle.setAttribute('class', '');
+  //   } else {
+  //     footerEle.setAttribute('class', classVal.replace(/footerstatic/g, ''));
+  //     contentClass.indexOf('contentmain') == -1 && contentEle.setAttribute('class', 'contentmain');
+  //   }
+  // }, [domUpdateDid, location.pathname]);
 
   return (
     <UseWalletProvider
@@ -78,7 +78,7 @@ const Layout: React.FC = ({ children }) => {
           rpc: { 42: 'https://kovan.infura.io/v3/' },
         },
       }}>
-      <div ref={appRef}>
+      <div >
         <header className={styles.header}>
           <div className={styles.newmain + ' ' + styles.head}>
             <div className={styles.logo}>
@@ -100,14 +100,14 @@ const Layout: React.FC = ({ children }) => {
             <RightContent />
           </div>
         </header>
-        <div ref={contentRef}>
+        <div >
           {children}
         </div>
-        <div ref={footerRef} className={styles.footer}>
+        <div className={styles.footer}>
           <Footer />
         </div>
       </div>
-    </UseWalletProvider>
+    </UseWalletProvider >
   )
 }
 
