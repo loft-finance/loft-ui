@@ -11,9 +11,9 @@ import Back from '@/components/Back';
 import styles from './confirm.less';
 const { Step } = Steps;
 
-export default ({ poolReserve, userReserve, maxAmountToDeposit, match: { params: { amount: amount0 } }, }: any,) => {
+export default ({ poolReserve, userReserve, maxAmountToDeposit, changeIsZore, match: { params: { amount: amount0 } }, }: any,) => {
     if (!poolReserve || !userReserve) {
-        return <div style={{textAlign:'center'}}><Spin /></div>
+        return <div style={{ textAlign: 'center' }}><Spin /></div>
     }
     const underlyingSymbol = poolReserve?.symbol || ''
     const amount = valueToBigNumber(amount0);
@@ -242,7 +242,7 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, match: { params:
                 handler.records.set('deposit', 'deposit', 'confirmed')
                 setCurrent(current + 1);
                 handler.loading.set('deposit', false);
-
+                changeIsZore(false);
                 refresh();
             },
             error(e: any) {

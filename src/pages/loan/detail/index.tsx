@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { useModel, FormattedMessage } from 'umi';
 import { GridContent } from '@ant-design/pro-layout';
 import Info from '@/components/Info';
@@ -11,7 +11,13 @@ import { fixedToValue } from '@/utils';
 import Percent from '@/components/Percent';
 
 export default (props: any) => {
-  const { match: { params: { underlyingAsset, id } } } = props
+  const { match: { params: { underlyingAsset, id } } } = props;
+
+  const [isZore, setIsZore] = useState(true);
+  const changeIsZore = useCallback((val: boolean) => {
+    setIsZore(val)
+  }, []);
+
 
   const { account, balances } = useModel('wallet', res => ({
     account: res.account,
@@ -85,9 +91,9 @@ export default (props: any) => {
 
       {!account && <WalletDisconnected />}
 
-      {/* {wallet && maxAmountToBorrow.toString() == '0' && <WalletEmpty symbol={poolReserve ? poolReserve?.symbol : ''} />} */}
+      {account && isZore && maxAmountToBorrow.toString() == '0' && <WalletEmpty symbol={poolReserve ? poolReserve?.symbol : ''} isBtn={true} />}
 
-      {account && React.cloneElement(props.children, { poolReserve, userReserve, maxAmountToBorrow: maxAmountToBorrow.toString(10) })}
+      {account && (!isZore || maxAmountToBorrow.toString() != '0') && React.cloneElement(props.children, { poolReserve, userReserve, maxAmountToBorrow: maxAmountToBorrow.toString(10), changeIsZore })}
     </GridContent>
   );
 };

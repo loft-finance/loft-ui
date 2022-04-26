@@ -12,7 +12,7 @@ import styles from './confirm.less';
 import React from 'react';
 const { Step } = Steps;
 
-export default ({ poolReserve, userReserve, maxAmountToDeposit, location: { query }, match: { params: { amount: amount0 } }, }: any,) => {
+export default ({ poolReserve, userReserve, maxAmountToDeposit, changeIsZore, location: { query }, match: { params: { amount: amount0 } }, }: any,) => {
     if (!poolReserve) {
         // return <div style={{textAlign:'center'}}><Spin /></div>
     }
@@ -268,6 +268,7 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, location: { quer
                 handler.records.set('loan', 'loan', 'confirmed')
                 setCurrent(current + 1);
                 handler.loading.set('loan', false);
+                changeIsZore(false);
                 refresh();
             },
             error(e: any) {
