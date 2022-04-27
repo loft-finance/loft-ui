@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useModel, history, FormattedMessage } from 'umi';
 import { Card, Row, Col, Button, Descriptions, Steps, Divider, Badge, Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons'
-import { calculateHealthFactorFromBalancesBigUnits, InterestRate, valueToBigNumber } from '@aave/protocol-js';
+import { BigNumber, calculateHealthFactorFromBalancesBigUnits, InterestRate, valueToBigNumber } from '@aave/protocol-js';
 import { sendEthTransaction, TxStatusType } from '@/lib/helpers/send-ethereum-tx';
 import { normalize } from '@aave/math-utils';
 import Bignumber from '@/components/Bignumber';
@@ -13,8 +13,8 @@ import React from 'react';
 const { Step } = Steps;
 
 export default ({ poolReserve, userReserve, maxAmountToDeposit, changeIsZore, location: { query }, match: { params: { amount: amount0 } }, }: any,) => {
-    if (!poolReserve) {
-        // return <div style={{textAlign:'center'}}><Spin /></div>
+    if (!poolReserve || !userReserve) {
+        return <div style={{ textAlign: 'center' }}><Spin /></div>
     }
 
     const amount = valueToBigNumber(amount0);
@@ -25,12 +25,14 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, changeIsZore, lo
     const [actionTxData, setActionTxData] = useState<any>(undefined)
     const [customGasPrice, setCustomGasPrice] = useState<string | null>(null);
     const [records, setRecords] = useState<any>([]);
+    const [healthFactorAfter, setHealthFactorAfter] = useState<BigNumber | undefined>(undefined);
 
     const { user, baseCurrency, refreshPool } = useModel('pool', res => ({
         user: res.user,
         baseCurrency: res.baseCurrency,
         refreshPool: res.refresh
-    }))
+    }));
+
     const { account, provider, refreshWallet } = useModel('wallet', res => ({
         account: res.account,
         refreshWallet: res.refresh,
@@ -52,26 +54,18 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, changeIsZore, lo
             : InterestRate.Variable;
 
     const marketRefPriceInUsd = normalize(baseCurrency?.marketReferenceCurrencyPriceInUsd || '0', 8)
-
-    const amountIntEth = amount.multipliedBy(poolReserve.priceInMarketReferenceCurrency);
+    const amountIntEth = amount.multipliedBy(poolReserve.priceInMarketReferenceCurrency || '0');
     const amountInUsd = amountIntEth.multipliedBy(marketRefPriceInUsd);
 
-    const totalCollateralMarketReferenceCurrencyAfter = valueToBigNumber(
-        user.totalCollateralMarketReferenceCurrency
-    ).plus(amountIntEth);
+    const amountToBorrowInUsd = amount
+        .multipliedBy(poolReserve.priceInMarketReferenceCurrency)
+        .multipliedBy(marketRefPriceInUsd);
 
-
-    const liquidationThresholdAfter = valueToBigNumber(user.totalCollateralMarketReferenceCurrency)
-        .multipliedBy(user.currentLiquidationThreshold)
-        .plus(amountIntEth.multipliedBy(poolReserve.reserveLiquidationThreshold))
-        .dividedBy(totalCollateralMarketReferenceCurrencyAfter);
-
-    const healthFactorAfterDeposit = calculateHealthFactorFromBalancesBigUnits(
-        totalCollateralMarketReferenceCurrencyAfter,
-        valueToBigNumber(user.totalBorrowsMarketReferenceCurrency),
-        liquidationThresholdAfter
+    const newHealthFactor = calculateHealthFactorFromBalancesBigUnits(
+        user.totalCollateralUSD,
+        valueToBigNumber(user.totalBorrowsUSD).plus(amountToBorrowInUsd),
+        user.currentLiquidationThreshold
     );
-
 
     const notShowHealthFactor =
         user.totalBorrowsMarketReferenceCurrency !== '0' && poolReserve.usageAsCollateralEnabled;
@@ -111,8 +105,8 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, changeIsZore, lo
                 });
 
                 const mainTxType = ''
-                const approveTx = txs.find((tx) => tx.txType === 'ERC20_APPROVAL');
-                const actionTx = txs.find((tx) =>
+                const approveTx = txs.find((tx: any) => tx.txType === 'ERC20_APPROVAL');
+                const actionTx = txs.find((tx: any) =>
                     [
                         'DLP_ACTION',
                         'GOVERNANCE_ACTION',
@@ -269,6 +263,7 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, changeIsZore, lo
                 setCurrent(current + 1);
                 handler.loading.set('loan', false);
                 changeIsZore(false);
+                setHealthFactorAfter(newHealthFactor);
                 refresh();
             },
             error(e: any) {
@@ -381,7 +376,7 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, changeIsZore, lo
                                     span={3}
                                     contentStyle={{ color: '#3163E2' }}
                                 >
-                                    {healthFactorAfterDeposit.decimalPlaces(3).toString()}
+                                    {(!healthFactorAfter ? newHealthFactor : healthFactorAfter).decimalPlaces(2).toString()}
                                 </Descriptions.Item>
                             </Descriptions>
                         </Col>

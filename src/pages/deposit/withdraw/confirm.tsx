@@ -25,6 +25,7 @@ export default ({ poolReserve, user, userReserve, maxAmountToDeposit, match: { p
     const [actionTxData, setActionTxData] = useState<any>(undefined)
     const [customGasPrice, setCustomGasPrice] = useState<string | null>(null);
     const [records, setRecords] = useState<any>([]);
+    const [healthFactorAfter, setHealthFactorAfter] = useState<BigNumber | undefined>(undefined);
 
     const { refreshPool } = useModel('pool', res => ({
         refreshPool: res.refresh
@@ -125,10 +126,11 @@ export default ({ poolReserve, user, userReserve, maxAmountToDeposit, match: { p
         }
     }
 
-    // const isHealthFactorDangerous =
-    // user.totalBorrowsMarketReferenceCurrency !== '0' &&
-    // healthFactorAfterWithdraw.toNumber() <= 1.05;
+    const isHealthFactorDangerous =
+        user.totalBorrowsMarketReferenceCurrency !== '0' &&
+        healthFactorAfterWithdraw.toNumber() <= 1.05;
 
+    console.log(healthFactorAfterWithdraw.toNumber())
     useEffect(() => {
         if (account) {
             handler.getTx({ withdrawing: false })
@@ -145,8 +147,8 @@ export default ({ poolReserve, user, userReserve, maxAmountToDeposit, match: { p
                     aTokenAddress: poolReserve.aTokenAddress,
                 });
                 const mainTxType = ''
-                const approvalTx = txs.find((tx) => tx.txType === 'ERC20_APPROVAL');
-                const actionTx = txs.find((tx) =>
+                const approvalTx = txs.find((tx: any) => tx.txType === 'ERC20_APPROVAL');
+                const actionTx = txs.find((tx: any) =>
                     [
                         'DLP_ACTION',
                         'GOVERNANCE_ACTION',
@@ -294,6 +296,7 @@ export default ({ poolReserve, user, userReserve, maxAmountToDeposit, match: { p
                 handler.records.set('withdraw', 'withdraw', 'confirmed')
                 setCurrent(current + 1);
                 handler.loading.set('withdraw', false);
+                setHealthFactorAfter(healthFactorAfterWithdraw)
                 refresh();
             },
             error(e: any) {
@@ -405,7 +408,7 @@ export default ({ poolReserve, user, userReserve, maxAmountToDeposit, match: { p
                                     span={3}
                                     contentStyle={{ color: '#3163E2' }}
                                 >
-                                    {Number(user.healthFactor).toFixed(2)}
+                                    <Bignumber value={!healthFactorAfter ? healthFactorAfterWithdraw : healthFactorAfter} />
                                 </Descriptions.Item>
                             </Descriptions>
                         </Col>

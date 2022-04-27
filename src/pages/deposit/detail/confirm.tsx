@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useModel, history, FormattedMessage } from 'umi';
 import { Card, Row, Col, Button, Descriptions, Steps, Divider, Badge, Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons'
-import { calculateHealthFactorFromBalancesBigUnits, valueToBigNumber } from '@aave/protocol-js';
+import { BigNumber, calculateHealthFactorFromBalancesBigUnits, valueToBigNumber } from '@aave/protocol-js';
 import { normalize } from '@aave/math-utils';
 import { sendEthTransaction, TxStatusType } from '@/lib/helpers/send-ethereum-tx';
 import Bignumber from '@/components/Bignumber';
@@ -25,6 +25,7 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, changeIsZore, ma
     const [actionTxData, setActionTxData] = useState<any>(undefined)
     const [customGasPrice, setCustomGasPrice] = useState<string | null>(null);
     const [records, setRecords] = useState<any>([]);
+    const [healthFactorAfter, setHealthFactorAfter] = useState<BigNumber | undefined>(undefined);
 
     const { user, baseCurrency, refreshPool } = useModel('pool', res => ({
         user: res.user,
@@ -52,7 +53,6 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, changeIsZore, ma
         user?.totalCollateralMarketReferenceCurrency || '0'
     ).plus(amountIntEth);
 
-
     const liquidationThresholdAfter = valueToBigNumber(user?.totalCollateralMarketReferenceCurrency || '0')
         .multipliedBy(user?.currentLiquidationThreshold || '0')
         .plus(amountIntEth.multipliedBy(poolReserve.reserveLiquidationThreshold))
@@ -63,7 +63,6 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, changeIsZore, ma
         valueToBigNumber(user.totalBorrowsMarketReferenceCurrency),
         liquidationThresholdAfter
     );
-
 
     const notShowHealthFactor =
         user.totalBorrowsMarketReferenceCurrency !== '0' && poolReserve.usageAsCollateralEnabled;
@@ -243,6 +242,7 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, changeIsZore, ma
                 setCurrent(current + 1);
                 handler.loading.set('deposit', false);
                 changeIsZore(false);
+                setHealthFactorAfter(healthFactorAfterDeposit);
                 refresh();
             },
             error(e: any) {
@@ -354,7 +354,7 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, changeIsZore, ma
                                     span={3}
                                     contentStyle={{ color: '#3163E2' }}
                                 >
-                                    {healthFactorAfterDeposit.decimalPlaces(3).toString()}
+                                    {(!healthFactorAfter ? healthFactorAfterDeposit : healthFactorAfter).decimalPlaces(2).toString()}
                                 </Descriptions.Item>
                             </Descriptions>
                         </Col>

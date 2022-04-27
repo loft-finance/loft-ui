@@ -24,6 +24,7 @@ export default ({ poolReserve, user, userReserve, maxAmountToRepay, debtType, wa
     const [actionTxData, setActionTxData] = useState<any>(undefined)
     const [customGasPrice, setCustomGasPrice] = useState<string | null>(null);
     const [records, setRecords] = useState<any>([]);
+    const [healthFactorAfter, setHealthFactorAfter] = useState<BigNumber | undefined>(undefined);
 
     const { baseCurrency, refreshPool } = useModel('pool', res => ({
         baseCurrency: res.baseCurrency,
@@ -70,9 +71,9 @@ export default ({ poolReserve, user, userReserve, maxAmountToRepay, debtType, wa
         .multipliedBy(marketRefPriceInUsd);
 
     const healthFactorAfterRepay = calculateHealthFactorFromBalancesBigUnits(
-        user?.totalCollateralUSD,
-        valueToBigNumber(user?.totalBorrowsUSD).minus(displayAmountToRepayInUsd.toNumber()),
-        user?.currentLiquidationThreshold
+        user.totalCollateralUSD,
+        valueToBigNumber(user.totalBorrowsUSD).minus(displayAmountToRepayInUsd.toNumber()),
+        user.currentLiquidationThreshold
     );
 
     const usageAsCollateralEnabledOnDeposit =
@@ -254,6 +255,7 @@ export default ({ poolReserve, user, userReserve, maxAmountToRepay, debtType, wa
                 handler.records.set('repay', 'repay', 'confirmed')
                 setCurrent(current + 1);
                 handler.loading.set('repay', false);
+                setHealthFactorAfter(healthFactorAfterRepay);
                 refresh();
             },
             error(e: any) {
@@ -365,7 +367,7 @@ export default ({ poolReserve, user, userReserve, maxAmountToRepay, debtType, wa
                                     span={3}
                                     contentStyle={{ color: '#3163E2' }}
                                 >
-                                    <Bignumber value={user?.healthFactor} />
+                                    <Bignumber value={!healthFactorAfter ? healthFactorAfterRepay : healthFactorAfter} />
                                 </Descriptions.Item>
                             </Descriptions>
                         </Col>

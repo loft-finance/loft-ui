@@ -64,7 +64,6 @@ export default (props: any) => {
     )
     : undefined;
   const currentBorrows = userReserve ? valueToBigNumber(userReserve.totalBorrows).toString() : '0';
-
   return (
     <GridContent>
       <Info
