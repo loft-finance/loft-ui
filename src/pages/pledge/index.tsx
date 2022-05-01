@@ -50,7 +50,7 @@ export default () => {
       }
       const txt = {
         overview: {
-          title: 'Pledge Overview',
+          title: 'Stake Overview',
           desc: 'These are your transaction details. Please be sure to check whether it is correct before submiting.'
         },
         approve: {
@@ -60,14 +60,14 @@ export default () => {
           description: 'Please approve before confirming',
         },
         confirm: {
-          title: 'pledge',
-          buttonText: 'pledge',
-          stepText: 'pledge',
-          description: 'Please submit a pledge',
+          title: 'Stake',
+          buttonText: 'Stake',
+          stepText: 'Stake',
+          description: '',
         },
         completed: {
           title: 'Completed',
-          buttonText: 'control panel',
+          buttonText: 'My Dashboard',
           stepText: 'Success',
           description: '',
         },
@@ -91,11 +91,11 @@ export default () => {
       principal: {
         amount() {
           const txt = {
-            title: 'How much do you want to unstake?',
-            desc: 'Provide LOFT/FTM liquidity on SpookySwap and stake the LP token here to earn more LOFT',
-            available: 'Can be pledge',
+            title: 'How much would you like to unstake?',
+            desc: 'Please enter the amount to be unstake, the maximum amount you can unstake is shown below',
+            available: 'Available to unstake',
             max: 'Max',
-            validate: 'Please input quantity!',
+            validate: 'Please input the correct amount',
             button: 'Unstake'
           };
 
@@ -118,17 +118,17 @@ export default () => {
               title: 'approve',
               buttonText: 'approve',
               stepText: 'approve',
-              description: 'Please approve before confirming',
+              description: '',
             },
             confirm: {
               title: 'unstake',
               buttonText: 'unstake',
               stepText: 'unstake',
-              description: 'Please submit a unstake',
+              description: '',
             },
             completed: {
               title: 'Completed',
-              buttonText: 'control panel',
+              buttonText: 'My Dashboard',
               stepText: 'Success',
               description: '',
             },
@@ -145,7 +145,7 @@ export default () => {
       earned() {
         const txt = {
           overview: {
-            title: 'Unstake Earned Overview',
+            title: 'Claim LOFT Overview',
             desc: 'These are your transaction details. Please be sure to check whether it is correct before submiting.'
           },
           approve: {
@@ -155,21 +155,21 @@ export default () => {
             description: 'Please approve before confirming',
           },
           confirm: {
-            title: 'unstake',
-            buttonText: 'unstake',
-            stepText: 'unstake',
-            description: 'Please submit a unstake',
+            title: 'claim',
+            buttonText: 'claim',
+            stepText: 'claim',
+            description: '',
           },
           completed: {
             title: 'Completed',
-            buttonText: 'control panel',
+            buttonText: 'My Dashboard',
             stepText: 'Success',
             description: '',
           },
         };
 
         (refConfirm as any).current.show({
-          title: 'Unstake Earned',
+          title: 'Claim LOFT',
           earned: true,
           amount: earnedLp,
           amountInUsd: lpToUsd(earnedLp),
@@ -183,18 +183,18 @@ export default () => {
   return (
     <>
       <GridContent>
-        <Info
+        {/* <Info
           items={[
             {
               title: <FormattedMessage id="pages.pledge.info.funds" />,
-              value: `$ ${lpContractBalance} USD`,
+              value: `$ ${lpContractBalance}`,
             },
           ]}
-        />
+        /> */}
 
         <Row>
           <Col span={16}>
-            {!account && <WalletDisconnected showBack={false} />}
+            {!account && <WalletDisconnected showBack={false} subTitle="We couldn’t detect a wallet. Connect a wallet to stake." />}
             {account &&
               <Card bordered={false}>
                 <Card bordered={false}>
@@ -224,7 +224,7 @@ export default () => {
                           >
                             <Input
                               style={{ width: '100%' }}
-                              placeholder="Quantity"
+                              placeholder="Amount"
                               type={'number'}
                               prefix={<TokenIcon
                                 tokenSymbol={symbol}
@@ -257,7 +257,7 @@ export default () => {
                   <Row>
                     <Col span={24}>
                       <div className={styles.title}><FormattedMessage id="pages.pledge.action.unstake.title" /></div>
-                      <div className={styles.value}><Bignumber value={account ? depositedLp : valueToBigNumber(0)} /> ($<Bignumber value={account ? lpToUsd(depositedLp) : valueToBigNumber(0)} /> USD)</div>
+                      <div className={styles.value}><Bignumber value={account ? depositedLp : valueToBigNumber(0)} /> ($<Bignumber value={account ? lpToUsd(depositedLp) : valueToBigNumber(0)} />)</div>
                       <div className={styles.button}>
                         <Button type="primary" block disabled={!account || depositedLp.eq('0')} onClick={handler.withdraw.principal.amount} >
                           <FormattedMessage id="pages.pledge.action.unstake.button" />
@@ -270,7 +270,7 @@ export default () => {
                   <Row>
                     <Col span={24}>
                       <div className={styles.title}><FormattedMessage id="pages.pledge.action.require.title" /></div>
-                      <div className={styles.value}><Bignumber value={account ? earnedLp : valueToBigNumber(0)} /> ($<Bignumber value={account ? lpToUsd(earnedLp) : valueToBigNumber(0)} /> USD)</div>
+                      <div className={styles.value}><Bignumber value={account ? earnedLp : valueToBigNumber(0)} /> ($<Bignumber value={account ? lpToUsd(earnedLp) : valueToBigNumber(0)} />)</div>
                       <div className={styles.button}>
                         <Button type="primary" block disabled={!account || earnedLp.eq('0')} onClick={handler.withdraw.earned}>
                           <FormattedMessage id="pages.pledge.action.require.button" />
@@ -281,8 +281,8 @@ export default () => {
                 </Card>
                 <Card bordered={false} className={styles.view} bodyStyle={{ padding: '10px 20px' }}>
                   <Row>
-                    <Col span={14} className={styles.label}><FormattedMessage id="pages.pledge.view.loft" /></Col>
-                    <Col span={10} className={styles.value}><Bignumber value={lpRewardPerYear.div(12)} /></Col>
+                    {/* <Col span={14} className={styles.label}><FormattedMessage id="pages.pledge.view.loft" /></Col>
+                    <Col span={10} className={styles.value}><Bignumber value={lpRewardPerYear.div(12)} /></Col> */}
                     <Col span={14} className={styles.label}><FormattedMessage id="pages.pledge.view.annualization" /></Col>
                     <Col span={10} className={styles.value}><Percent value={lpApy} /></Col>
                   </Row>

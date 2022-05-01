@@ -8,7 +8,8 @@ import WalletDisconnected from '@/components/Wallet/Disconnected';
 import WalletEmpty from '@/components/Wallet/Empty';
 import { BigNumber, valueToBigNumber } from '@aave/protocol-js';
 import { fixedToValue } from '@/utils';
-import Percent from '@/components/Percent'
+import Percent from '@/components/Percent';
+import styles from './index.less';
 
 export default (props: any) => {
     const { match: { params: { underlyingAsset, id } } } = props
@@ -72,13 +73,15 @@ export default (props: any) => {
 
     maxUserAmountToWithdraw = BigNumber.max(maxUserAmountToWithdraw, 0).toString();
 
+    console.log(userReserve)
     return (
         <GridContent>
             <Info
                 items={[
                     {
                         title: <FormattedMessage id="pages.deposit.withdraw.info.balance" />,
-                        value: <>{fixedToValue(userReserve?.underlyingBalance)} {underlyingSymbol}</>,
+                        value: <>{fixedToValue(userReserve?.underlyingBalance)} {underlyingSymbol}<br/></>,
+                        tag: <>(${fixedToValue(userReserve?.underlyingBalanceUSD)})</>,
                     },
                     {
                         title: <FormattedMessage id="pages.deposit.withdraw.info.FitnessFactor" />,

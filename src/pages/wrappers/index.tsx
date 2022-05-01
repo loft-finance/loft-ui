@@ -30,8 +30,7 @@ export default (props: any) => {
         {
             isConnected() && chainId != childIdSetting && account && ethereum &&
             <div className="alert">
-                App network ({chainId}) doesn't match to network selected in wallet
-                (network with id: {42}).
+                Error detected! Connected to unsupported network  &nbsp; &nbsp;
                 <Button size="small" type="primary" shape="round" onClick={changeNetwork}>
                     Change Network
                 </Button>

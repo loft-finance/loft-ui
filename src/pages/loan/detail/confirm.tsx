@@ -128,7 +128,7 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, changeIsZore, lo
                     setApproveTxData(approve)
                 }
                 if (actionTx) {
-                    const mainTxName = 'Loan'
+                    const mainTxName = 'Borrow'
                     action = {
                         txType: actionTx.txType,
                         unsignedData: actionTx.tx,
@@ -151,7 +151,7 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, changeIsZore, lo
                             error: '',
                         },
                         {
-                            key: 'loan',
+                            key: 'borrow',
                             title: <span><FormattedMessage id="pages.loan.detail.confirm.steps.loan.title" /></span>,
                             buttonText: <span><FormattedMessage id="pages.loan.detail.confirm.steps.loan.button" /></span>,
                             stepText: <span><FormattedMessage id="pages.loan.detail.confirm.steps.loan.step" /></span>,
@@ -172,7 +172,7 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, changeIsZore, lo
                 } else if (action) {
                     setSteps([
                         {
-                            key: 'loan',
+                            key: 'borrow',
                             title: <span><FormattedMessage id="pages.loan.detail.confirm.steps.loan.title" /></span>,
                             buttonText: <span><FormattedMessage id="pages.loan.detail.confirm.steps.loan.button" /></span>,
                             stepText: <span> <FormattedMessage id="pages.loan.detail.confirm.steps.loan.step" /></span>,
@@ -229,11 +229,11 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, changeIsZore, lo
         },
         action: {
             async submit() {
-                handler.loading.set('loan', true);
-                handler.records.set('loan', 'loan', 'wait')
+                handler.loading.set('borrow', true);
+                handler.records.set('borrow', 'borrow', 'wait')
                 const success = await handler.getTx({ loaning: true })
                 if (success) {
-                    handler.loading.set('loan', true);
+                    handler.loading.set('borrow', true);
                     return sendEthTransaction(
                         actionTxData.unsignedData,
                         provider,
@@ -252,26 +252,26 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, changeIsZore, lo
                         loading: false,
                         error: 'transaction no longer valid',
                     }));
-                    handler.loading.set('loan', false);
+                    handler.loading.set('borrow', false);
                 }
             },
             executed() {
                 console.log('--------loan executed----')
             },
             confirmed() {
-                handler.records.set('loan', 'loan', 'confirmed')
+                handler.records.set('borrow', 'borrow', 'confirmed')
                 setCurrent(current + 1);
-                handler.loading.set('loan', false);
+                handler.loading.set('borrow', false);
                 changeIsZore(false);
                 setHealthFactorAfter(newHealthFactor);
                 refresh();
             },
             error(e: any) {
                 console.log('confirm error:', e)
-                const key = 'loan'
+                const key = 'borrow'
                 handler.error.set(key, e.message.indexOf('(') > -1 ? e.message.slice(0, e.message.indexOf('(')) : e.message);
                 handler.loading.set(key, false);
-                handler.records.set(key, 'loan', 'error')
+                handler.records.set(key, 'borrow', 'error')
             }
         },
         records: {
@@ -320,7 +320,7 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, changeIsZore, lo
         async submit() {
             if (approveTxData && steps[current]?.key === 'approve') {
                 handler.approve.submit()
-            } else if (actionTxData && steps[current]?.key === 'loan') {
+            } else if (actionTxData && steps[current]?.key === 'borrow') {
                 handler.action.submit()
             } else if (steps[current]?.key === 'completed') {
                 history.push('/control')
@@ -350,7 +350,7 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, changeIsZore, lo
                                 labelStyle={{ color: '#696D85' }}
                                 contentStyle={{ justifyContent: 'end', color: '#29292D', fontWeight: 'bold' }}
                             >
-                                <Descriptions.Item label="Quantity" span={3}>
+                                <Descriptions.Item label="Amount" span={3}>
                                     <Bignumber value={amount} />
                                 </Descriptions.Item>
                                 <Descriptions.Item

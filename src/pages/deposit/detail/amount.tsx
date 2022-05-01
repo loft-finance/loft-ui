@@ -62,7 +62,7 @@ export default ({ poolReserve, maxAmountToDeposit }: any) => {
                   >
                     <Input
                       style={{ width: '100%' }}
-                      placeholder="Quantity"
+                      placeholder="Amount"
                       type={'number'}
                       prefix={<TokenIcon 
                         tokenSymbol={symbol}

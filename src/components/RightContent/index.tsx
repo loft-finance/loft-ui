@@ -39,7 +39,7 @@ const GlobalHeaderRight: React.FC = () => {
   const menu = (
     <Menu>
       {/* <Menu.Divider /> */}
-      <Menu.Item key="3" onClick={handler.disconnect}>DISCONNECT</Menu.Item>
+      <Menu.Item key="3" onClick={handler.disconnect}>disconnected</Menu.Item>
     </Menu>
   );
 
@@ -62,7 +62,7 @@ const GlobalHeaderRight: React.FC = () => {
           style={{ borderRadius: 16, padding: '0 10px 24px' }}
           onClick={handler.connect}
         >
-          connect
+          connect wallet
         </Button>}
         {/* <SelectLang className={styles.action} /> */}
       </Space>

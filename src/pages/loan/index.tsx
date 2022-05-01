@@ -173,7 +173,7 @@ export default () => {
       },
     },
     {
-      title: <FormattedMessage id="pages.loan.index.table.col.available" />,
+      title: <div>(Based on your collateral)<br /><FormattedMessage id="pages.loan.index.table.col.available" /></div>,
       dataIndex: 'availableBorrows',
       render: (text: any) => {
         return fixedToValue(text)
@@ -244,7 +244,7 @@ export default () => {
                       />
                     </Col>
                     <Col span={12}>
-                      <span className={styles.value}>{fixedToValue(item.currentBorrows.toString())}</span>
+                      <span className={styles.value}>{fixedToValue(item.currentBorrows.toString())}<br /> (${fixedToValue(item.currentBorrowsInUSD.toString())})</span>
                     </Col>
                   </Row>
                 </Menu.Item>
@@ -252,7 +252,7 @@ export default () => {
               {totalValue > 0 && <Menu.Divider />}
               <Menu.Item key="total">
                 <FormattedMessage id="pages.loan.index.my.total" />
-                <span className={styles.value}>{fixedToValue(totalValue)}</span>
+                <span className={styles.totalvalue}>${fixedToValue(totalValue)}</span>
               </Menu.Item>
             </Menu>
           </Col>

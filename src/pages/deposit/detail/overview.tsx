@@ -27,6 +27,7 @@ export default ({ title = '', items = [], poolReserve = {}, marketRefPriceInUsd 
     borrowingEnabled: poolReserve.borrowingEnabled,
   };
 
+  console.log(data)
   return (
     <div className={styles.overview}>
       <Card bordered={false}>
@@ -35,7 +36,7 @@ export default ({ title = '', items = [], poolReserve = {}, marketRefPriceInUsd 
             <FormattedMessage id="pages.deposit.detail.overview.DepositFTM" /> {underlyingSymbol}
           </Col>
           <Col span={9} offset={4} className={styles.title}>
-            <FormattedMessage id="pages.deposit.detail.overview.FantomReserve" />
+          {underlyingSymbol} <FormattedMessage id="pages.deposit.detail.overview.FantomReserve" />
           </Col>
         </Row>
         <Row>
@@ -64,10 +65,10 @@ export default ({ title = '', items = [], poolReserve = {}, marketRefPriceInUsd 
               contentStyle={{ justifyContent: 'end', color: '#29292D', fontWeight: 'bold' }}
             >
               <Descriptions.Item label={<FormattedMessage id="pages.deposit.detail.overview.AssetPrice" />} span={3}>
-                <Bignumber value={data.priceInUsd} /> USD
+                $<Bignumber value={data.priceInUsd} />
               </Descriptions.Item>
               <Descriptions.Item label={<FormattedMessage id="pages.deposit.detail.overview.MaxLtv" />} span={3}>
-                <Bignumber value={data.baseLTVasCollateral} /> {underlyingSymbol}
+                <Percent value={data.baseLTVasCollateral} />
               </Descriptions.Item>
               <Descriptions.Item label={<FormattedMessage id="pages.deposit.detail.overview.LiquidationThreshold" />} span={3}>
                 <Percent value={data.liquidationThreshold} />

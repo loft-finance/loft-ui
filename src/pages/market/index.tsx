@@ -124,10 +124,13 @@ export default () => {
       sorter: (a: any, b: any) => a.totalBorrowsInUSD - b.totalBorrowsInUSD
     },
     {
-      title: <div style={{ textAlign: 'center' }}><FormattedMessage id="pages.market.index.table.collumn.DepositApy" /> <p><FormattedMessage id="pages.market.index.table.collumn.DepositApyAnnotation" /></p></div>,
+      title: <FormattedMessage id="pages.market.index.table.collumn.DepositApy" />,
       dataIndex: 'depositAPY',
       render: (text: any, record: any) => {
-        return <div className={styles.TagBox}><Percent value={text} /> <div className={styles.tag}><Percent value={record.aincentivesAPR} /> <span>APR</span></div></div>
+        return <div className={styles.TagBox}>
+          <Percent value={text} /> 
+          <div className={styles.tag}><span className={styles.tagloft}>loft</span><Percent value={record.aincentivesAPR} /> <span>APR</span></div>
+          </div>
       },
       align: 'center',
       sorter: (a: any, b: any) => a.depositAPY - b.depositAPY
@@ -137,7 +140,7 @@ export default () => {
       dataIndex: 'variableBorrowRate',
       align: 'center',
       render: (text: any, record: any) => {
-        return <div className={styles.TagBox}><Percent value={text} /> <div className={styles.tag}><Percent value={record.vincentivesAPR} /> <span>APR</span></div></div>
+        return <div className={styles.TagBox}><Percent value={text} /> <div className={styles.tag}><span className={styles.tagloft}>loft</span><Percent value={record.vincentivesAPR} /> <span>APR</span></div></div>
       },
       sorter: (a: any, b: any) => a.variableBorrowRate - b.variableBorrowRate
     },

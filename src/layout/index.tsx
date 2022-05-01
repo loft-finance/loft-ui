@@ -10,33 +10,33 @@ import { useEffect, useLayoutEffect, useRef } from 'react';
 
 const navList = [
   {
-    name: 'market',
+    name: 'Market',
     url: '/market',
     icon: 'icon-ic_market'
   },
   {
-    name: 'deposit',
+    name: 'Supply',
     url: '/deposit',
     icon: 'icon-ic_deposit'
   },
   {
-    name: 'loan',
+    name: 'Borrow',
     url: '/loan',
     icon: 'icon-ic_loan'
   },
   {
 
-    name: 'manage currency',
+    name: 'Manage loft',
     url: '/manage',
     icon: 'icon-ic_platform_currency'
   },
   {
-    name: 'pledge',
+    name: 'Stake',
     url: '/pledge',
     icon: 'icon-ic_Pledge'
   },
   {
-    name: 'control panel',
+    name: 'My Dashboard',
     url: '/control',
     icon: 'icon-ic_control_panel'
   }

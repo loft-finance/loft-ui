@@ -72,7 +72,7 @@ export default (props: any) => {
                 items={[
                     {
                         title: <FormattedMessage id="pages.loan.repay.info.balance" />,
-                        value: fixedToValue(userReserve?.totalBorrows),
+                        value: <>{fixedToValue(userReserve?.totalBorrows)}<br/></>,
                         tag: <>(${fixedToValue(userReserve?.totalBorrowsUSD)})</>,
                         span: 8,
                     },

@@ -1,8 +1,8 @@
 export default {
-    'pages.manage.info.pledge':'Pledge coin',
-    'pages.manage.info.price':'Coin price',
-    'pages.manage.info.fluidity':'Fluidity',
-    'pages.manage.info.market':'Market value',
+    'pages.manage.info.pledge':'Your Staked Loft',
+    'pages.manage.info.price':'Loft price',
+    'pages.manage.info.fluidity':'Circulating supply',
+    'pages.manage.info.market':'Market Cap',
     
     'pages.manage.stake.title':'Stake LOFT',
     'pages.manage.stake.desc':'Stake LOFT and earn platform fees with no lockup period.',

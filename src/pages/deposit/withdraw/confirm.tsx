@@ -382,7 +382,7 @@ export default ({ poolReserve, user, userReserve, maxAmountToDeposit, match: { p
                                 labelStyle={{ color: '#696D85' }}
                                 contentStyle={{ justifyContent: 'end', color: '#29292D', fontWeight: 'bold' }}
                             >
-                                <Descriptions.Item label="Quantity" span={3}>
+                                <Descriptions.Item label="Amount" span={3}>
                                     <Bignumber value={displayAmountToWithdraw} /> {underlyingSymbol}
                                 </Descriptions.Item>
                                 {/* <Descriptions.Item

@@ -107,7 +107,7 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, changeIsZore, ma
                     setApproveTxData(approve)
                 }
                 if (actionTx) {
-                    const mainTxName = 'Deposit'
+                    const mainTxName = 'Supply'
                     action = {
                         txType: actionTx.txType,
                         unsignedData: actionTx.tx,
@@ -130,7 +130,7 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, changeIsZore, ma
                             error: '',
                         },
                         {
-                            key: 'deposit',
+                            key: 'supply',
                             title: <span><FormattedMessage id="pages.deposit.detail.confirm.steps.deposit.title" /></span>,
                             buttonText: <span><FormattedMessage id="pages.deposit.detail.confirm.steps.deposit.button" /></span>,
                             stepText: <span><FormattedMessage id="pages.deposit.detail.confirm.steps.deposit.step" /></span>,
@@ -151,7 +151,7 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, changeIsZore, ma
                 } else if (action) {
                     setSteps([
                         {
-                            key: 'deposit',
+                            key: 'supply',
                             title: <span><FormattedMessage id="pages.deposit.detail.confirm.steps.deposit.title" /></span>,
                             buttonText: <span><FormattedMessage id="pages.deposit.detail.confirm.steps.deposit.button" /></span>,
                             stepText: <span><FormattedMessage id="pages.deposit.detail.confirm.steps.deposit.step" /></span>,
@@ -208,11 +208,11 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, changeIsZore, ma
         },
         action: {
             async submit() {
-                handler.loading.set('deposit', true);
-                handler.records.set('deposit', 'deposit', 'wait')
+                handler.loading.set('supply', true);
+                handler.records.set('supply', 'supply', 'wait')
                 const success = await handler.getTx({ depositing: true })
                 if (success) {
-                    handler.loading.set('deposit', true);
+                    handler.loading.set('supply', true);
                     sendEthTransaction(
                         actionTxData.unsignedData,
                         provider,
@@ -231,26 +231,26 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, changeIsZore, ma
                         loading: false,
                         error: 'transaction no longer valid',
                     }));
-                    handler.loading.set('deposit', false);
+                    handler.loading.set('supply', false);
                 }
             },
             executed() {
                 console.log('--------deposit executed----')
             },
             confirmed() {
-                handler.records.set('deposit', 'deposit', 'confirmed')
+                handler.records.set('supply', 'supply', 'confirmed')
                 setCurrent(current + 1);
-                handler.loading.set('deposit', false);
+                handler.loading.set('supply', false);
                 changeIsZore(false);
                 setHealthFactorAfter(healthFactorAfterDeposit);
                 refresh();
             },
             error(e: any) {
                 console.log('confirm error:', e)
-                const key = 'deposit'
+                const key = 'supply'
                 handler.error.set(key, e.message.indexOf('(') > -1 ? e.message.slice(0, e.message.indexOf('(')) : e.message);
                 handler.loading.set(key, false);
-                handler.records.set(key, 'deposit', 'error')
+                handler.records.set(key, 'supply', 'error')
             }
         },
         records: {
@@ -299,7 +299,7 @@ export default ({ poolReserve, userReserve, maxAmountToDeposit, changeIsZore, ma
         async submit() {
             if (approveTxData && steps[current]?.key === 'approve') {
                 handler.approve.submit()
-            } else if (actionTxData && steps[current]?.key === 'deposit') {
+            } else if (actionTxData && steps[current]?.key === 'supply') {
                 handler.action.submit()
             } else if (steps[current]?.key === 'completed') {
                 history.push('/control')

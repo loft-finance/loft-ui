@@ -20,16 +20,16 @@ import styles from './Deposit.less';
 const { Step } = Steps;
 
 export default ({ poolReserve, maxAmountToDeposit }: any) => {
-  const symbol = poolReserve?poolReserve.symbol:''
+  const symbol = poolReserve ? poolReserve.symbol : ''
 
   const [quantity, setQuantity] = useState(0);
   const [steps, setSteps] = useState([]);
   const [current, setCurrent] = useState(0);
-  
+
   const { user, userReserve, baseCurrency } = useModel('pool')
   const { wallet } = useModel('wallet');
-  const {lendingPool} = useModel('lendingPool');
-  
+  const { lendingPool } = useModel('lendingPool');
+
 
   const amount = valueToBigNumber(quantity || '0');
   const amountIntEth = amount.multipliedBy(poolReserve.priceInMarketReferenceCurrency);
@@ -38,7 +38,7 @@ export default ({ poolReserve, maxAmountToDeposit }: any) => {
     user.totalCollateralMarketReferenceCurrency
   ).plus(amountIntEth);
 
- 
+
   const liquidationThresholdAfter = valueToBigNumber(user.totalCollateralMarketReferenceCurrency)
     .multipliedBy(user.currentLiquidationThreshold)
     .plus(amountIntEth.multipliedBy(poolReserve.reserveLiquidationThreshold))
@@ -121,9 +121,9 @@ export default ({ poolReserve, maxAmountToDeposit }: any) => {
         {!quantity && (
           <>
             <div className={styles.desc}>
-              <div className={styles.title}>How much do you want to deposit</div>
+              <div className={styles.title}>How much would you like to supply?</div>
               <div className={styles.text}>
-                Please enter the amount to be deposited, the maximum amount you can deposit is shown below
+                Please enter the amount to be supply , the maximum amount you can supply is shown below
               </div>
             </div>
             <div className={styles.form}>
@@ -136,17 +136,17 @@ export default ({ poolReserve, maxAmountToDeposit }: any) => {
                     autoComplete="off"
                   >
                     <div className={styles.able}>
-                      <span>Available for deposit</span>
+                      <span>Available for supply</span>
                       <span className={styles.amount}>{maxAmountToDeposit} {symbol}</span>
                     </div>
                     <Form.Item
                       name="quantity"
-                      rules={[{ required: true, message: 'Please input quantity!' }]}
+                      rules={[{ required: true, message: 'Please input the correct amount' }]}
                     >
                       <InputNumber
                         style={{ width: '100%' }}
-                        placeholder="Quantity"
-                        prefix={<TokenIcon 
+                        placeholder="Amount"
+                        prefix={<TokenIcon
                           tokenSymbol={symbol}
                           height={20}
                           width={20}
@@ -188,7 +188,7 @@ export default ({ poolReserve, maxAmountToDeposit }: any) => {
                     labelStyle={{ color: '#696D85' }}
                     contentStyle={{ justifyContent: 'end', color: '#29292D', fontWeight: 'bold' }}
                   >
-                    <Descriptions.Item label="Quantity" span={3}>
+                    <Descriptions.Item label="Amount" span={3}>
                       {quantity}
                     </Descriptions.Item>
                     <Descriptions.Item
@@ -207,7 +207,7 @@ export default ({ poolReserve, maxAmountToDeposit }: any) => {
                       span={3}
                       contentStyle={{ color: '#3163E2' }}
                     >
-                      {usageAsCollateralEnabledOnDeposit?'yes':'no'}
+                      {usageAsCollateralEnabledOnDeposit ? 'yes' : 'no'}
                     </Descriptions.Item>
                     <Descriptions.Item
                       label="New health factors"

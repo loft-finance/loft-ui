@@ -70,15 +70,16 @@ export default (props: any) => {
         items={[
           {
             title: <FormattedMessage id="pages.loan.detail.info.borrowed" />,
-            value: <>{fixedToValue(currentBorrows)} {underlyingSymbol}</>,
+            value: <>{fixedToValue(currentBorrows)} {underlyingSymbol}<br/></>,
+            tag: <>(${fixedToValue(userReserve?.totalBorrowsUSD.toString())})</>,
           },
           {
             title: <FormattedMessage id="pages.loan.detail.info.TotalCollateral" />,
-            value: <><Bignumber value={user?.totalCollateralUSD} maximumValueDecimals={4} /> USD</>,
+            value: <>$<Bignumber value={user?.totalCollateralUSD || '0'} maximumValueDecimals={4} /></>,
           },
           {
             title: <FormattedMessage id="pages.loan.detail.info.LoanValue" />,
-            value: <><Percent value={user?.currentLoanToValue} /></>,
+            value: <><Percent value={user?.currentLoanToValue || '0'} /></>,
           },
           {
             title: <FormattedMessage id="pages.loan.detail.info.FitnessFactor" />,
@@ -90,7 +91,10 @@ export default (props: any) => {
 
       {!account && <WalletDisconnected />}
 
-      {account && isZore && maxAmountToBorrow.toString() == '0' && <WalletEmpty symbol={poolReserve ? poolReserve?.symbol : ''} isBtn={true} />}
+      {account && isZore && maxAmountToBorrow.toString() == '0' &&
+        <WalletEmpty symbol={poolReserve ? poolReserve?.symbol : ''} isBtn={true} title="No supplies yet"
+          subTitle="You need to supply some collateral first to unlock your borrowing power." />
+      }
 
       {account && (!isZore || maxAmountToBorrow.toString() != '0') && React.cloneElement(props.children, { poolReserve, userReserve, maxAmountToBorrow: maxAmountToBorrow.toString(10), changeIsZore })}
     </GridContent>

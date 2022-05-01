@@ -76,11 +76,12 @@ export default (props: { children?: any; match?: any; }) => {
         items={[
           {
             title: <FormattedMessage id="pages.deposit.detail.info.balance" />,
-            value: <>{fixedToValue(userReserve?.underlyingBalance)} {underlyingSymbol}</>,
+            value: <>{fixedToValue(userReserve?.underlyingBalance)} {underlyingSymbol}<br/></>,
+            tag: <>(${fixedToValue(userReserve?.underlyingBalanceUSD)})</>,
           },
           {
             title: <FormattedMessage id="pages.deposit.detail.info.WalletBalance" />,
-            value: <><Bignumber value={walletBalance} /> {underlyingSymbol}</>,
+            value: <>{walletBalance.toNumber() ? <Bignumber value={walletBalance} /> : '0'} {underlyingSymbol}</>,
           },
           {
             title: <FormattedMessage id="pages.deposit.detail.info.FitnessFactor" />,

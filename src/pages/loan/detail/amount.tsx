@@ -60,7 +60,7 @@ export default ({ poolReserve, maxAmountToBorrow }: any) => {
                 >
                   <Input
                     style={{ width: '100%' }}
-                    placeholder="Quantity"
+                    placeholder="Amount"
                     prefix={<TokenIcon
                       tokenSymbol={symbol}
                       height={20}

@@ -58,7 +58,7 @@ export default ({ poolReserve, maxUserAmountToWithdraw }: any) => {
                   >
                     <Input
                       style={{ width: '100%' }}
-                      placeholder="Quantity"
+                      placeholder="Amount"
                       prefix={<TokenIcon 
                         tokenSymbol={symbol}
                         height={20}

@@ -3,7 +3,7 @@ import { Card, Result, Button, Image } from 'antd';
 import Back from '@/components/Back';
 import Connect from '@/components/Wallet/Connect';
 
-export default ({ showBack = true }) => {
+export default ({ showBack = true, subTitle = 'To see your supplies / borrowed assets, you need to connect your wallet.' }) => {
   const connectRef = useRef();
 
   const handler = {
@@ -18,9 +18,9 @@ export default ({ showBack = true }) => {
         {showBack && <Back />}
         <Result
           icon={<Image width={70} preview={false} src="/ic_wallet@3x.png" />}
-          title="Please connect a wallet"
+          title="Please,connect your wallet"
           style={{}}
-          subTitle="The wallet cannot be detected, please connect the wallet to deposit and check the balance growth"
+          subTitle={subTitle}
           extra={
             <Button type="primary" style={{ width: 300 }} onClick={handler.connect}>
               connect

@@ -49,14 +49,14 @@ export default ({ match: { params: { underlyingAsset, id, status } }, }: any,) =
         )
         : undefined;
 
-    const usageAsCollateralModeAfterSwitch = !userReserve.usageAsCollateralEnabledOnUser;
+    const usageAsCollateralModeAfterSwitch = userReserve?.usageAsCollateralEnabledOnUser;
     const currenttotalCollateralMarketReferenceCurrency = valueToBigNumber(
-        user.totalCollateralMarketReferenceCurrency
+        user?.totalCollateralMarketReferenceCurrency || '0'
     );
 
     const totalCollateralAfterSwitchETH = currenttotalCollateralMarketReferenceCurrency[
         usageAsCollateralModeAfterSwitch ? 'plus' : 'minus'
-    ](userReserve.underlyingBalanceMarketReferenceCurrency);
+    ](userReserve?.underlyingBalanceMarketReferenceCurrency || '0');
 
     const healthFactorAfterSwitch = calculateHealthFactorFromBalancesBigUnits(
         totalCollateralAfterSwitchETH,

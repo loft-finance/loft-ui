@@ -23,7 +23,7 @@ export default () => {
     account: res.account
   }))
   const { updateDom } = useModel('domUpdateDid');
-  
+
   const { loftRewardPerYear, loftApy, balanceLoft, depositedLoft, earnedLoft, isLoftAllowanceEnough, loftApprove, loftDeposit, loftWithdraw, getLoftAPY } = useModel('pledge', res => ({
     loftRewardPerYear: res.loftRewardPerYear,
     loftApy: res.loftApy,
@@ -44,7 +44,7 @@ export default () => {
   useEffect(() => {
     updateDom();
   }, []);
-  
+
   const handler = {
     submit(values: any) {
       form
@@ -57,7 +57,7 @@ export default () => {
           }
           const txt = {
             overview: {
-              title: 'Pledge Overview',
+              title: 'Stake Overview',
               desc: 'These are your transaction details. Please be sure to check whether it is correct before submiting.'
             },
             approve: {
@@ -67,14 +67,14 @@ export default () => {
               description: 'Please approve before confirming',
             },
             confirm: {
-              title: 'pledge',
-              buttonText: 'pledge',
-              stepText: 'pledge',
-              description: 'Please submit a pledge',
+              title: 'Stake',
+              buttonText: 'Stake',
+              stepText: 'Stake',
+              description: '',
             },
             completed: {
               title: 'Completed',
-              buttonText: 'control panel',
+              buttonText: 'My Dashboard',
               stepText: 'Success',
               description: '',
             },
@@ -99,11 +99,11 @@ export default () => {
       principal: {
         amount() {
           const txt = {
-            title: 'How much do you want to unstake?',
-            desc: 'Provide LOFT/FTM liquidity on SpookySwap and stake the LP token here to earn more LOFT',
-            available: 'Can be pledge',
+            title: 'How much would you like to unstake?',
+            desc: 'Please enter the amount to be unstake, the maximum amount you can unstake is shown below',
+            available: 'Available to stake',
             max: 'Max',
-            validate: 'Please input quantity!',
+            validate: 'Please input the correct amount',
             button: 'Unstake'
           };
 
@@ -136,7 +136,7 @@ export default () => {
             },
             completed: {
               title: 'Completed',
-              buttonText: 'control panel',
+              buttonText: 'My Dashboard',
               stepText: 'Success',
               description: '',
             },
@@ -153,7 +153,7 @@ export default () => {
       earned() {
         const txt = {
           overview: {
-            title: 'Withdraw Earned Overview',
+            title: 'Claim LOFT Overview',
             desc: 'These are your transaction details. Please be sure to check whether it is correct before submiting.'
           },
           approve: {
@@ -163,21 +163,21 @@ export default () => {
             description: 'Please approve before confirming',
           },
           confirm: {
-            title: 'unstake',
-            buttonText: 'unstake',
-            stepText: 'unstake',
-            description: 'Please submit a unstake',
+            title: 'claim',
+            buttonText: 'claim',
+            stepText: 'claim',
+            description: '',
           },
           completed: {
             title: 'Completed',
-            buttonText: 'control panel',
+            buttonText: 'My Dashboard',
             stepText: 'Success',
             description: '',
           },
         };
 
         (refConfirm as any).current.show({
-          title: 'Withdraw Earned',
+          title: 'Claim LOFT',
           earned: true,
           amount: earnedLoft,
           amountInUsd: loftToUsd(earnedLoft),
@@ -195,7 +195,7 @@ export default () => {
             {
               title: <FormattedMessage id="pages.manage.info.pledge" />,
               value: <Bignumber on={true} value={depositedLoft} />,
-              tag: <>($<Bignumber on={true} value={account ? loftToUsd(depositedLoft) : valueToBigNumber(0)} /> USD)</>,
+              tag: <>($<Bignumber on={true} value={account ? loftToUsd(depositedLoft) : valueToBigNumber(0)} />)</>,
             },
             {
               title: <FormattedMessage id="pages.manage.info.price" />,
@@ -204,7 +204,7 @@ export default () => {
             {
               title: <FormattedMessage id="pages.manage.info.fluidity" />,
               value: '5.3M',
-              tag: '(28.5% LOCKED)',
+              tag: '(28.5 % LOCKED)',
             },
             {
               title: <FormattedMessage id="pages.manage.info.market" />,
@@ -213,7 +213,7 @@ export default () => {
           ]}
         />
 
-        {!account && <WalletDisconnected showBack={false} />}
+        {!account && <WalletDisconnected showBack={false} subTitle="We couldn’t detect a wallet. Connect a wallet to stake." />}
         {account && (
           <Row>
             <Col span={10} style={{ paddingRight: 15 }}>
@@ -241,11 +241,11 @@ export default () => {
                     <Form form={form} name="basic" layout={'vertical'} autoComplete="off">
                       <Form.Item
                         name="amount"
-                        rules={[{ required: true, message: 'Please input quantity!' }]}
+                        rules={[{ required: true, message: 'Please input the correct amount' }]}
                       >
                         <Input
                           style={{ width: '100%' }}
-                          placeholder="Quantity"
+                          placeholder="Amount"
                           prefix={<DollarCircleOutlined className="site-form-item-icon" />}
                           suffix={<a onClick={handler.max}><FormattedMessage id="pages.manage.stake.max" /></a>}
                         />
@@ -292,17 +292,17 @@ export default () => {
                   </Col>
                 </Row>
                 <Row>
-                  <Col span={10}>
+                  {/* <Col span={10}>
                     <p className={styles.tip}>
                       <FormattedMessage id="pages.manage.unlocked.desc" />
                     </p>
-                  </Col>
-                  <Col span={6} offset={1}>
+                  </Col> */}
+                  <Col span={16}>
                     <p className={styles.tip}>
                       <Bignumber value={earnedLoft} /> {symbol}
                     </p>
                   </Col>
-                  <Col span={5} offset={1}>
+                  <Col span={6} >
                     <Button type="primary" shape="round" disabled={!account || earnedLoft.eq('0')} onClick={handler.withdraw.earned}>
                       <FormattedMessage id="pages.manage.unlocked.button" />
                     </Button>

@@ -159,6 +159,7 @@ export default () => {
     updateDom();
   }, [reserves]);
 
+
   return (
     <Spin spinning={!reserves || !reserves.length}>
       <GridContent>
@@ -211,7 +212,8 @@ export default () => {
                       />
                     </Col>
                     <Col span={12}>
-                      <span className={styles.value}>{fixedToValue(item.underlyingBalance.toString())}</span>
+                      <div className={styles.value}>{fixedToValue(item.underlyingBalance.toString())}<br/>
+                      (${fixedToValue(item.underlyingBalanceInUSD.toString())})</div>
                     </Col>
                   </Row>
                 </Menu.Item>
@@ -219,7 +221,7 @@ export default () => {
               {totalValue > 0 && <Menu.Divider />}
               <Menu.Item key="total">
                 <FormattedMessage id="pages.deposit.index.my.total" />
-                <span className={styles.value}>{fixedToValue(totalValue)}</span>
+                <span className={styles.totalvalue}>${fixedToValue(totalValue)}</span>
               </Menu.Item>
             </Menu>
           </Col>

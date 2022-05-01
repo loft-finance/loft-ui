@@ -22,5 +22,5 @@ export default {
   'menu.loan.rate': 'loan/rate',
   'menu.manage': 'manage currency',
   'menu.pledge': 'Pledge',
-  'menu.control': 'control panel',
+  'menu.control': 'My Dashboard',
 };

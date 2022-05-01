@@ -1,5 +1,5 @@
 export default {
-    'pages.loan.rate.info.balance':'Your balance in the platform',
+    'pages.loan.rate.info.balance':'Your balance on the platform',
     'pages.loan.rate.info.WalletBalance':'Wallet balance',
     'pages.loan.rate.info.FitnessFactor':'Fitness factor',
     'pages.loan.rate.info.CollateralComposition':'Collateral composition',
@@ -30,7 +30,7 @@ export default {
     'pages.loan.rate.confirm.steps.rate.desc':'Switch interest Type',
 
     'pages.loan.rate.confirm.steps.completed.title':'Completed',
-    'pages.loan.rate.confirm.steps.completed.button':'control panel',
+    'pages.loan.rate.confirm.steps.completed.button':'My Dashboard',
     'pages.loan.rate.confirm.steps.completed.step':'Success',
     'pages.loan.rate.confirm.steps.completed.desc':' ',
 

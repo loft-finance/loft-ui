@@ -58,7 +58,7 @@ export default ({ title = '', items = [], poolReserve = {}, marketRefPriceInUsd 
               contentStyle={{ justifyContent: 'end', color: '#29292D', fontWeight: 'bold' }}
             >
               <Descriptions.Item label={<FormattedMessage id="pages.loan.detail.overview.AssetPrice" />} span={3}>
-                <Bignumber value={data.priceInUsd} /> USD
+                $<Bignumber value={data.priceInUsd} />
               </Descriptions.Item>
               <Descriptions.Item label={<FormattedMessage id="pages.loan.detail.overview.LoanApy" />} span={3}>
               <Percent value={data.baseLTVasCollateral} />

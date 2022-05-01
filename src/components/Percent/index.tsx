@@ -3,6 +3,6 @@ export default ({value, decimals = 2, ...props }: any) => {
     
     const v = (Number(value) * 100).toFixed(2);
     return (
-        <>{v}%</>
+        <>{v} %</>
     );
 }

@@ -271,14 +271,14 @@ export default ({ refs }: any) => {
                                 ))}
                             </Steps>
                         </Col>
-                        <Col span={19}>
+                        <Col span={17}>
                             <p className={styles.tip}>
                                 {current + 1}/{steps.length} {steps[current]?.stepText}
                             </p>
 
                             <p className={styles.tip} style={steps[current]?.error ? { color: '#F46D6D' } : {}}>{steps[current]?.error ? steps[current]?.error : steps[current]?.description}</p>
                         </Col>
-                        <Col span={5} >
+                        <Col span={7} >
                             <Button type="primary" shape="round" loading={steps[current]?.loading ? true : false} onClick={handler.submit}>
                                 {steps[current]?.buttonText}
                             </Button>

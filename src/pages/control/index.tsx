@@ -307,7 +307,7 @@ export default () => {
                     <div className={styles.label}><FormattedMessage id="pages.info.deposit.balance" /></div>
                     <div className={styles.value}>
                       ${Number(user?.totalLiquidityUSD || 0).toFixed(2)}
-                      <span className={styles.dollar}>{Number(user?.totalLiquidityMarketReferenceCurrency || 0).toFixed(2)} USD</span>
+                      {/* <span className={styles.dollar}>{Number(user?.totalLiquidityMarketReferenceCurrency || 0).toFixed(2)} USD</span> */}
                     </div>
                   </Col>
                   <Col span={12}>
@@ -327,11 +327,11 @@ export default () => {
                     <Row>
                       <Col span={24}>
                         <div className={styles.label}><FormattedMessage id="pages.info.loan.borrowed" /></div>
-                        <div className={styles.value}>${Number(user?.totalBorrowsUSD || 0).toFixed(2)} USD</div>
+                        <div className={styles.value}>${Number(user?.totalBorrowsUSD || 0).toFixed(2)}</div>
                       </Col>
                       <Col span={24} style={{ marginTop: 15 }}>
                         <div className={styles.label}><FormattedMessage id="pages.info.loan.collateral" /></div>
-                        <div className={styles.value}>${Number(user?.totalCollateralUSD || 0).toFixed(2)} USD</div>
+                        <div className={styles.value}>${Number(user?.totalCollateralUSD || 0).toFixed(2)}</div>
                       </Col>
                       <Col span={24} style={{ marginTop: 15 }}>
                         <div className={styles.label}><FormattedMessage id="pages.info.loan.ltv" /></div>
@@ -418,7 +418,7 @@ export default () => {
                       </Col> */}
                       <Col span={3} className={styles.single}>
                         <Button size="small" type="primary" shape="round">
-                          To trade loft
+                          trade loft
                         </Button>
                       </Col>
                     </Row>
@@ -452,7 +452,7 @@ export default () => {
                       </Col>
                       <Col span={3} className={styles.single}>
                         <Button size="small" type="primary" shape="round">
-                          To provide liquidity
+                          provide liquidity
                         </Button>
                       </Col>
                     </Row>

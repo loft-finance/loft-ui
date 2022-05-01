@@ -24,7 +24,7 @@ export default () => (
                 rules={[{ required: true, message: 'Please input your username!' }]}
               >
                 <Input
-                  placeholder="Quantity"
+                  placeholder="Amount"
                   prefix={<DollarCircleOutlined className="site-form-item-icon" />}
                   suffix={<a>Max</a>}
                 />

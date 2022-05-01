@@ -174,7 +174,7 @@ export default (props: any) => {
         value: Number(Number(data.availableLiquidity).toFixed(2)),
       },
       {
-        type: 'Total borrowings',
+        type: 'Total Borrowed',
         value: Number(Number(data.totalBorrows).toFixed(2)),
       },
     ],
@@ -284,7 +284,7 @@ export default (props: any) => {
                             <div className={styles.card}>
                               <div className={styles.name}>
                                 {/* <FormattedMessage id="pages.market.detail.config.ReserveScale" /> */}
-                                Utilisation rate
+                                Utilisation Rate
                               </div>
                               <div className={styles.value}>
                                 {data.totalBorrowsInUsd != '0' && data.totalLiquidityInUsd != '0' ? valueToBigNumber(data.totalBorrowsInUsd).dividedBy(valueToBigNumber(data.totalLiquidityInUsd)).multipliedBy(100).toFixed(2) : '0.00'}%
@@ -441,10 +441,15 @@ export default (props: any) => {
                           </Col>
                         </Row>
                         <Row className={styles.msg}>
+                        <Col span={12} className={styles.label}><FormattedMessage id="pages.market.detail.your.loan.available" /></Col>
+                          <Col span={12} className={styles.value}>
+                            {Number(availableBorrows).toFixed(2)} {poolReserve.symbol}
+                          </Col>
                           <Col span={12} className={styles.label}><FormattedMessage id="pages.market.detail.your.loan.borrowed" /></Col>
                           <Col span={12} className={styles.value}>
                             {Number(totalBorrows || 0).toFixed(2)} {poolReserve.symbol}
                           </Col>
+                         
                           <Col span={12} className={styles.label}><FormattedMessage id="pages.market.detail.your.loan.FitnessFactor" /></Col>
                           <Col span={12} className={styles.value}>
                             {Number(user?.healthFactor || '--').toFixed(2)}
@@ -452,10 +457,6 @@ export default (props: any) => {
                           <Col span={12} className={styles.label}><FormattedMessage id="pages.market.detail.your.loan.LoanAppreciation" /></Col>
                           <Col span={12} className={styles.value}>
                             <Percent value={user?.currentLoanToValue || 0} />
-                          </Col>
-                          <Col span={12} className={styles.label}><FormattedMessage id="pages.market.detail.your.loan.available" /></Col>
-                          <Col span={12} className={styles.value}>
-                            {Number(availableBorrows).toFixed(2)} {poolReserve.symbol}
                           </Col>
                         </Row>
                       </Col>
